@@ -25,5 +25,6 @@ public class MainView extends VerticalLayout {
         ListOfPlayers result = restTemplate.getForObject(uri, ListOfPlayers.class);
         System.out.println(result.getPlayers().size());
         System.out.println(result.getPlayers().get(1).getName());
+        System.out.println(result.getPlayers().get(0).getName());
     }
 }
