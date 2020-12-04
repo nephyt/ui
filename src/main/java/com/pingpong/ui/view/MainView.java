@@ -3,9 +3,13 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -13,18 +17,32 @@ import java.util.List;
 @Route
 public class MainView extends VerticalLayout {
 
+    Grid<Player> grid;
+
     public MainView() {
         add(new Button("Click me", e -> Notification.show("Hello, Spring+Vaadin user!")));
 
+        this.grid = new Grid<>(Player.class);
+        TextField filter = new TextField();
+        filter.setPlaceholder("Filter by last name");
+        filter.setValueChangeMode(ValueChangeMode.EAGER);
+        filter.addValueChangeListener(e -> listPlayer(e.getValue()));
+        add(filter, grid);
+    }
 
-        final String uri = "http://localhost:8090/Players";
+    private void listPlayer(String filterText) {
+        String uri = "http://localhost:8090/Players";
 
         //TODO: Autowire the RestTemplate in all the examples
         RestTemplate restTemplate = new RestTemplate();
 
+        if (!StringUtils.isEmpty(filterText)) {
+            uri = "http://localhost:8090/PlayersWithName/" + filterText;
+        }
+
         ListOfPlayers result = restTemplate.getForObject(uri, ListOfPlayers.class);
-        System.out.println(result.getPlayers().size());
-        System.out.println(result.getPlayers().get(1).getName());
-        System.out.println(result.getPlayers().get(0).getName());
+
+        grid.setItems(result.getPlayers());
     }
+
 }
