@@ -32,7 +32,7 @@
         <server>
             <id>github</id>
             <username>nephyt</username>
-            <password>e702168b9d118ee40b5901c3cd4cde00e9eb6d8d</password>
+            <password>${TOKEN_GIT_HUB_READ}</password>
         </server>
     </servers>
 </settings>
