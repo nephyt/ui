@@ -32,13 +32,14 @@ public class MainView extends VerticalLayout {
 
     private void listPlayer(String filterText) {
         //String uri = "http://localhost:8090/Players";
-        String uri = "https://pingpongplayersservice.herokuapp.com/Players";
+        String baseUri = "https://pingpongplayersservice.herokuapp.com/";
+        String uri = baseUri +  "Players";
 
         //TODO: Autowire the RestTemplate in all the examples
         RestTemplate restTemplate = new RestTemplate();
 
         if (!StringUtils.isEmpty(filterText)) {
-            uri = "http://localhost:8090/PlayersWithName/" + filterText;
+            uri = baseUri +  "PlayersWithName/" + filterText;
         }
 
         ListOfPlayers result = restTemplate.getForObject(uri, ListOfPlayers.class);
