@@ -2,9 +2,9 @@
   "name": "no-name",
   "license": "UNLICENSED",
   "scripts": {
-    "heroku-postbuild": "npm install"
+    "start": "node server.js",
+    "heroku-postbuild": "webpack -p"
   },
-
   "vaadin": {
     "dependencies": {
       "lit-element": "^2.2.1",

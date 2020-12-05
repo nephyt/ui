@@ -12,9 +12,7 @@ import com.vaadin.flow.router.Route;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-
-@Route
+@Route("players")
 public class MainView extends VerticalLayout {
 
     Grid<Player> grid;
