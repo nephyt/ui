@@ -3,7 +3,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node server.js",
-    "heroku-postbuild": "webpack -p"
   },
  "engines" : { "node" : ">=0.12" },
   "vaadin": {
