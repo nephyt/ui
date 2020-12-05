@@ -2,7 +2,7 @@
   "name": "no-name",
   "license": "UNLICENSED",
   "scripts": {
-    "heroku-postbuild": "webpack -p"
+    "heroku-postbuild": "npm install"
   },
 
   "vaadin": {
