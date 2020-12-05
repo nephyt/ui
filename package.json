@@ -2,6 +2,7 @@
   "name": "no-name",
   "license": "UNLICENSED",
   "scripts": {
+    "heroku-postbuild": "npm install",
     "start": "node server.js"
   },
  "engines" : { "node" : ">=0.12" },
