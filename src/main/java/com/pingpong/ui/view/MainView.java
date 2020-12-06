@@ -20,6 +20,13 @@ public class MainView extends VerticalLayout {
     public MainView() {
         add(new Button("Click me", e -> Notification.show("Hello, Spring+Vaadin user!")));
 
+        this.grid = new Grid<>(Player.class);
+        TextField filter = new TextField();
+        filter.setPlaceholder("Filter by last name");
+        filter.setValueChangeMode(ValueChangeMode.EAGER);
+        filter.addValueChangeListener(e -> listPlayer(e.getValue()));
+        add(filter, grid);
+
 
     }
 
