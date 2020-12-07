@@ -9,26 +9,6 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<repositories>
-		<!-- The order of definitions matters. Explicitly defining central here to make sure it has the highest priority. -->
-
-		<!-- Main Maven repository -->
-		<repository>
-			<id>central</id>
-			<url>https://repo.maven.apache.org/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<!-- Repository used by many Vaadin add-ons -->
-		<repository>
-			<id>Vaadin Directory</id>
-			<url>https://maven.vaadin.com/vaadin-addons</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 
 	<groupId>com.pingpong</groupId>
 	<artifactId>ui</artifactId>
@@ -70,6 +50,15 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</pluginRepository>
+
+		<!-- Repository used by many Vaadin add-ons -->
+		<pluginRepository>
+			<id>Vaadin Directory</id>
+			<url>https://maven.vaadin.com/vaadin-addons</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
 	</pluginRepositories>
 
 	<dependencyManagement>
@@ -94,6 +83,33 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>npm</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.eirslett</groupId>
+						<artifactId>frontend-maven-plugin</artifactId>
+						<!-- Use the latest released version:
+                        https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
+						<version>1.9.1</version>
+						<executions>
+							<execution>
+								<id>install node and npm</id>
+								<goals>
+									<goal>install-node-and-npm</goal>
+								</goals>
+								<!-- optional: default phase is "generate-resources" -->
+								<phase>generate-resources</phase>
+							</execution>
+						</executions>
+						<configuration>
+							<nodeVersion>v12.13.0</nodeVersion>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<!-- Production mode is activated using -Pproduction -->
 			<id>production</id>
