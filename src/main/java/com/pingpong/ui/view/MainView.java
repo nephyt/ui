@@ -2,11 +2,14 @@ package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.ui.Constants;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -16,6 +19,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -24,10 +28,19 @@ import java.util.Map;
 @Route("players")
 public class MainView extends VerticalLayout {
 
-    Grid<Player> grid;
+    private PlayerEditor editor = new PlayerEditor();
+
+    private Grid<Player> grid;
+
+    private Button addNewBtn;
+
+    private IFrame iFrame = new IFrame();
 
     public MainView() {
       //  add(new Button("Click me", e -> Notification.show("Hello, Spring+Vaadin user!")));
+
+
+        addNewBtn = new Button("New player", VaadinIcon.PLUS.create());
 
         Tab tabPlayer = new Tab("Players");
         Tab tabGame = new Tab("Game");
@@ -38,6 +51,7 @@ public class MainView extends VerticalLayout {
 
         pageGame.setVisible(false);
 
+
         this.grid = new Grid<>(Player.class);
         TextField filter = new TextField();
         filter.setPlaceholder("Filter by last name");
@@ -45,7 +59,11 @@ public class MainView extends VerticalLayout {
         filter.addValueChangeListener(e -> listPlayer(e.getValue()));
 
         grid.setWidthFull();
-        pagePlayers.add(filter,grid);
+
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+
+
+        pagePlayers.add(actions,grid, editor);
 
         pagePlayers.setWidthFull();
 
@@ -70,6 +88,21 @@ public class MainView extends VerticalLayout {
 
         //add(filter, grid);
 
+        // Connect selected Customer to editor or hide if none is selected
+        grid.asSingleSelect().addValueChangeListener(e -> {
+            editor.editCustomer(e.getValue());
+        });
+
+        // Instantiate and edit new Customer the new button is clicked
+        addNewBtn.addClickListener(e -> editor.editCustomer(new Player()));
+
+        // Listen changes made by the editor, refresh data from backend
+        editor.setChangeHandler(() -> {
+            editor.setVisible(false);
+            listPlayer(filter.getValue());
+        });
+
+        listPlayer("");
 
 
     }
@@ -89,6 +122,8 @@ public class MainView extends VerticalLayout {
         teamName.setWidthFull();
 
 
+        Button play = new Button("Play");
+
         // compteur
 
         Label scoreTeam2 = new Label();
@@ -103,21 +138,38 @@ public class MainView extends VerticalLayout {
 
         pageGame.add(teamName, teamScore);
 
+//        IFrame iFrame = new IFrame("https://www.youtube.com/embed/dQw4w9WgXcQ");
+        iFrame.setHeight("315px");
+        iFrame.setWidth("560px");
+        iFrame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
+        iFrame.getElement().setAttribute("allowfullscreen", true);
+        iFrame.getElement().setAttribute("frameborder", "0");
+
+        iFrame.setVisible(false);
+
+        pageGame.add(iFrame, play);
+
+        play.addClickListener(e -> showVideo());
 
         return pageGame;
 
     }
 
+    private void showVideo() {
+        iFrame .setSrc("https://www.youtube.com/embed/e8X3ACToii0?autoplay=1");
+
+        iFrame.setVisible(true);
+
+    }
+
     private void listPlayer(String filterText) {
-        //String uri = "http://localhost:8090/Players";
-        String baseUri = "https://pingpongplayersservice.herokuapp.com/";
-        String uri = baseUri +  "Players";
+        String uri = Constants.SERVICE_URL +  "Players";
 
         //TODO: Autowire the RestTemplate in all the examples
         RestTemplate restTemplate = new RestTemplate();
 
         if (!StringUtils.isEmpty(filterText)) {
-            uri = baseUri +  "PlayersWithName/" + filterText;
+            uri = Constants.SERVICE_URL +  "PlayersWithName/" + filterText;
         }
 
         ListOfPlayers result = restTemplate.getForObject(uri, ListOfPlayers.class);
