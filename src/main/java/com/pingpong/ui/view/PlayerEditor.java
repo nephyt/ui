@@ -8,6 +8,7 @@ import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -55,6 +56,7 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
     TextField name = new TextField("Name");
     TextField victorySongPath = new TextField("Victory Song");
     private IFrame previewSong = new IFrame();
+    Label textPicture = new Label("Picture");
     TextField picturePath = new TextField("Picture");
     FileBuffer memoryBuffer = new FileBuffer();
     Upload upload = new Upload(memoryBuffer);
@@ -79,8 +81,9 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
 
     @Autowired
     public PlayerEditor() {
+        picturePath.setVisible(false);
 
-        add(name, victorySongPath, previewSong, picturePath, upload, image, actions);
+        add(name, textPicture, picturePath, upload, image, victorySongPath, previewSong, actions);
 
         // bind using naming convention
         binder.bindInstanceFields(this);
@@ -113,6 +116,9 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
         delete.addClickListener(e -> delete());
         restore.addClickListener(e -> restore());
         cancel.addClickListener(e -> editCustomer(player));
+
+        victorySongPath.addValueChangeListener(e -> previewSong());
+
         setVisible(false);
 
 
@@ -186,6 +192,8 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
 
     private void setUpload() {
 
+        upload.setMaxFiles(1);
+
         upload.addFinishedListener(e -> {
 
             String filePath = FileUtils.getUserDirectoryPath() + "//" + memoryBuffer.getFileName();
@@ -234,13 +242,11 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
     }
 
     public void previewSong() {
-        String victorySong = player.getVictorySongPath();
+        String victorySong = player.getYoutubeEmbedVictorySongPath();
 
-        if (victorySong != null && victorySong.contains("youtube")) {
+        if (victorySong != null) {
 
-            String embedUrl = victorySong.replace("watch?v=", "embed/");
-
-            previewSong.setSrc(embedUrl);
+            previewSong.setSrc(victorySong);
 
             //https://www.youtube.com/watch?v=sYyyEyOWeGs
             //https://www.youtube.com/embed/dQw4w9WgXcQ");

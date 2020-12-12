@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.IFrame;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,11 +19,18 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Route("players")
@@ -53,6 +61,56 @@ public class MainView extends VerticalLayout {
 
 
         this.grid = new Grid<>(Player.class);
+
+        grid.removeColumnByKey("creationDate");
+        grid.removeColumnByKey("picturePath");
+        grid.removeColumnByKey("victorySongPath");
+        grid.removeColumnByKey("youtubeEmbedVictorySongPath");
+        grid.removeColumnByKey("id");
+
+        grid.addComponentColumn(player -> {
+            Image result = new Image();
+            result.setWidth("60px");
+            result.setHeight("60px");
+            if (player.getPicturePath() != null) {
+                try {
+                    byte[] targetArray = FileUtils.readFileToByteArray(new File(player.getPicturePath()));
+                    StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(targetArray));
+
+                    result.setSrc(resource);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return result;
+        }).setHeader("Picture").setKey("picture");
+
+
+        grid.addComponentColumn(player -> {
+            IFrame result = new IFrame();
+            result.setWidth("60px");
+            result.setHeight("60px");
+            if (player.getVictorySongPath() != null) {
+                String victorySong = player.getYoutubeEmbedVictorySongPath();
+
+                if (victorySong != null) {
+                    result.setSrc(victorySong);
+                }
+
+            }
+            return result;
+        }).setHeader("Victory Song").setKey("song");
+
+        List<Grid.Column<Player>> orderColumn = new ArrayList<>();
+
+        orderColumn.add(grid.getColumnByKey("picture"));
+        orderColumn.add(grid.getColumnByKey("name"));
+        orderColumn.add(grid.getColumnByKey("song"));
+        orderColumn.add(grid.getColumnByKey("status"));
+
+        grid.setColumnOrder(orderColumn);
+
+
         TextField filter = new TextField();
         filter.setPlaceholder("Filter by last name");
         filter.setValueChangeMode(ValueChangeMode.EAGER);
@@ -139,13 +197,8 @@ public class MainView extends VerticalLayout {
         pageGame.add(teamName, teamScore);
 
 //        IFrame iFrame = new IFrame("https://www.youtube.com/embed/dQw4w9WgXcQ");
-        iFrame.setHeight("315px");
-        iFrame.setWidth("560px");
-        iFrame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
-        iFrame.getElement().setAttribute("allowfullscreen", true);
-        iFrame.getElement().setAttribute("frameborder", "0");
+        setupIframe(iFrame, "315px", "560px", false);
 
-        iFrame.setVisible(false);
 
         pageGame.add(iFrame, play);
 
@@ -153,6 +206,15 @@ public class MainView extends VerticalLayout {
 
         return pageGame;
 
+    }
+
+    private void setupIframe(IFrame frame, String height, String witdth, boolean isVisible) {
+        frame.setHeight("315px");
+        frame.setWidth("560px");
+        frame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
+        frame.getElement().setAttribute("allowfullscreen", true);
+        frame.getElement().setAttribute("frameborder", "0");
+        iFrame.setVisible(isVisible);
     }
 
     private void showVideo() {
