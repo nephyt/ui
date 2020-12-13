@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Route("players")
+@Route("")
 public class MainView extends VerticalLayout {
 
     private PlayerEditor editor = new PlayerEditor();

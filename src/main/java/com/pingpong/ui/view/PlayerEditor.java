@@ -191,14 +191,12 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
 
         upload.addFinishedListener(e -> {
 
-            String filePath = FileUtils.getUserDirectoryPath() + "//" + memoryBuffer.getFileName();
+            String filePath = FileUtils.getUserDirectoryPath() + "/PlayersPictures/" + memoryBuffer.getFileName();
 
             player.setPicturePath(filePath);
             picturePath.setValue(filePath);
 
-            System.out.println("User directoru path" + FileUtils.getUserDirectoryPath());
-
-             InputStream inputStream = memoryBuffer.getInputStream();
+            InputStream inputStream = memoryBuffer.getInputStream();
 
             try {
                 byte[] targetArray = new byte[inputStream.available()];
@@ -206,7 +204,7 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
 
                 FileUtils.writeByteArrayToFile(new File(FileUtils.getUserDirectoryPath() + "/PlayersPictures/" + memoryBuffer.getFileName()), targetArray);
 
-                StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(targetArray));
+                StreamResource resource = new StreamResource(memoryBuffer.getFileName(), () -> new ByteArrayInputStream(targetArray));
                 image.setSrc(resource);
                 image.setVisible(true);
 
