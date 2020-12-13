@@ -196,9 +196,7 @@ public class MainView extends VerticalLayout {
 
         pageGame.add(teamName, teamScore);
 
-//        IFrame iFrame = new IFrame("https://www.youtube.com/embed/dQw4w9WgXcQ");
         setupIframe(iFrame, "315px", "560px", false);
-
 
         pageGame.add(iFrame, play);
 
@@ -219,9 +217,7 @@ public class MainView extends VerticalLayout {
 
     private void showVideo() {
         iFrame .setSrc("https://www.youtube.com/embed/e8X3ACToii0?autoplay=1");
-
         iFrame.setVisible(true);
-
     }
 
     private void listPlayer(String filterText) {

@@ -63,11 +63,6 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
     Image image = new Image();
 
 
-
-//    FileUtils.writeByteArrayToFile()
-    //FileUtils.writeByteArrayToFile(new File("pathname"), myByteArray);
-
-
     /* Action buttons */
     // TODO why more code?
     Button save = new Button("Save", VaadinIcon.CHECK.create());
@@ -209,7 +204,7 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
                 byte[] targetArray = new byte[inputStream.available()];
                 inputStream.read(targetArray);
 
-                FileUtils.writeByteArrayToFile(new File(FileUtils.getUserDirectoryPath() + "//" + memoryBuffer.getFileName()), targetArray);
+                FileUtils.writeByteArrayToFile(new File(FileUtils.getUserDirectoryPath() + "/PlayersPictures/" + memoryBuffer.getFileName()), targetArray);
 
                 StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(targetArray));
                 image.setSrc(resource);
