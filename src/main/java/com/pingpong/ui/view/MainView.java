@@ -5,6 +5,7 @@ import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.Constants;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.IFrame;
@@ -63,7 +64,7 @@ public class MainView extends VerticalLayout {
         this.grid = new Grid<>(Player.class);
 
         grid.removeColumnByKey("creationDate");
-        grid.removeColumnByKey("picturePath");
+        grid.removeColumnByKey("picture");
         grid.removeColumnByKey("victorySongPath");
         grid.removeColumnByKey("youtubeEmbedVictorySongPath");
         grid.removeColumnByKey("id");
@@ -72,19 +73,13 @@ public class MainView extends VerticalLayout {
             Image result = new Image();
             result.setWidth("60px");
             result.setHeight("60px");
-            if (player.getPicturePath() != null) {
-                try {
-                    byte[] targetArray = FileUtils.readFileToByteArray(new File(player.getPicturePath()));
-                    StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(targetArray));
+            if (player.getPicture() != null) {
+                StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(player.getPicture()));
 
-                    result.setSrc(resource);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                result.setSrc(resource);
             }
             return result;
         }).setHeader("Picture").setKey("picture");
-
 
         grid.addComponentColumn(player -> {
             IFrame result = new IFrame();
@@ -114,7 +109,7 @@ public class MainView extends VerticalLayout {
         TextField filter = new TextField();
         filter.setPlaceholder("Filter by last name");
         filter.setValueChangeMode(ValueChangeMode.EAGER);
-        filter.addValueChangeListener(e -> listPlayer(e.getValue()));
+        filter.addValueChangeListener(e -> fillGrid(e.getValue()));
 
         grid.setWidthFull();
 
@@ -144,8 +139,6 @@ public class MainView extends VerticalLayout {
 
         add(tabs, pages);
 
-        //add(filter, grid);
-
         // Connect selected Customer to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
             editor.editCustomer(e.getValue());
@@ -157,15 +150,51 @@ public class MainView extends VerticalLayout {
         // Listen changes made by the editor, refresh data from backend
         editor.setChangeHandler(() -> {
             editor.setVisible(false);
-            listPlayer(filter.getValue());
+            fillGrid(filter.getValue());
         });
 
-        listPlayer("");
-
-
+        fillGrid("");
     }
 
+    Player player1;
+    Player player2;
+    Player player3;
+    Player player4;
     private Div buildPageGame() {
+/*
+        byte[] targetArray = FileUtils.readFileToByteArray(new File(player.getPicturePath()));
+        StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(targetArray));
+
+        image.setSrc(resource);
+        image.setVisible(true);
+*/
+
+
+
+        Div score = new Div();
+        score.getElement().getStyle().set("background-image","url('pingpongtable.png')");
+
+        score.setWidthFull();
+        score.setHeight("600px");
+
+
+        Label allo = new Label("allo");
+        score.add(allo);
+
+
+        ComboBox<Player> player1 = new ComboBox<>();
+        player1.setItemLabelGenerator(Player::getName);
+        player1.setItems(listPlayer(""));
+
+        score.add(player1);
+
+        player1.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+
+                System.out.println("PLayer selected: " + event.getValue().getName() + event.getValue().getId());
+            }
+        });
+
 
         Div pageGame = new Div();
         pageGame.setWidthFull();
@@ -194,11 +223,11 @@ public class MainView extends VerticalLayout {
         teamScore.setWidthFull();
         teamScore.setHeight("400");
 
-        pageGame.add(teamName, teamScore);
+        pageGame.add(player1, teamName, teamScore);
 
         setupIframe(iFrame, "315px", "560px", false);
 
-        pageGame.add(iFrame, play);
+        pageGame.add(iFrame, play, score);
 
         play.addClickListener(e -> showVideo());
 
@@ -220,7 +249,12 @@ public class MainView extends VerticalLayout {
         iFrame.setVisible(true);
     }
 
-    private void listPlayer(String filterText) {
+    private void fillGrid(String filterText) {
+
+        grid.setItems(listPlayer(filterText));
+    }
+
+    private List<Player> listPlayer(String filterText) {
         String uri = Constants.SERVICE_URL +  "Players";
 
         //TODO: Autowire the RestTemplate in all the examples
@@ -232,7 +266,7 @@ public class MainView extends VerticalLayout {
 
         ListOfPlayers result = restTemplate.getForObject(uri, ListOfPlayers.class);
 
-        grid.setItems(result.getPlayers());
+        return result.getPlayers();
     }
 
 }

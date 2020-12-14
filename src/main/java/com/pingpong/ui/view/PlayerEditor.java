@@ -191,10 +191,6 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
 
         upload.addFinishedListener(e -> {
 
-            String filePath = FileUtils.getUserDirectoryPath() + "/PlayersPictures/" + memoryBuffer.getFileName();
-
-            player.setPicturePath(filePath);
-            picturePath.setValue(filePath);
 
             InputStream inputStream = memoryBuffer.getInputStream();
 
@@ -202,7 +198,9 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
                 byte[] targetArray = new byte[inputStream.available()];
                 inputStream.read(targetArray);
 
-                FileUtils.writeByteArrayToFile(new File(FileUtils.getUserDirectoryPath() + "/PlayersPictures/" + memoryBuffer.getFileName()), targetArray);
+                player.setPicture(targetArray);
+
+                //FileUtils.writeByteArrayToFile(new File(FileUtils.getUserDirectoryPath() + "/PlayersPictures/" + memoryBuffer.getFileName()), targetArray);
 
                 StreamResource resource = new StreamResource(memoryBuffer.getFileName(), () -> new ByteArrayInputStream(targetArray));
                 image.setSrc(resource);
@@ -221,16 +219,11 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
 
         image.setVisible(false);
 
-        if (player.getPicturePath() != null) {
-            try {
-                byte[] targetArray = FileUtils.readFileToByteArray(new File(player.getPicturePath()));
-                StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(targetArray));
+        if (player.getPicture() != null) {
+            StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(player.getPicture()));
 
-                image.setSrc(resource);
-                image.setVisible(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            image.setSrc(resource);
+            image.setVisible(true);
         }
     }
 
