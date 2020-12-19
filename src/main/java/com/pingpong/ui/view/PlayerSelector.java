@@ -13,8 +13,8 @@ import java.util.List;
 
 public class PlayerSelector extends VerticalLayout implements KeyNotifier {
 
-    Integer playerId1 = null;
-    Integer playerId2 = null;
+    Player player1;
+    Player player2;
 
     String namePlayer1 = null;
     String namePlayer2 = null;
@@ -37,41 +37,49 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        ComboBox<Player> player1 = new ComboBox<>();
-        player1.setItemLabelGenerator(Player::getName);
-        player1.setItems(listPlayer1);
+        ComboBox<Player> cboPlayer1 = new ComboBox<>();
+        cboPlayer1.setItemLabelGenerator(Player::getName);
+        cboPlayer1.setItems(listPlayer1);
 
-        ComboBox<Player> player2 = new ComboBox<>();
-        player2.setItemLabelGenerator(Player::getName);
-        player2.setItems(listPlayer2);
-        player2.setVisible(false);
+        ComboBox<Player> cboPlayer2 = new ComboBox<>();
+        cboPlayer2.setItemLabelGenerator(Player::getName);
+        cboPlayer2.setItems(listPlayer2);
+        cboPlayer2.setVisible(false);
         labelPlayer2.setVisible(false);
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.add(labelPlayer1, player1, labelPlayer2, player2);
+        horizontalLayout.add(labelPlayer1, cboPlayer1, labelPlayer2, cboPlayer2);
         horizontalLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
         add(selectTeam, horizontalLayout);
 
-        player1.addValueChangeListener(event -> {
+        cboPlayer1.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                playerId1 = event.getValue().getId();
+                player1 = event.getValue();
                 namePlayer1 = event.getValue().getName();
                 labelPlayer2.setVisible(true);
-                player2.setVisible(true);
+                cboPlayer2.setVisible(true);
             }
         });
 
-        player2.addValueChangeListener(event -> {
+        cboPlayer2.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                playerId2 = event.getValue().getId();
+                player2 = event.getValue();
                 namePlayer2 = event.getValue().getName();
             }
         });
     }
 
     public Team createTeam(boolean hasService) {
-        return new Team(playerId1, playerId2, hasService);
+        return new Team(player1.getId(), player2.getId(), hasService);
+    }
+
+    public byte[] getPicturePlayer1() {
+        return player1.getPicture();
+    }
+
+    public byte[] getPicturePlayer2() {
+        return player2.getPicture();
     }
 
     public String getLabelTeam() {
