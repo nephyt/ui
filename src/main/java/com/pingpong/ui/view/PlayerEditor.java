@@ -20,12 +20,10 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import elemental.json.Json;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -253,22 +251,22 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
     }
 
     private void deletePlayer(Player player) {
-        String uri = Constants.SERVICE_URL +  "Players/" + player.getId();
+        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + player.getId();
         restTemplate.delete(uri, player, Player.class);
     }
 
     private void restorePlayer(Player player) {
-        String uri = Constants.SERVICE_URL +  "Players/" + player.getId();
+        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + player.getId();
         restTemplate.put(uri, player, Player.class);
     }
 
     private void savePlayer(Player player) {
-        String uri = Constants.SERVICE_URL +  "SavePlayer";
+        String uri = Constants.SERVICE_PLAYER_URL +  "SavePlayer";
         restTemplate.postForEntity(uri, player, Player.class);
     }
 
     private Player getAPlayer(int id) {
-        String uri = Constants.SERVICE_URL +  "Players/" + id;
+        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + id;
         Player result = restTemplate.getForObject(uri, Player.class);
 
         return result;

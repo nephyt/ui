@@ -1,9 +1,15 @@
 package com.pingpong.ui.view;
 
+import com.pingpong.basicclass.game.Game;
+import com.pingpong.basicclass.game.Team;
+import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.Constants;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -15,27 +21,19 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Route("")
-public class MainView extends VerticalLayout {
+public class MainView extends VerticalLayout implements KeyNotifier {
 
     private PlayerEditor editor = new PlayerEditor();
 
@@ -43,7 +41,22 @@ public class MainView extends VerticalLayout {
 
     private Button addNewBtn;
 
-    private IFrame iFrame = new IFrame();
+
+    Label team1 = new Label();
+    Label team2 = new Label();
+
+    Label scoreTeam2 = new Label();
+    Label scoreTeam1 = new Label();
+
+
+    Div playerSelect = new Div();
+
+    PlayerSelector playerSelectorTeamA;
+    PlayerSelector playerSelectorTeamB;
+
+    int scoreMaxSelected = 21;
+
+    Game gameInProgess;
 
     public MainView() {
       //  add(new Button("Click me", e -> Notification.show("Hello, Spring+Vaadin user!")));
@@ -156,10 +169,6 @@ public class MainView extends VerticalLayout {
         fillGrid("");
     }
 
-    Player player1;
-    Player player2;
-    Player player3;
-    Player player4;
     private Div buildPageGame() {
 /*
         byte[] targetArray = FileUtils.readFileToByteArray(new File(player.getPicturePath()));
@@ -168,70 +177,106 @@ public class MainView extends VerticalLayout {
         image.setSrc(resource);
         image.setVisible(true);
 */
-
-
-
         Div score = new Div();
         score.getElement().getStyle().set("background-image","url('pingpongtable.png')");
 
         score.setWidthFull();
         score.setHeight("600px");
 
+        playerSelectorTeamA = new PlayerSelector(listPlayer(""), "Select player(s) team A :");
+        playerSelectorTeamB = new PlayerSelector(listPlayer(""), "Select player(s) team B :");
 
-        Label allo = new Label("allo");
-        score.add(allo);
+        VerticalLayout scoreMaxDiv = new VerticalLayout();
+        scoreMaxDiv.setAlignItems(Alignment.CENTER);
+        scoreMaxDiv.setJustifyContentMode(JustifyContentMode.CENTER);
 
 
-        ComboBox<Player> player1 = new ComboBox<>();
-        player1.setItemLabelGenerator(Player::getName);
-        player1.setItems(listPlayer(""));
+        Label selectScoreMax = new Label("Select score max :");
+        ComboBox<Integer> scoreMax = new ComboBox<>();
+        scoreMax.setItems(11, 21);
+        scoreMax.setValue(21);
 
-        score.add(player1);
-
-        player1.addValueChangeListener(event -> {
+        scoreMax.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-
-                System.out.println("PLayer selected: " + event.getValue().getName() + event.getValue().getId());
+                scoreMaxSelected = event.getValue();
             }
         });
 
+        Button btnStartGame = new Button("Start Game");
+
+        scoreMaxDiv.add(selectScoreMax, scoreMax, btnStartGame);
+
+        playerSelect.add(playerSelectorTeamA, playerSelectorTeamB);
+        playerSelect.add(scoreMaxDiv);
+
+        score.add(playerSelect);
+
+        btnStartGame.addClickListener(e -> startGame());
 
         Div pageGame = new Div();
         pageGame.setWidthFull();
 
-        Label team1 = new Label();
-        team1.setText("Myriam");
-
-        Label team2 = new Label();
-        team2.setText("Cedric");
 
         Div teamName = new Div(team1, team2);
         teamName.setWidthFull();
 
 
-        Button play = new Button("Play");
-
         // compteur
 
-        Label scoreTeam2 = new Label();
-        scoreTeam2.setText("5");
-
-        Label scoreTeam1 = new Label();
-        scoreTeam1.setText("5");
 
         Div teamScore = new Div(scoreTeam1, scoreTeam2);
         teamScore.setWidthFull();
         teamScore.setHeight("400");
 
-        pageGame.add(player1, teamName, teamScore);
+        pageGame.add(playerSelect, teamName, teamScore);
 
-        setupIframe(iFrame, "315px", "560px", false);
-
-        pageGame.add(iFrame, play, score);
-
-        play.addClickListener(e -> showVideo());
+        pageGame.addClickListener( e -> updateGame(e));
 
         return pageGame;
+
+    }
+
+
+
+    private void updateGame(ClickEvent event) {
+
+        if (gameInProgess != null) {
+            System.out.println("YESYEYS");
+
+            if (event.getClickCount() == 1) {
+                gameInProgess.getTeamA().incrementScore();
+            } else if (event.getClickCount() == 2) {
+                gameInProgess.getTeamA().decrementScore(); // undo the count 1
+                gameInProgess.getTeamB().incrementScore();
+            }
+
+            gameInProgess.updateGame();
+
+            team1.setText(playerSelectorTeamA.getLabelTeam());
+            team2.setText(playerSelectorTeamB.getLabelTeam());
+
+            scoreTeam1.setText(gameInProgess.getTeamA().getScore() + "");
+            scoreTeam2.setText(gameInProgess.getTeamB().getScore() + "");
+
+        }
+
+
+    }
+
+    private void startGame() {
+
+        playerSelect.setVisible(false);
+
+
+        Team teamA = playerSelectorTeamA.createTeam(true);
+        Team teamB = playerSelectorTeamB.createTeam(false);
+
+        Game game = new Game(teamA, teamB,scoreMaxSelected);
+
+        gameInProgess = createGame(game);
+
+
+
 
     }
 
@@ -241,12 +286,12 @@ public class MainView extends VerticalLayout {
         frame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
         frame.getElement().setAttribute("allowfullscreen", true);
         frame.getElement().setAttribute("frameborder", "0");
-        iFrame.setVisible(isVisible);
+        frame.setVisible(isVisible);
     }
 
-    private void showVideo() {
-        iFrame .setSrc("https://www.youtube.com/embed/e8X3ACToii0?autoplay=1");
-        iFrame.setVisible(true);
+    private void showVideo(IFrame frame) {
+        frame .setSrc("https://www.youtube.com/embed/e8X3ACToii0?autoplay=1");
+        frame.setVisible(true);
     }
 
     private void fillGrid(String filterText) {
@@ -254,14 +299,25 @@ public class MainView extends VerticalLayout {
         grid.setItems(listPlayer(filterText));
     }
 
+    private Game createGame(Game game) {
+        String uri = Constants.SERVICE_GAME_URL +  "createGame";
+
+        //TODO: Autowire the RestTemplate in all the examples
+        RestTemplate restTemplate = new RestTemplate();
+
+        Game savedGame = restTemplate.postForObject(uri, game, Game.class);
+
+        return savedGame;
+    }
+
     private List<Player> listPlayer(String filterText) {
-        String uri = Constants.SERVICE_URL +  "Players";
+        String uri = Constants.SERVICE_PLAYER_URL +  "Players";
 
         //TODO: Autowire the RestTemplate in all the examples
         RestTemplate restTemplate = new RestTemplate();
 
         if (!StringUtils.isEmpty(filterText)) {
-            uri = Constants.SERVICE_URL +  "PlayersWithName/" + filterText;
+            uri = Constants.SERVICE_PLAYER_URL +  "PlayersWithName/" + filterText;
         }
 
         ListOfPlayers result = restTemplate.getForObject(uri, ListOfPlayers.class);
