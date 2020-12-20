@@ -33,13 +33,15 @@ public class GameScore extends VerticalLayout {
 
     public void refreshScreen() {
 
+        displayScore.removeAll();
+
         displayScore.add(displayTeamA.refreshTeam(game.getTeamA()));
 
         // Ici score
         displayScore.add(generateLabelScore(game.getTeamA().getScore()));
         displayScore.add(generateLabelScore(game.getTeamB().getScore()));
 
-        displayScore.add(displayTeamA.refreshTeam(game.getTeamB()));
+        displayScore.add(displayTeamB.refreshTeam(game.getTeamB()));
     }
 
     private Label generateLabelScore(int score) {
