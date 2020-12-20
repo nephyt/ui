@@ -174,12 +174,12 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         // compteur
 
 
-        GameSetting gameSetting = new GameSetting(listPlayer(""), gameScore);
+        GameSetting gameSetting = new GameSetting(listPlayer(""), pageGame, gameScore);
         gameSetting.setVisible(true);
 
 
 
-        pageGame.add(gameSetting, gameScore);
+        pageGame.add(gameSetting);
 
 
         return pageGame;

@@ -79,7 +79,7 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     }
 
     public Team createTeam(boolean hasService) {
-        return new Team(player1.getId(), player2.getId(), hasService);
+        return new Team(player1.getId(),  (player2==null? null :player2.getId()), hasService);
     }
 
     public byte[] getPicturePlayer1() {
@@ -87,7 +87,10 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     }
 
     public byte[] getPicturePlayer2() {
-        return player2.getPicture();
+        if (player2 != null) {
+            return player2.getPicture();
+        }
+        return new byte[1];
     }
 
     public String getLabelTeam() {

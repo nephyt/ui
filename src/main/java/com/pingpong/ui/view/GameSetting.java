@@ -27,6 +27,8 @@ public class GameSetting extends VerticalLayout {
     Game gameInProgress = null;
     GameScore gameScore;
 
+    Div pageGame;
+
     int scoreMaxSelected = 21;
 
     public Game getGameInProgress() {
@@ -45,14 +47,20 @@ public class GameSetting extends VerticalLayout {
         Map<Integer, DisplayPlayer> map = new HashMap<>();
 
         map.put(team.getPlayer1().getId(), new DisplayPlayer(team.getPlayer1()));
-        map.put(team.getPlayer2().getId(), new DisplayPlayer(team.getPlayer2()));
+
+        if (team.getPlayer2() != null) {
+            map.put(team.getPlayer2().getId(), new DisplayPlayer(team.getPlayer2()));
+        } else {
+            map.put(null, new DisplayPlayer(new Player()));
+        }
 
         return map;
     }
 
 
-    public GameSetting(List<Player> listPlayer, GameScore gameScore) {
+    public GameSetting(List<Player> listPlayer, Div pageGame, GameScore gameScore) {
         this.gameScore = gameScore;
+        this.pageGame = pageGame;
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -92,7 +100,7 @@ public class GameSetting extends VerticalLayout {
     private void startGame() {
 
         playerSelect.setVisible(false);
-
+        setVisible(false);
 
         Team teamA = playerSelectorTeamA.createTeam(true);
         Team teamB = playerSelectorTeamB.createTeam(false);
@@ -103,6 +111,9 @@ public class GameSetting extends VerticalLayout {
 
         gameScore = new GameScore(getGameInProgress(), new DisplayTeam(getDisplayPlayerTeamA()), new DisplayTeam(getDisplayPlayerTeamB()));
         gameScore.setVisible(true);
+
+        pageGame.add(gameScore);
+
     }
 
     private Game createGame(Game game) {

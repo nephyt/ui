@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class GameScore extends VerticalLayout {
 
-    Div displayScore;
+    Div displayScore = new Div();
 
     Game game;
 
@@ -26,6 +26,7 @@ public class GameScore extends VerticalLayout {
         this.displayTeamA = displayTeamA;
         this.displayTeamB = displayTeamB;
 
+        add(displayScore);
 
         this.addClickListener( e -> updateGame(e));
     }
