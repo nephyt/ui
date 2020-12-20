@@ -27,6 +27,14 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     Label labelPlayer1 = new Label("Player 1 : ");
     Label labelPlayer2 = new Label("Player 2 : ");
 
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
+    }
+
     public PlayerSelector(List<Player> listPlayer, String textSelectTeam) {
 
         this.listPlayer1 = listPlayer;

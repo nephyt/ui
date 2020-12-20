@@ -4,7 +4,6 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.Constants;
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
@@ -13,7 +12,9 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GameSetting extends VerticalLayout {
 
@@ -23,11 +24,35 @@ public class GameSetting extends VerticalLayout {
     PlayerSelector playerSelectorTeamA;
     PlayerSelector playerSelectorTeamB;
 
-    Game gameInProgess = null;
+    Game gameInProgress = null;
+    GameScore gameScore;
 
     int scoreMaxSelected = 21;
 
-    public GameSetting(List<Player> listPlayer) {
+    public Game getGameInProgress() {
+        return gameInProgress;
+    }
+
+    public Map<Integer, DisplayPlayer> getDisplayPlayerTeamA() {
+        return getDisplayPlayer(playerSelectorTeamA);
+    }
+
+    public Map<Integer, DisplayPlayer> getDisplayPlayerTeamB() {
+        return getDisplayPlayer(playerSelectorTeamA);
+    }
+
+    private Map<Integer, DisplayPlayer> getDisplayPlayer(PlayerSelector team) {
+        Map<Integer, DisplayPlayer> map = new HashMap<>();
+
+        map.put(team.getPlayer1().getId(), new DisplayPlayer(team.getPlayer1()));
+        map.put(team.getPlayer2().getId(), new DisplayPlayer(team.getPlayer2()));
+
+        return map;
+    }
+
+
+    public GameSetting(List<Player> listPlayer, GameScore gameScore) {
+        this.gameScore = gameScore;
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -74,8 +99,10 @@ public class GameSetting extends VerticalLayout {
 
         Game game = new Game(teamA, teamB,scoreMaxSelected);
 
-        gameInProgess = createGame(game);
+        gameInProgress = createGame(game);
 
+        gameScore = new GameScore(getGameInProgress(), new DisplayTeam(getDisplayPlayerTeamA()), new DisplayTeam(getDisplayPlayerTeamB()));
+        gameScore.setVisible(true);
     }
 
     private Game createGame(Game game) {

@@ -11,9 +11,9 @@ public class DisplayPlayer extends VerticalLayout {
 
     Player player;
 
-    public DisplayPlayer(Player playerTodisplay) {
+    public DisplayPlayer(Player playerToDisplay) {
 
-        player = playerTodisplay;
+        player = playerToDisplay;
 
         Image imgPlayer = new Image();
         imgPlayer.setWidth("120px");

@@ -19,16 +19,14 @@ public class DisplayTeam extends VerticalLayout {
     }
 
     public Component refreshTeam(Team team) {
-        team.getRightPlayer();
 
         displayTeam.add(mapIdPlayer.get(team.getRightPlayer()));
+        displayTeam.add(mapIdPlayer.get(team.getLeftPlayer()));
 
         return this;
 
 
     }
-
-
 
 
 }

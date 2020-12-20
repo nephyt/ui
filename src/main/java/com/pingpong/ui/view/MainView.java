@@ -1,17 +1,11 @@
 package com.pingpong.ui.view;
 
-import com.pingpong.basicclass.game.Game;
-import com.pingpong.basicclass.game.Team;
-import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.Constants;
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.IFrame;
@@ -19,9 +13,9 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
@@ -30,7 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Route("")
 public class MainView extends VerticalLayout implements KeyNotifier {
@@ -41,22 +38,9 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
     private Button addNewBtn;
 
+    GameSetting gameSetting;
 
-    Label team1 = new Label();
-    Label team2 = new Label();
-
-    Label scoreTeam2 = new Label();
-    Label scoreTeam1 = new Label();
-
-
-    Div playerSelect = new Div();
-
-    PlayerSelector playerSelectorTeamA;
-    PlayerSelector playerSelectorTeamB;
-
-    int scoreMaxSelected = 21;
-
-    Game gameInProgess;
+    GameScore gameScore;
 
     public MainView() {
       //  add(new Button("Click me", e -> Notification.show("Hello, Spring+Vaadin user!")));
@@ -183,102 +167,25 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         score.setWidthFull();
         score.setHeight("600px");
 
-        playerSelectorTeamA = new PlayerSelector(listPlayer(""), "Select player(s) team A :");
-        playerSelectorTeamB = new PlayerSelector(listPlayer(""), "Select player(s) team B :");
-
-        VerticalLayout scoreMaxDiv = new VerticalLayout();
-        scoreMaxDiv.setAlignItems(Alignment.CENTER);
-        scoreMaxDiv.setJustifyContentMode(JustifyContentMode.CENTER);
-
-
-        Label selectScoreMax = new Label("Select score max :");
-        ComboBox<Integer> scoreMax = new ComboBox<>();
-        scoreMax.setItems(11, 21);
-        scoreMax.setValue(21);
-
-        scoreMax.addValueChangeListener(event -> {
-            if (event.getValue() != null) {
-                scoreMaxSelected = event.getValue();
-            }
-        });
-
-        Button btnStartGame = new Button("Start Game");
-
-        scoreMaxDiv.add(selectScoreMax, scoreMax, btnStartGame);
-
-        playerSelect.add(playerSelectorTeamA, playerSelectorTeamB);
-        playerSelect.add(scoreMaxDiv);
-
-        score.add(playerSelect);
-
-        btnStartGame.addClickListener(e -> startGame());
-
         Div pageGame = new Div();
         pageGame.setWidthFull();
-
-
-        Div teamName = new Div(team1, team2);
-        teamName.setWidthFull();
 
 
         // compteur
 
 
-        Div teamScore = new Div(scoreTeam1, scoreTeam2);
-        teamScore.setWidthFull();
-        teamScore.setHeight("400");
+        GameSetting gameSetting = new GameSetting(listPlayer(""), gameScore);
+        gameSetting.setVisible(true);
 
-        pageGame.add(playerSelect, teamName, teamScore);
 
-        pageGame.addClickListener( e -> updateGame(e));
+
+        pageGame.add(gameSetting, gameScore);
+
 
         return pageGame;
 
     }
 
-
-
-    private void updateGame(ClickEvent event) {
-
-        if (gameInProgess != null) {
-            System.out.println("YESYEYS");
-
-            if (event.getClickCount() == 1) {
-                gameInProgess.getTeamA().incrementScore();
-            } else if (event.getClickCount() == 2) {
-                gameInProgess.getTeamA().decrementScore(); // undo the count 1
-                gameInProgess.getTeamB().incrementScore();
-            }
-
-            gameInProgess.updateGame();
-
-            team1.setText(playerSelectorTeamA.getLabelTeam());
-            team2.setText(playerSelectorTeamB.getLabelTeam());
-
-            scoreTeam1.setText(gameInProgess.getTeamA().getScore() + "");
-            scoreTeam2.setText(gameInProgess.getTeamB().getScore() + "");
-
-        }
-
-
-    }
-
-    private void startGame() {
-
-        playerSelect.setVisible(false);
-
-
-        Team teamA = playerSelectorTeamA.createTeam(true);
-        Team teamB = playerSelectorTeamB.createTeam(false);
-
-        Game game = new Game(teamA, teamB,scoreMaxSelected);
-
-        gameInProgess = createGame(game);
-
-
-
-
-    }
 
     private void setupIframe(IFrame frame, String height, String witdth, boolean isVisible) {
         frame.setHeight("315px");
@@ -299,16 +206,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         grid.setItems(listPlayer(filterText));
     }
 
-    private Game createGame(Game game) {
-        String uri = Constants.SERVICE_GAME_URL +  "createGame";
 
-        //TODO: Autowire the RestTemplate in all the examples
-        RestTemplate restTemplate = new RestTemplate();
-
-        Game savedGame = restTemplate.postForObject(uri, game, Game.class);
-
-        return savedGame;
-    }
 
     private List<Player> listPlayer(String filterText) {
         String uri = Constants.SERVICE_PLAYER_URL +  "Players";
