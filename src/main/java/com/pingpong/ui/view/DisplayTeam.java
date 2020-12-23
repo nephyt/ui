@@ -1,6 +1,7 @@
 package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Team;
+import com.pingpong.basicclass.game.TeamEnum;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,18 +19,31 @@ public class DisplayTeam extends VerticalLayout {
         this.mapIdPlayer = mapIdPlayer;
     }
 
-    public Component refreshTeam(Team team) {
+    public Component refreshTeam(Team team, TeamEnum teamSide) {
 
-        Div displayTeam = new Div();
+        VerticalLayout displayTeam = new VerticalLayout();
 
-        displayTeam.add(mapIdPlayer.get(team.getRightPlayer()));
-        displayTeam.add(mapIdPlayer.get(team.getLeftPlayer()));
+        setWidth("25%");
 
+        if (TeamEnum.TEAM_A.getCode().equals(teamSide.getCode())) {
+            displayTeam.add(mapIdPlayer.get(team.getLeftPlayer()).getDisplayPlayer(hasServe(team.getServer(), team.getLeftPlayer())));
+            displayTeam.add(mapIdPlayer.get(team.getRightPlayer()).getDisplayPlayer(hasServe(team.getServer(),team.getRightPlayer())));
+        } else {
+            displayTeam.add(mapIdPlayer.get(team.getRightPlayer()).getDisplayPlayer(hasServe(team.getServer(), team.getRightPlayer())));
+            displayTeam.add(mapIdPlayer.get(team.getLeftPlayer()).getDisplayPlayer(hasServe(team.getServer(), team.getLeftPlayer())));
+        }
         removeAll();
         add(displayTeam);
 
         return this;
     }
 
+    private boolean hasServe(Integer server, Integer playerId) {
+        if (server == null) {
+            return false;
+        }
+        return server == playerId;
+
+    }
 
 }

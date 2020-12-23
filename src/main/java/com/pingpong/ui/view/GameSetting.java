@@ -40,7 +40,7 @@ public class GameSetting extends VerticalLayout {
     }
 
     public Map<Integer, DisplayPlayer> getDisplayPlayerTeamB() {
-        return getDisplayPlayer(playerSelectorTeamA);
+        return getDisplayPlayer(playerSelectorTeamB);
     }
 
     private Map<Integer, DisplayPlayer> getDisplayPlayer(PlayerSelector team) {
@@ -111,6 +111,8 @@ public class GameSetting extends VerticalLayout {
 
         gameScore = new GameScore(getGameInProgress(), new DisplayTeam(getDisplayPlayerTeamA()), new DisplayTeam(getDisplayPlayerTeamB()));
         gameScore.setVisible(true);
+
+        gameScore.refreshScreen();
 
         pageGame.add(gameScore);
 

@@ -7,7 +7,7 @@ import com.vaadin.flow.server.StreamResource;
 
 import java.io.ByteArrayInputStream;
 
-public class DisplayPlayer extends VerticalLayout {
+public class DisplayPlayer {
 
     Player player;
 
@@ -15,16 +15,30 @@ public class DisplayPlayer extends VerticalLayout {
 
         player = playerToDisplay;
 
+    }
+
+    public Image getDisplayPlayer(boolean hasServe) {
+
         Image imgPlayer = new Image();
-        imgPlayer.setWidth("120px");
-        imgPlayer.setHeight("240px");
+        //imgPlayer.setWidthFull();
+
+        imgPlayer.setWidth("200px");
+        imgPlayer.setHeight("200px");
         if (player.getPicture() != null) {
             StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(player.getPicture()));
 
             imgPlayer.setSrc(resource);
         }
+        //else {
+         //   imgPlayer.setSrc("dummyImg.png");
+       // }
 
-        add(imgPlayer);
+        if (hasServe) {
+            imgPlayer.getElement().setAttribute("border", "5px solid #73AD21");
+        }
+
+
+        return imgPlayer;
 
     }
 
