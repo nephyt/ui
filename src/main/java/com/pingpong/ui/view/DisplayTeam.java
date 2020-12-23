@@ -10,14 +10,13 @@ import java.util.Map;
 
 public class DisplayTeam extends VerticalLayout {
 
-    Div displayTeam = new Div();
-
-
     Map<Integer, DisplayPlayer> mapIdPlayer;
 
     public DisplayTeam(Map<Integer, DisplayPlayer> mapIdPlayer) {
         this.mapIdPlayer = mapIdPlayer;
     }
+
+    public DisplayPlayer getDisplayPlayerById(Integer id) { return mapIdPlayer.get(id);}
 
     public Component refreshTeam(Team team, TeamEnum teamSide) {
 

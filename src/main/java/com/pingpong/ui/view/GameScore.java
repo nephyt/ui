@@ -2,7 +2,6 @@ package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamEnum;
-import com.pingpong.basicclass.player.Player;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
@@ -22,11 +21,11 @@ public class GameScore extends VerticalLayout {
     DisplayTeam displayTeamA;
     DisplayTeam displayTeamB;
 
-    Label scoreTeamA = new Label("00");
-    Label scoreTeamB = new Label("00");
+    Div pageGame;
 
-    public GameScore(Game gameToManage, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
-        game = gameToManage;
+    public GameScore(Div pageGame, Game gameToManage, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
+        this.game = gameToManage;
+        this.pageGame = pageGame;
         this.displayTeamA = displayTeamA;
         this.displayTeamB = displayTeamB;
 
@@ -152,7 +151,13 @@ public class GameScore extends VerticalLayout {
                 game.getTeamB().incrementScore();
             }
 
-            refreshScreen();
+
+            if (game.getTeamWinnerId() != null) {
+                WinnerScreen winnerScreen = new WinnerScreen(pageGame);
+                winnerScreen.showWinner(game, displayTeamA, displayTeamB);
+            } else {
+                refreshScreen();
+            }
         }
     }
 }

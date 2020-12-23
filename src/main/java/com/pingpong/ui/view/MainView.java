@@ -161,15 +161,9 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         image.setSrc(resource);
         image.setVisible(true);
 */
-        Div score = new Div();
-        score.getElement().getStyle().set("background-image","url('pingpongtable.png')");
-
-        score.setWidthFull();
-        score.setHeight("600px");
 
         Div pageGame = new Div();
         pageGame.setWidthFull();
-
 
         // compteur
 
@@ -187,14 +181,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
     }
 
 
-    private void setupIframe(IFrame frame, String height, String witdth, boolean isVisible) {
-        frame.setHeight("315px");
-        frame.setWidth("560px");
-        frame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
-        frame.getElement().setAttribute("allowfullscreen", true);
-        frame.getElement().setAttribute("frameborder", "0");
-        frame.setVisible(isVisible);
-    }
+
 
     private void showVideo(IFrame frame) {
         frame .setSrc("https://www.youtube.com/embed/e8X3ACToii0?autoplay=1");

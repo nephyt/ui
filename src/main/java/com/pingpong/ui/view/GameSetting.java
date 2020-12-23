@@ -109,7 +109,7 @@ public class GameSetting extends VerticalLayout {
 
         gameInProgress = createGame(game);
 
-        gameScore = new GameScore(getGameInProgress(), new DisplayTeam(getDisplayPlayerTeamA()), new DisplayTeam(getDisplayPlayerTeamB()));
+        gameScore = new GameScore(pageGame, getGameInProgress(), new DisplayTeam(getDisplayPlayerTeamA()), new DisplayTeam(getDisplayPlayerTeamB()));
         gameScore.setVisible(true);
 
         gameScore.refreshScreen();
