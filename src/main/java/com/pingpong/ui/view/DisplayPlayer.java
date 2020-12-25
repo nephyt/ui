@@ -18,16 +18,16 @@ public class DisplayPlayer {
 
     }
 
+    public String getPlayerName() {
+        return player.getName();
+    }
+
     public IFrame getVictorySong() {
         IFrame frame = new IFrame();
 
         setupIframe(frame, "480px", "600px", true);
 
-        String emdebSong = player.getYoutubeEmbedVictorySongPath();
-
-        System.out.println(player.getName());
-
-        System.out.println(player.getYoutubeEmbedVictorySongPath());
+        String emdebSong = player.getYoutubeEmbedVictorySongPath() + "?autoplay=1";
 
         frame.setSrc(emdebSong);
 

@@ -3,6 +3,7 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.Constants;
+import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -20,9 +21,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.client.RestTemplate;
-
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,8 +37,6 @@ public class MainView extends VerticalLayout implements KeyNotifier {
     private Button addNewBtn;
 
     GameSetting gameSetting;
-
-    GameScore gameScore;
 
     public MainView() {
       //  add(new Button("Click me", e -> Notification.show("Hello, Spring+Vaadin user!")));
@@ -168,7 +164,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         // compteur
 
 
-        GameSetting gameSetting = new GameSetting(listPlayer(""), pageGame, gameScore);
+        gameSetting = new GameSetting(ServicesRest.listPlayer(""), pageGame);
         gameSetting.setVisible(true);
 
 
@@ -180,34 +176,10 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
     }
 
-
-
-
-    private void showVideo(IFrame frame) {
-        frame .setSrc("https://www.youtube.com/embed/e8X3ACToii0?autoplay=1");
-        frame.setVisible(true);
-    }
-
     private void fillGrid(String filterText) {
 
-        grid.setItems(listPlayer(filterText));
+        grid.setItems(ServicesRest.listPlayer(filterText));
     }
 
-
-
-    private List<Player> listPlayer(String filterText) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "Players";
-
-        //TODO: Autowire the RestTemplate in all the examples
-        RestTemplate restTemplate = new RestTemplate();
-
-        if (!StringUtils.isEmpty(filterText)) {
-            uri = Constants.SERVICE_PLAYER_URL +  "PlayersWithName/" + filterText;
-        }
-
-        ListOfPlayers result = restTemplate.getForObject(uri, ListOfPlayers.class);
-
-        return result.getPlayers();
-    }
 
 }

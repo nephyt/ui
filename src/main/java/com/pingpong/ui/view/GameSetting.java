@@ -4,13 +4,13 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.Constants;
+import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,7 @@ public class GameSetting extends VerticalLayout {
     PlayerSelector playerSelectorTeamB;
 
     Game gameInProgress = null;
-    GameScore gameScore;
+
 
     Div pageGame;
 
@@ -58,8 +58,8 @@ public class GameSetting extends VerticalLayout {
     }
 
 
-    public GameSetting(List<Player> listPlayer, Div pageGame, GameScore gameScore) {
-        this.gameScore = gameScore;
+    public GameSetting(List<Player> listPlayer, Div pageGame) {
+
         this.pageGame = pageGame;
 
         setAlignItems(Alignment.CENTER);
@@ -99,7 +99,6 @@ public class GameSetting extends VerticalLayout {
 
     private void startGame() {
 
-        playerSelect.setVisible(false);
         setVisible(false);
 
         Team teamA = playerSelectorTeamA.createTeam(true);
@@ -107,9 +106,9 @@ public class GameSetting extends VerticalLayout {
 
         Game game = new Game(teamA, teamB,scoreMaxSelected);
 
-        gameInProgress = createGame(game);
+        gameInProgress = ServicesRest.createGame(game);
 
-        gameScore = new GameScore(pageGame, getGameInProgress(), new DisplayTeam(getDisplayPlayerTeamA()), new DisplayTeam(getDisplayPlayerTeamB()));
+        GameScore gameScore = new GameScore(pageGame, getGameInProgress(), new DisplayTeam(getDisplayPlayerTeamA()), new DisplayTeam(getDisplayPlayerTeamB()));
         gameScore.setVisible(true);
 
         gameScore.refreshScreen();
@@ -118,15 +117,6 @@ public class GameSetting extends VerticalLayout {
 
     }
 
-    private Game createGame(Game game) {
-        String uri = Constants.SERVICE_GAME_URL +  "createGame";
 
-        //TODO: Autowire the RestTemplate in all the examples
-        RestTemplate restTemplate = new RestTemplate();
-
-        Game savedGame = restTemplate.postForObject(uri, game, Game.class);
-
-        return savedGame;
-    }
 
 }

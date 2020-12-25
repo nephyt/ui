@@ -2,12 +2,14 @@ package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamEnum;
+import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import org.springframework.web.bind.annotation.RestController;
 
 
 public class GameScore extends VerticalLayout {
@@ -98,8 +100,8 @@ public class GameScore extends VerticalLayout {
         //scoreImg.setHeight("120px");
         scoreImg.setWidth("50%");
 
-        scoreImg.getElement().setAttribute("position","relative");
-        scoreImg.getElement().setAttribute("left","30px");
+       // scoreImg.getElement().setAttribute("position","relative");
+       // scoreImg.getElement().setAttribute("left","30px");
 
         return scoreImg;
     }
@@ -141,8 +143,6 @@ public class GameScore extends VerticalLayout {
     private void updateGame(ClickEvent event) {
 
         if (game != null) {
-            System.out.println("YESYEYS");
-
             if (event.getClickCount() == 1) {
                 game.getTeamA().incrementScore();
                 game.updateGame();
@@ -151,6 +151,10 @@ public class GameScore extends VerticalLayout {
                 game.getTeamB().incrementScore();
             }
 
+            // done after the click or double click to end the game correctly
+            game.updateGameIfFinish();
+
+            ServicesRest.updateGame(game); // save state un DB
 
             if (game.getTeamWinnerId() != null) {
                 WinnerScreen winnerScreen = new WinnerScreen(pageGame);
