@@ -153,7 +153,7 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
             setVisible(false);
             return;
         }
-        final boolean persisted = c.getId() != -1;
+        final boolean persisted = c.getId() != null;
         if (persisted) {
             // Find fresh entity for editing
             player = getAPlayer(c.getId());
