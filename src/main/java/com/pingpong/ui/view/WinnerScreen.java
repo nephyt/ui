@@ -159,7 +159,7 @@ public class WinnerScreen extends VerticalLayout {
     }
 
     private Team createNewTeam(Integer teamWinId, Team team) {
-        return createTeam(team.getPlayer1Id(), team.getPlayer2Id(), teamWin(teamWinId, team.getId()));
+        return createTeam(team.getTeamPlayer1Id(), team.getTeamPlayer2Id(), teamWin(teamWinId, team.getId()));
     }
 
     private void changePlayers() {
