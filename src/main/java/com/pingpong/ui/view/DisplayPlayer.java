@@ -7,10 +7,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
 
 import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DisplayPlayer {
 
     Image imgPlayer = new Image();
+
+    Map<Integer, StreamResource> playerPicture = new HashMap<>();
 
     public DisplayPlayer() {
 
@@ -52,8 +56,11 @@ public class DisplayPlayer {
     public Image refreshDisplayPlayer(Player player, boolean hasServe) {
 
         if (player.getPicture() != null) {
-            StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(player.getPicture()));
-
+            StreamResource resource = playerPicture.get(player.getId());
+            if (resource == null) {
+                resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(player.getPicture()));
+                playerPicture.put(player.getId(), resource);
+            }
             imgPlayer.setSrc(resource);
         }
         else {
