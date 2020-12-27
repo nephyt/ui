@@ -3,6 +3,7 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.GameTime;
 import com.pingpong.basicclass.game.Team;
+import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -29,8 +30,8 @@ public class WinnerScreen extends VerticalLayout {
     public void showWinner(Game game, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
 
         Integer winnerTeamId = game.getTeamWinnerId();
-        DisplayPlayer winner1;
-        DisplayPlayer winner2 = null;
+        Player winner1;
+        Player winner2 = null;
 
         DisplayTeam loserDisplayTeam;
         Team loserTeam;
@@ -43,15 +44,15 @@ public class WinnerScreen extends VerticalLayout {
             loserTeam = game.getTeamB();
 
             if (game.getTeamA().getRightPlayer() != null) {
-                winner1 = displayTeamA.getDisplayPlayerById(game.getTeamA().getRightPlayer());
+                winner1 = displayTeamA.getPlayerById(game.getTeamA().getRightPlayer());
 
                 if (game.getTeamA().getLeftPlayer() != null) {
-                    winner2 = displayTeamA.getDisplayPlayerById(game.getTeamA().getLeftPlayer());
+                    winner2 = displayTeamA.getPlayerById(game.getTeamA().getLeftPlayer());
                 }
             } else {
-                winner1 = displayTeamA.getDisplayPlayerById(game.getTeamA().getLeftPlayer());
+                winner1 = displayTeamA.getPlayerById(game.getTeamA().getLeftPlayer());
                 if (game.getTeamA().getLeftPlayer() != null) {
-                    winner1 = displayTeamA.getDisplayPlayerById(game.getTeamA().getLeftPlayer());
+                    winner1 = displayTeamA.getPlayerById(game.getTeamA().getLeftPlayer());
                 }
             }
         } else {
@@ -59,21 +60,21 @@ public class WinnerScreen extends VerticalLayout {
             loserDisplayTeam = displayTeamA;
             loserTeam = game.getTeamA();
             if (game.getTeamB().getRightPlayer() != null) {
-                winner1 = displayTeamB.getDisplayPlayerById(game.getTeamB().getRightPlayer());
+                winner1 = displayTeamB.getPlayerById(game.getTeamB().getRightPlayer());
 
                 if (game.getTeamB().getLeftPlayer() != null) {
-                    winner2 = displayTeamB.getDisplayPlayerById(game.getTeamB().getLeftPlayer());
+                    winner2 = displayTeamB.getPlayerById(game.getTeamB().getLeftPlayer());
                 }
             } else {
-                winner1 = displayTeamB.getDisplayPlayerById(game.getTeamB().getLeftPlayer());
+                winner1 = displayTeamB.getPlayerById(game.getTeamB().getLeftPlayer());
             }
         }
 
 
-        String playersNames = winner1.getPlayerName();
+        String playersNames = winner1.getName();
 
         if (winner2 != null) {
-            playersNames += " & " + winner2.getPlayerName();
+            playersNames += " & " + winner2.getName();
         }
         Html winnerName = new Html("<font>" + playersNames + "</font>");
         winnerName.getElement().getStyle().set("font-size", "49px");
@@ -84,13 +85,13 @@ public class WinnerScreen extends VerticalLayout {
 
         String loserNameStr = "";
         if (loserTeam.getRightPlayer() != null) {
-            loserNameStr = loserDisplayTeam.getDisplayPlayerById(loserTeam.getRightPlayer()).getPlayerName();
+            loserNameStr = loserDisplayTeam.getPlayerById(loserTeam.getRightPlayer()).getName();
         }
         if (loserTeam.getLeftPlayer() != null) {
             if (!"".equals(loserNameStr)) {
                 loserNameStr += " & ";
             }
-            loserNameStr += loserDisplayTeam.getDisplayPlayerById(loserTeam.getLeftPlayer()).getPlayerName();
+            loserNameStr += loserDisplayTeam.getPlayerById(loserTeam.getLeftPlayer()).getName();
         }
 
         Html loserName = new Html("<font>" + loserNameStr + "</font>");
@@ -112,7 +113,9 @@ public class WinnerScreen extends VerticalLayout {
         add(loserName);
         add(time);
       //  add(winnerImg);
-        add(winner1.getVictorySong());
+
+        DisplayPlayer winnerDisplaySong = new DisplayPlayer();
+        add(winnerDisplaySong.getVictorySong(winner1));
 
         HorizontalLayout buttonsDiv = new HorizontalLayout();
 

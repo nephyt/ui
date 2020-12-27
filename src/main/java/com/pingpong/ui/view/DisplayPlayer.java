@@ -10,24 +10,24 @@ import java.io.ByteArrayInputStream;
 
 public class DisplayPlayer {
 
-    Player player;
+    Image imgPlayer = new Image();
 
-    public DisplayPlayer(Player playerToDisplay) {
+    public DisplayPlayer() {
 
-        player = playerToDisplay;
+        //imgPlayer.setWidthFull();
+
+        imgPlayer.setWidth("200px");
+        imgPlayer.setHeight("200px");
+
 
     }
 
-    public String getPlayerName() {
-        return player.getName();
-    }
-
-    public IFrame getVictorySong() {
+    public IFrame getVictorySong(Player playerToDisplay) {
         IFrame frame = new IFrame();
 
         setupIframe(frame, "480px", "600px", true);
 
-        String emdebSong = player.getYoutubeEmbedVictorySongPath() + "?autoplay=1";
+        String emdebSong = playerToDisplay.getYoutubeEmbedVictorySongPath() + "?autoplay=1";
 
         frame.setSrc(emdebSong);
 
@@ -44,27 +44,27 @@ public class DisplayPlayer {
         frame.setVisible(isVisible);
     }
 
-    public Image getDisplayPlayer(boolean hasServe) {
+    public Image getPlayerImage() {
 
-        Image imgPlayer = new Image();
-        //imgPlayer.setWidthFull();
+        return imgPlayer;
+    }
 
-        imgPlayer.setWidth("200px");
-        imgPlayer.setHeight("200px");
+    public Image refreshDisplayPlayer(Player player, boolean hasServe) {
+
         if (player.getPicture() != null) {
             StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(player.getPicture()));
 
             imgPlayer.setSrc(resource);
         }
-        //else {
-         //   imgPlayer.setSrc("dummyImg.png");
-       // }
+        else {
+            imgPlayer.setSrc("blank.png");
+        }
 
         if (hasServe) {
             imgPlayer.getElement().setAttribute("border", "5px solid #73AD21");
+        } else {
+            imgPlayer.getElement().removeAttribute("border");
         }
-
-
         return imgPlayer;
 
     }

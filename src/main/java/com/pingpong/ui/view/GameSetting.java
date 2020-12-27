@@ -35,23 +35,23 @@ public class GameSetting extends VerticalLayout {
         return gameInProgress;
     }
 
-    public Map<Integer, DisplayPlayer> getDisplayPlayerTeamA() {
-        return getDisplayPlayer(playerSelectorTeamA);
+    public Map<Integer, Player> getDisplayPlayerTeamA() {
+        return getPlayer(playerSelectorTeamA);
     }
 
-    public Map<Integer, DisplayPlayer> getDisplayPlayerTeamB() {
-        return getDisplayPlayer(playerSelectorTeamB);
+    public Map<Integer, Player> getDisplayPlayerTeamB() {
+        return getPlayer(playerSelectorTeamB);
     }
 
-    private Map<Integer, DisplayPlayer> getDisplayPlayer(PlayerSelector team) {
-        Map<Integer, DisplayPlayer> map = new HashMap<>();
+    private Map<Integer, Player> getPlayer(PlayerSelector team) {
+        Map<Integer, Player> map = new HashMap<>();
 
-        map.put(team.getPlayer1().getId(), new DisplayPlayer(team.getPlayer1()));
+        map.put(team.getPlayer1().getId(), team.getPlayer1());
 
         if (team.getPlayer2() != null) {
-            map.put(team.getPlayer2().getId(), new DisplayPlayer(team.getPlayer2()));
+            map.put(team.getPlayer2().getId(), team.getPlayer2());
         } else {
-            map.put(null, new DisplayPlayer(new Player()));
+            map.put(null, new Player());
         }
 
         return map;
