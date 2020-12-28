@@ -132,6 +132,8 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         orderColumn.add(grid.getColumnByKey("song"));
         orderColumn.add(grid.getColumnByKey("status"));
         orderColumn.add(grid.getColumnByKey("gamePlayed"));
+        orderColumn.add(grid.getColumnByKey("win"));
+        orderColumn.add(grid.getColumnByKey("lost"));
 
 
 
