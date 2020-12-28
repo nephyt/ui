@@ -2,6 +2,7 @@ package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.ui.Constants;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.Component;
@@ -89,12 +90,30 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             return result;
         }).setHeader("Victory Song").setKey("song");
 
+        Map<Integer, PlayerStats> playersStats = ServicesRest.getPlayersStats();
+
+        grid.addColumn(player -> {
+            PlayerStats stats = playersStats.get(player.getId());
+
+            int result = 0;
+            if (stats != null) {
+                result = stats.getNumberOfGamePlayed();
+            }
+
+            return result;
+        }).setHeader("Game played").setKey("gamePlayed");
+
+
+
         List<Grid.Column<Player>> orderColumn = new ArrayList<>();
 
         orderColumn.add(grid.getColumnByKey("picture"));
         orderColumn.add(grid.getColumnByKey("name"));
         orderColumn.add(grid.getColumnByKey("song"));
         orderColumn.add(grid.getColumnByKey("status"));
+        orderColumn.add(grid.getColumnByKey("gamePlayed"));
+
+
 
         grid.setColumnOrder(orderColumn);
 

@@ -3,14 +3,31 @@ package com.pingpong.ui.servicesrest;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.basicclass.stats.PlayerStats;
+import com.pingpong.basicclass.stats.PlayersStats;
 import com.pingpong.ui.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 public class ServicesRest {
 
+
+
+
+    public static Map<Integer, PlayerStats> getPlayersStats() {
+        String uri = Constants.SERVICE_GAME_URL +  "getPlayersStats";
+
+        //TODO: Autowire the RestTemplate in all the examples
+        RestTemplate restTemplate = new RestTemplate();
+
+
+        PlayersStats result = restTemplate.getForObject(uri, PlayersStats.class);
+
+        return result.getPlayersStats();
+    }
 
     public static List<Player> listPlayer(String filterText) {
         String uri = Constants.SERVICE_PLAYER_URL +  "Players";
