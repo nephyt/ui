@@ -151,7 +151,7 @@ public class WinnerScreen extends VerticalLayout {
     }
 
     private Team createTeam(Integer player1, Integer player2, boolean hasService) {
-        return new Team(player1,  player2, hasService);
+        return new Team(player1, player2, hasService);
     }
 
     private boolean teamWin(Integer idTeamWin, Integer idTeam) {

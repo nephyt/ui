@@ -5,11 +5,10 @@ import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.springframework.web.bind.annotation.RestController;
+import com.vaadin.flow.shared.Registration;
 
 
 public class GameScore extends VerticalLayout {
@@ -28,6 +27,10 @@ public class GameScore extends VerticalLayout {
 
     DisplayScore displayScoreTeamA = new DisplayScore();
     DisplayScore displayScoreTeamB = new DisplayScore();
+
+    Registration clickScore;
+    Registration clickTeamA;
+    Registration clickTeamB;
 
     Div pageGame;
 
@@ -61,7 +64,7 @@ public class GameScore extends VerticalLayout {
 
         add(displayScore);
 
-        this.addClickListener( e ->{
+        clickScore = scoring.addClickListener( e ->{
                 /*long currentClickTime = System.currentTimeMillis();
 
                 System.out.println("Debut : lastClickTime " + lastClickTime + " current " + currentClickTime + " click count : " + e.getClickCount());
@@ -83,9 +86,12 @@ public class GameScore extends VerticalLayout {
                     lastClickTime = currentClickTime;
                     updateGame(e);
                 }*/
-                    updateGame(e);
+                    updateGame(e, null);
                 }
                 );
+
+        clickTeamA = displayTeamA.addClickListener(e -> updateGame(e, TeamEnum.TEAM_A));
+        clickTeamB = displayTeamB.addClickListener(e -> updateGame(e, TeamEnum.TEAM_B));
     }
 
     public void refreshScreen() {
@@ -115,23 +121,37 @@ public class GameScore extends VerticalLayout {
         return scoreLabel;
     }
 
-    private void updateGame(ClickEvent event) {
+    private void updateGame(ClickEvent event, TeamEnum teamScored) {
 
         if (game != null) {
-            if (event.getClickCount() == 1) {
+            if (teamScored == null) {
+                if (event.getClickCount() == 1) {
+                    game.getTeamA().incrementScore();
+                    game.updateGame();
+                } else if (event.getClickCount() == 2) {
+                    game.getTeamA().decrementScore(); // undo the count 1
+                    game.getTeamB().incrementScore();
+                }
+            }
+            else if (TeamEnum.TEAM_A.getCode().equals(teamScored.getCode() )) {
                 game.getTeamA().incrementScore();
                 game.updateGame();
-            } else if (event.getClickCount() == 2) {
-                game.getTeamA().decrementScore(); // undo the count 1
+            }
+            else if (TeamEnum.TEAM_B.getCode().equals(teamScored.getCode() )) {
                 game.getTeamB().incrementScore();
+                game.updateGame();
             }
 
             // done after the click or double click to end the game correctly
             game.updateGameIfFinish();
 
-            ServicesRest.updateGame(game); // save state un DB
+            ServicesRest.updateGame(game); // save state in DB
 
             if (game.getTeamWinnerId() != null) {
+                clickScore.remove();
+                clickTeamA.remove();
+                clickTeamB.remove();
+
                 WinnerScreen winnerScreen = new WinnerScreen(pageGame);
                 winnerScreen.showWinner(game, displayTeamA, displayTeamB);
             } else {
