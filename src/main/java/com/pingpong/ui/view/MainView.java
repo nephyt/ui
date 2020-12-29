@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Route("")
 public class MainView extends VerticalLayout implements KeyNotifier {
@@ -125,6 +126,28 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             return result;
         }).setHeader("Lost").setKey("lost");
 
+
+        grid.addColumn(player -> {
+            PlayerStats stats = playersStats.get(player.getId());
+
+            long timeInSeconde = 0;
+            if (stats != null) {
+                timeInSeconde = stats.getTimePlayed();
+            }
+
+            long hours = TimeUnit.SECONDS.toHours(timeInSeconde);
+            long minutes = TimeUnit.SECONDS.toMinutes(timeInSeconde) -
+                           TimeUnit.HOURS.toSeconds(hours);
+
+            long secondes = timeInSeconde - TimeUnit.HOURS.toSeconds(hours) - TimeUnit.MINUTES.toSeconds(minutes);
+
+            return String.format("%02d:%02d:%02d",
+                    hours,
+                    minutes,
+                    secondes);
+
+        }).setHeader("Time").setKey("time");
+
         List<Grid.Column<Player>> orderColumn = new ArrayList<>();
 
         orderColumn.add(grid.getColumnByKey("picture"));
@@ -134,6 +157,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         orderColumn.add(grid.getColumnByKey("gamePlayed"));
         orderColumn.add(grid.getColumnByKey("win"));
         orderColumn.add(grid.getColumnByKey("lost"));
+        orderColumn.add(grid.getColumnByKey("time"));
 
 
 
