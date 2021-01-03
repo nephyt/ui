@@ -1,9 +1,9 @@
 package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +23,7 @@ public class DisplayPlayer {
         imgPlayer.setWidth("200px");
         imgPlayer.setHeight("200px");
 
+        Utils.disableSelection(imgPlayer);
 
     }
 

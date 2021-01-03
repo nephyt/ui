@@ -1,8 +1,11 @@
 package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Game;
+import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.ui.servicesrest.ServicesRest;
+import com.pingpong.ui.thread.ClickThread;
+import com.pingpong.ui.thread.ServiceCountThread;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
@@ -15,10 +18,10 @@ public class GameScore extends VerticalLayout {
 
     HorizontalLayout displayScore = new HorizontalLayout();
 
+    ClickThread clickListener;
+    Thread thread;
 
     HorizontalLayout scoring = new HorizontalLayout();
-
-    long lastClickTime = 0;
 
     Game game;
 
@@ -39,6 +42,10 @@ public class GameScore extends VerticalLayout {
         this.pageGame = pageGame;
         this.displayTeamA = displayTeamA;
         this.displayTeamB = displayTeamB;
+
+        clickListener = new ClickThread(this);
+        thread = new Thread(clickListener);
+        thread.start();
 
         setWidthFull();
         displayScore.setWidthFull();
@@ -64,34 +71,11 @@ public class GameScore extends VerticalLayout {
 
         add(displayScore);
 
-        clickScore = scoring.addClickListener( e ->{
-                /*long currentClickTime = System.currentTimeMillis();
+        clickScore = scoring.addClickListener( e -> addClick(e));
 
-                System.out.println("Debut : lastClickTime " + lastClickTime + " current " + currentClickTime + " click count : " + e.getClickCount());
-                if (e.getClickCount() == 1) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
-                    }
-                    System.out.println("apres le sleep : lastClickTime " + lastClickTime + " current " + currentClickTime + " click count : " + e.getClickCount());
-                    System.out.println("apres slee : currentClickTime - lastClickTime " + (currentClickTime - lastClickTime));
+        clickTeamA = displayTeamA.addClickListener(e -> updateGame(TeamEnum.TEAM_A));
+        clickTeamB = displayTeamB.addClickListener(e -> updateGame(TeamEnum.TEAM_B));
 
-
-                    if (currentClickTime - lastClickTime > 500) {
-                        lastClickTime = currentClickTime;
-                        updateGame(e);
-                    }
-                } else {
-                    lastClickTime = currentClickTime;
-                    updateGame(e);
-                }*/
-                    updateGame(e, null);
-                }
-                );
-
-        clickTeamA = displayTeamA.addClickListener(e -> updateGame(e, TeamEnum.TEAM_A));
-        clickTeamB = displayTeamB.addClickListener(e -> updateGame(e, TeamEnum.TEAM_B));
     }
 
     public void refreshScreen() {
@@ -121,23 +105,28 @@ public class GameScore extends VerticalLayout {
         return scoreLabel;
     }
 
-    private void updateGame(ClickEvent event, TeamEnum teamScored) {
+    private void addClick(ClickEvent event) {
 
         if (game != null) {
-            if (teamScored == null) {
-                if (event.getClickCount() == 1) {
-                    game.getTeamA().incrementScore();
-                    game.updateGame();
-                } else if (event.getClickCount() == 2) {
-                    game.getTeamA().decrementScore(); // undo the count 1
-                    game.getTeamB().incrementScore();
-                }
+            synchronized (clickListener) {
+                clickListener.addClickEvent(event);
+                clickListener.notify();
             }
-            else if (TeamEnum.TEAM_A.getCode().equals(teamScored.getCode() )) {
+        }
+    }
+
+    public void updateGame(TeamEnum teamScored) {
+
+        if (game != null) {
+            if (TeamEnum.TEAM_A.getCode().equals(teamScored.getCode() )) {
+                updateServiceCount(game.getTeamA(), game.getTeamB());
+
                 game.getTeamA().incrementScore();
                 game.updateGame();
             }
             else if (TeamEnum.TEAM_B.getCode().equals(teamScored.getCode() )) {
+                updateServiceCount(game.getTeamB(), game.getTeamA());
+
                 game.getTeamB().incrementScore();
                 game.updateGame();
             }
@@ -152,11 +141,26 @@ public class GameScore extends VerticalLayout {
                 clickTeamA.remove();
                 clickTeamB.remove();
 
+                synchronized (clickListener) {
+                    clickListener.stopThread();
+                    clickListener.notify();
+                }
+
                 WinnerScreen winnerScreen = new WinnerScreen(pageGame);
                 winnerScreen.showWinner(game, displayTeamA, displayTeamB);
             } else {
                 refreshScreen();
             }
         }
+    }
+
+    private void updateServiceCount(Team teamScored, Team teamLost) {
+        boolean winServe = false;
+        Integer server = teamLost.getServer();
+        if (teamScored.hasService()) {
+            winServe = true;
+            server = teamScored.getServer();
+        }
+        new Thread(new ServiceCountThread(server, winServe)).start();
     }
 }

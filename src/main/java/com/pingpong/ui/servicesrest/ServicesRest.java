@@ -3,6 +3,7 @@ package com.pingpong.ui.servicesrest;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.basicclass.servicecount.UpdatePlayer;
 import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.basicclass.stats.PlayersStats;
 import com.pingpong.ui.Constants;
@@ -14,16 +15,16 @@ import java.util.Map;
 
 public class ServicesRest {
 
+    static RestTemplate restTemplate = new RestTemplate();
 
+    public static void updatePlayerCountService(UpdatePlayer updatePlayer) {
+        String uri = Constants.SERVICE_COUNT_URL +  "updatePlayerCountService";
+        restTemplate.put(uri, updatePlayer, PlayersStats.class);
+    }
 
 
     public static Map<Integer, PlayerStats> getPlayersStats() {
         String uri = Constants.SERVICE_GAME_URL +  "getPlayersStats";
-
-        //TODO: Autowire the RestTemplate in all the examples
-        RestTemplate restTemplate = new RestTemplate();
-
-
         PlayersStats result = restTemplate.getForObject(uri, PlayersStats.class);
 
         return result.getPlayersStats();
@@ -31,9 +32,6 @@ public class ServicesRest {
 
     public static List<Player> listPlayer(String filterText) {
         String uri = Constants.SERVICE_PLAYER_URL +  "Players";
-
-        //TODO: Autowire the RestTemplate in all the examples
-        RestTemplate restTemplate = new RestTemplate();
 
         if (!StringUtils.isEmpty(filterText)) {
             uri = Constants.SERVICE_PLAYER_URL +  "PlayersWithName/" + filterText;
@@ -47,9 +45,6 @@ public class ServicesRest {
     public static Game createGame(Game game) {
         String uri = Constants.SERVICE_GAME_URL +  "createGame";
 
-        //TODO: Autowire the RestTemplate in all the examples
-        RestTemplate restTemplate = new RestTemplate();
-
         Game savedGame = restTemplate.postForObject(uri, game, Game.class);
 
         return savedGame;
@@ -57,10 +52,6 @@ public class ServicesRest {
 
     public static void updateGame(Game game) {
         String uri = Constants.SERVICE_GAME_URL +  "updateGame";
-
-        //TODO: Autowire the RestTemplate in all the examples
-        RestTemplate restTemplate = new RestTemplate();
         restTemplate.put(uri, game);
-
     }
 }

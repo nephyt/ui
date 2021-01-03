@@ -1,5 +1,6 @@
 package com.pingpong.ui.view;
 
+import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 
@@ -31,12 +32,7 @@ public class DisplayScore {
 
         scoreImg.setWidth("50%");
 
-
-        scoreImg.getElement().getStyle().set("user-select", "none");
-        scoreImg.getElement().getStyle().set("-o-user-select", "none");
-        scoreImg.getElement().getStyle().set("-moz-user-select", "none");
-        scoreImg.getElement().getStyle().set("-khtml-user-select", "none");
-        scoreImg.getElement().getStyle().set("-webkit-user-select", "none");
+        Utils.disableSelection(scoreImg);
 
         return scoreImg;
     }

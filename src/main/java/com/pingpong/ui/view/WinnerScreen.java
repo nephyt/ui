@@ -5,6 +5,7 @@ import com.pingpong.basicclass.game.GameTime;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.servicesrest.ServicesRest;
+import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
@@ -25,6 +26,8 @@ public class WinnerScreen extends VerticalLayout {
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
+
+        Utils.disableSelection(this);
     }
 
     public void showWinner(Game game, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {

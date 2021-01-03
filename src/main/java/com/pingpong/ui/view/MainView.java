@@ -16,6 +16,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextField;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+@Push
 @Route("")
 public class MainView extends VerticalLayout implements KeyNotifier {
 
@@ -37,8 +39,6 @@ public class MainView extends VerticalLayout implements KeyNotifier {
     private Grid<Player> grid;
 
     private Button addNewBtn;
-
-    GameSetting gameSetting;
 
     public MainView() {
       //  add(new Button("Click me", e -> Notification.show("Hello, Spring+Vaadin user!")));
@@ -226,16 +226,10 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         Div pageGame = new Div();
         pageGame.setWidthFull();
 
-        // compteur
-
-
-        gameSetting = new GameSetting(ServicesRest.listPlayer(""), pageGame);
+        GameSetting gameSetting = new GameSetting(ServicesRest.listPlayer(""), pageGame);
         gameSetting.setVisible(true);
 
-
-
         pageGame.add(gameSetting);
-
 
         return pageGame;
 
