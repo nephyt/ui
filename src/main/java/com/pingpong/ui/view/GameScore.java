@@ -166,6 +166,7 @@ public class GameScore extends VerticalLayout {
             winServe = true;
             server = teamScored.getServer();
         }
-        new Thread(new ServiceCountThread(server, winServe)).start();
+        new ServiceCountThread(server, winServe).run();
+     //   new Thread(new ServiceCountThread(server, winServe)).start();
     }
 }
