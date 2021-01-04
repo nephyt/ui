@@ -1,9 +1,9 @@
 package com.pingpong.ui.view;
 
-import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.basicclass.servicecount.AllServiceCount;
+import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.basicclass.stats.PlayerStats;
-import com.pingpong.ui.Constants;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.KeyNotifier;
@@ -12,7 +12,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -23,6 +22,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,6 +126,17 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             return result;
         }).setHeader("Lost").setKey("lost");
 
+        AllServiceCount serviceCount = ServicesRest.getPlayerCountService();
+
+        grid.addColumn(player -> {
+            ServiceCount stats = serviceCount.getServiceCountForPlayer(player.getId());
+
+            String result = stats.getBallServe() + "/";
+            result += stats.getBallServeWin() + "/";
+            result += stats.getBallServeFail() + "/";
+
+            return result;
+        }).setHeader("#Serve/W/L").setKey("ballServe");
 
         grid.addColumn(player -> {
             PlayerStats stats = playersStats.get(player.getId());
@@ -148,6 +159,8 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
         }).setHeader("Time").setKey("time");
 
+
+
         List<Grid.Column<Player>> orderColumn = new ArrayList<>();
 
         orderColumn.add(grid.getColumnByKey("picture"));
@@ -157,6 +170,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         orderColumn.add(grid.getColumnByKey("gamePlayed"));
         orderColumn.add(grid.getColumnByKey("win"));
         orderColumn.add(grid.getColumnByKey("lost"));
+        orderColumn.add(grid.getColumnByKey("ballServe"));
         orderColumn.add(grid.getColumnByKey("time"));
 
 

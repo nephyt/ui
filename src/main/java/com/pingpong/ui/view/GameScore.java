@@ -6,6 +6,7 @@ import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.pingpong.ui.thread.ClickThread;
 import com.pingpong.ui.thread.ServiceCountThread;
+import com.pingpong.ui.web.controller.GameController;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
@@ -46,6 +47,8 @@ public class GameScore extends VerticalLayout {
         clickListener = new ClickThread(this);
         thread = new Thread(clickListener);
         thread.start();
+
+        GameController.setGameScore(this);
 
         setWidthFull();
         displayScore.setWidthFull();
@@ -145,6 +148,8 @@ public class GameScore extends VerticalLayout {
                     clickListener.stopThread();
                     clickListener.notify();
                 }
+
+                GameController.setGameScore(null);
 
                 WinnerScreen winnerScreen = new WinnerScreen(pageGame);
                 winnerScreen.showWinner(game, displayTeamA, displayTeamB);

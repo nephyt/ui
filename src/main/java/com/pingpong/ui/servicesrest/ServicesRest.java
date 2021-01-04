@@ -3,6 +3,7 @@ package com.pingpong.ui.servicesrest;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.UpdatePlayer;
 import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.basicclass.stats.PlayersStats;
@@ -22,6 +23,12 @@ public class ServicesRest {
         restTemplate.put(uri, updatePlayer, PlayersStats.class);
     }
 
+    public static AllServiceCount getPlayerCountService() {
+        String uri = Constants.SERVICE_COUNT_URL +  "getPlayerCountService";
+        AllServiceCount result = restTemplate.getForObject(uri, AllServiceCount.class);
+
+        return result;
+    }
 
     public static Map<Integer, PlayerStats> getPlayersStats() {
         String uri = Constants.SERVICE_GAME_URL +  "getPlayersStats";
@@ -29,6 +36,8 @@ public class ServicesRest {
 
         return result.getPlayersStats();
     }
+
+
 
     public static List<Player> listPlayer(String filterText) {
         String uri = Constants.SERVICE_PLAYER_URL +  "Players";
