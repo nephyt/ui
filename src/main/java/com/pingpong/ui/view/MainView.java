@@ -133,7 +133,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
             String result = stats.getBallServe() + "/";
             result += stats.getBallServeWin() + "/";
-            result += stats.getBallServeFail() + "/";
+            result += stats.getBallServeFail();
 
             return result;
         }).setHeader("#Serve/W/L").setKey("ballServe");
