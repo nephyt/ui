@@ -4,6 +4,7 @@ import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.basicclass.stats.PlayerStats;
+import com.pingpong.basicclass.stats.PlayersStats;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.KeyNotifier;
@@ -91,40 +92,17 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             return result;
         }).setHeader("Victory Song").setKey("song");
 
-        Map<Integer, PlayerStats> playersStats = ServicesRest.getPlayersStats();
+        PlayersStats playersStats = ServicesRest.getPlayersStats();
 
         grid.addColumn(player -> {
-            PlayerStats stats = playersStats.get(player.getId());
+            PlayerStats stats = playersStats.getPlayerStatsForPlayer(player.getId());
 
-            int result = 0;
-            if (stats != null) {
-                result = stats.getNumberOfGamePlayed();
-            }
-
-            return result;
-        }).setHeader("Game played").setKey("gamePlayed");
-
-        grid.addColumn(player -> {
-            PlayerStats stats = playersStats.get(player.getId());
-
-            int result = 0;
-            if (stats != null) {
-                result = stats.getNumberOfGameWin();
-            }
+            String result = stats.getNumberOfGamePlayed() + "/";
+            result += stats.getNumberOfGameWin() + "/";
+            result += stats.getNumberOfGameLost();
 
             return result;
-        }).setHeader("Win").setKey("win");
-
-        grid.addColumn(player -> {
-            PlayerStats stats = playersStats.get(player.getId());
-
-            int result = 0;
-            if (stats != null) {
-                result = stats.getNumberOfGameLost();
-            }
-
-            return result;
-        }).setHeader("Lost").setKey("lost");
+        }).setHeader("#Games/W/L").setKey("gamePlayed");
 
         AllServiceCount serviceCount = ServicesRest.getPlayerCountService();
 
@@ -136,15 +114,12 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             result += stats.getBallServeFail();
 
             return result;
-        }).setHeader("#Serve/W/L").setKey("ballServe");
+        }).setHeader("#BallsServe/W/L").setKey("ballServe");
 
         grid.addColumn(player -> {
-            PlayerStats stats = playersStats.get(player.getId());
+            PlayerStats stats = playersStats.getPlayerStatsForPlayer(player.getId());
 
-            long timeInSeconde = 0;
-            if (stats != null) {
-                timeInSeconde = stats.getTimePlayed();
-            }
+            long timeInSeconde = stats.getTimePlayed();
 
             long hours = TimeUnit.SECONDS.toHours(timeInSeconde);
             long minutes = TimeUnit.SECONDS.toMinutes(timeInSeconde) -
@@ -168,8 +143,6 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         orderColumn.add(grid.getColumnByKey("song"));
         orderColumn.add(grid.getColumnByKey("status"));
         orderColumn.add(grid.getColumnByKey("gamePlayed"));
-        orderColumn.add(grid.getColumnByKey("win"));
-        orderColumn.add(grid.getColumnByKey("lost"));
         orderColumn.add(grid.getColumnByKey("ballServe"));
         orderColumn.add(grid.getColumnByKey("time"));
 

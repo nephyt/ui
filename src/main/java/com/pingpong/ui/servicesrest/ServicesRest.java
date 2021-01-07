@@ -5,18 +5,21 @@ import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.UpdatePlayer;
-import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.basicclass.stats.PlayersStats;
 import com.pingpong.ui.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 public class ServicesRest {
 
     static RestTemplate restTemplate = new RestTemplate();
+
+    public static void updatePlayersCountService(AllServiceCount updatePlayers) {
+        String uri = Constants.SERVICE_COUNT_URL +  "updatePlayersCountService";
+        restTemplate.put(uri, updatePlayers, AllServiceCount.class);
+    }
 
     public static void updatePlayerCountService(UpdatePlayer updatePlayer) {
         String uri = Constants.SERVICE_COUNT_URL +  "updatePlayerCountService";
@@ -30,11 +33,11 @@ public class ServicesRest {
         return result;
     }
 
-    public static Map<Integer, PlayerStats> getPlayersStats() {
+    public static PlayersStats getPlayersStats() {
         String uri = Constants.SERVICE_GAME_URL +  "getPlayersStats";
         PlayersStats result = restTemplate.getForObject(uri, PlayersStats.class);
 
-        return result.getPlayersStats();
+        return result;
     }
 
 

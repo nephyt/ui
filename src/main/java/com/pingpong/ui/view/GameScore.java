@@ -3,9 +3,10 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.game.TeamEnum;
+import com.pingpong.basicclass.servicecount.AllServiceCount;
+import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.pingpong.ui.thread.ClickThread;
-import com.pingpong.ui.thread.ServiceCountThread;
 import com.pingpong.ui.web.controller.GameController;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.html.Div;
@@ -24,6 +25,10 @@ public class GameScore extends VerticalLayout {
 
     HorizontalLayout scoring = new HorizontalLayout();
 
+    public Game getGame() {
+        return game;
+    }
+
     Game game;
 
     DisplayTeam displayTeamA;
@@ -37,6 +42,8 @@ public class GameScore extends VerticalLayout {
     Registration clickTeamB;
 
     Div pageGame;
+
+    AllServiceCount serviceCountStats = new AllServiceCount();
 
     public GameScore(Div pageGame, Game gameToManage, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
         this.game = gameToManage;
@@ -149,7 +156,8 @@ public class GameScore extends VerticalLayout {
                     clickListener.notify();
                 }
 
-                GameController.setGameScore(null);
+                // update count for service when the game is completec
+                ServicesRest.updatePlayersCountService(serviceCountStats);
 
                 WinnerScreen winnerScreen = new WinnerScreen(pageGame);
                 winnerScreen.showWinner(game, displayTeamA, displayTeamB);
@@ -166,7 +174,12 @@ public class GameScore extends VerticalLayout {
             winServe = true;
             server = teamScored.getServer();
         }
-        new ServiceCountThread(server, winServe).run();
+
+        ServiceCount  serviceCount = serviceCountStats.getServiceCountForPlayer(server);
+        serviceCount.incrementCounter(winServe);
+        serviceCountStats.putServiceCount(serviceCount);
+
+     //   new ServiceCountThread(server, winServe).run();
      //   new Thread(new ServiceCountThread(server, winServe)).start();
     }
 }

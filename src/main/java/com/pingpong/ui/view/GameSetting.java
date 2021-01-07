@@ -3,7 +3,6 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
-import com.pingpong.ui.Constants;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;

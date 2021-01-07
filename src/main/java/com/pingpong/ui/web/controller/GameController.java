@@ -17,7 +17,7 @@ public class GameController {
     }
 
     @GetMapping(value = "/teamScored/{teamScored}")
-    public String getCurrentGame(@PathVariable TeamEnum teamScored) {
+    public String teamScored(@PathVariable TeamEnum teamScored) {
 
         String result = "YES";
         if (gameScore != null) {
@@ -30,5 +30,29 @@ public class GameController {
         return result;
     }
 
+    @GetMapping(value = "/teamService")
+    public String getTeamService() {
+
+        String result = "A";
+        if (gameScore != null && gameScore.getGame().getTeamB().hasService()) {
+            result = "B";
+        }
+
+        return result;
+    }
+
+    @GetMapping(value = "/teamWinner")
+    public String getTeamWinner() {
+
+        String result = null;
+        if (gameScore != null && gameScore.getGame().getTeamWinnerId() != null) {
+            result = "A";
+            if (gameScore.getGame().getTeamB().getId().equals(gameScore.getGame().getTeamWinnerId())) {
+                result = "B";
+            }
+        }
+
+        return result;
+    }
 
 }

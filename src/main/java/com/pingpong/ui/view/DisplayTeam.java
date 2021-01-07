@@ -4,7 +4,6 @@ import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.player.Player;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.Map;
