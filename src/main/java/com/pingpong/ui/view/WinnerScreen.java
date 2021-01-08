@@ -186,7 +186,7 @@ public class WinnerScreen extends VerticalLayout {
 
         Game newGame = new Game(teamA, teamB,game.getMaxScore());
 
-        Game gameInProgress = ServicesRest.createGame(newGame);
+        Game gameInProgress = ServicesRest.saveGame(newGame);
 
         GameScore gameScore = new GameScore(pageGame, gameInProgress, displayTeamA, displayTeamB);
         gameScore.setVisible(true);

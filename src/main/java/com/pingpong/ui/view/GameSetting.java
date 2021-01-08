@@ -105,7 +105,7 @@ public class GameSetting extends VerticalLayout {
 
         Game game = new Game(teamA, teamB,scoreMaxSelected);
 
-        gameInProgress = ServicesRest.createGame(game);
+        gameInProgress = ServicesRest.saveGame(game);
 
         GameScore gameScore = new GameScore(pageGame, getGameInProgress(), new DisplayTeam(getDisplayPlayerTeamA()), new DisplayTeam(getDisplayPlayerTeamB()));
         gameScore.setVisible(true);

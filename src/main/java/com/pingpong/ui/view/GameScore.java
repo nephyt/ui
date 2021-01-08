@@ -1,6 +1,7 @@
 package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Game;
+import com.pingpong.basicclass.game.GameStatus;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
@@ -9,6 +10,7 @@ import com.pingpong.ui.servicesrest.ServicesRest;
 import com.pingpong.ui.thread.ClickThread;
 import com.pingpong.ui.web.controller.GameController;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -42,6 +44,8 @@ public class GameScore extends VerticalLayout {
     Registration clickTeamB;
 
     Div pageGame;
+
+    Button pauseResumeGame;
 
     AllServiceCount serviceCountStats = new AllServiceCount();
 
@@ -86,6 +90,28 @@ public class GameScore extends VerticalLayout {
         clickTeamA = displayTeamA.addClickListener(e -> updateGame(TeamEnum.TEAM_A));
         clickTeamB = displayTeamB.addClickListener(e -> updateGame(TeamEnum.TEAM_B));
 
+        pauseResumeGame = new Button("Pause Game");
+
+        setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        add(pauseResumeGame);
+
+        pauseResumeGame.addClickListener(e-> pauseResumeGame());
+
+    }
+
+    private void pauseResumeGame() {
+        if (game != null) {
+            if (GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
+                game.pauseGame();
+                game = ServicesRest.saveGame(game);
+                pauseResumeGame.setText("Resume Game");
+            } else if (GameStatus.PAUSE.getCode().equals(game.getGameStatus().getCode())) {
+                game.resumeGame();
+                game = ServicesRest.saveGame(game);
+                pauseResumeGame.setText("Pause Game");
+            }
+        }
     }
 
     public void refreshScreen() {
@@ -127,7 +153,7 @@ public class GameScore extends VerticalLayout {
 
     public void updateGame(TeamEnum teamScored) {
 
-        if (game != null) {
+        if (game != null && GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
             if (TeamEnum.TEAM_A.getCode().equals(teamScored.getCode() )) {
                 updateServiceCount(game.getTeamA(), game.getTeamB());
 
@@ -144,7 +170,7 @@ public class GameScore extends VerticalLayout {
             // done after the click or double click to end the game correctly
             game.updateGameIfFinish();
 
-            ServicesRest.updateGame(game); // save state in DB
+            game = ServicesRest.saveGame(game); // save state in DB
 
             if (game.getTeamWinnerId() != null) {
                 clickScore.remove();

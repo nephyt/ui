@@ -26,6 +26,16 @@ public class ServicesRest {
         restTemplate.put(uri, updatePlayer, PlayersStats.class);
     }
 
+    public static void pauseGame(Integer gameId) {
+        String uri = Constants.SERVICE_GAME_URL +  "pauseGame/" + gameId;
+        restTemplate.put(uri, null);
+    }
+
+    public static void resumeGame(Integer gameId) {
+        String uri = Constants.SERVICE_GAME_URL +  "resumeGame/" + gameId;
+        restTemplate.put(uri, null);
+    }
+
     public static AllServiceCount getPlayerCountService() {
         String uri = Constants.SERVICE_COUNT_URL +  "getPlayerCountService";
         AllServiceCount result = restTemplate.getForObject(uri, AllServiceCount.class);
@@ -54,16 +64,10 @@ public class ServicesRest {
         return result.getPlayers();
     }
 
-    public static Game createGame(Game game) {
-        String uri = Constants.SERVICE_GAME_URL +  "createGame";
+    public static Game saveGame(Game game) {
+        String uri = Constants.SERVICE_GAME_URL +  "saveGame";
 
-        Game savedGame = restTemplate.postForObject(uri, game, Game.class);
-
-        return savedGame;
+        return restTemplate.postForObject(uri, game, Game.class);
     }
 
-    public static void updateGame(Game game) {
-        String uri = Constants.SERVICE_GAME_URL +  "updateGame";
-        restTemplate.put(uri, game);
-    }
 }
