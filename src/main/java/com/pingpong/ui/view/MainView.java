@@ -42,22 +42,73 @@ public class MainView extends VerticalLayout implements KeyNotifier {
     private Button addNewBtn;
 
     public MainView() {
-      //  add(new Button("Click me", e -> Notification.show("Hello, Spring+Vaadin user!")));
-
-
-        addNewBtn = new Button("New player", VaadinIcon.PLUS.create());
 
         Tab tabPlayer = new Tab("Players");
         Tab tabGame = new Tab("Game");
 
-        Div pagePlayers = new Div();
-
+        Div pagePlayers = buildPagePlayers();
         Div pageGame = buildPageGame();
 
-        pageGame.setVisible(false);
+        Map<Tab, Component> tabsToPages = new HashMap<>();
+        tabsToPages.put(tabPlayer, pagePlayers);
+        tabsToPages.put(tabGame, pageGame);
+
+        Tabs tabs = new Tabs(tabPlayer, tabGame);
+        tabs.setWidthFull();
+        tabs.setFlexGrowForEnclosedTabs(1);
+
+        Div pages = new Div(pagePlayers, pageGame);
+        pages.setWidthFull();
+
+        tabs.addSelectedChangeListener(event -> {
+            tabsToPages.values().forEach(page -> page.setVisible(false));
+            Component selectedPage = tabsToPages.get(tabs.getSelectedTab());
+            selectedPage.setVisible(true);
+        });
+
+        add(tabs, pages);
+
+    }
+
+    private Div buildPagePlayers() {
+
+        addNewBtn = new Button("New player", VaadinIcon.PLUS.create());
+
+        Div pagePlayers = new Div();
+
+        setupGridPlayers();
+
+        TextField filter = new TextField();
+        filter.setPlaceholder("Filter by last name");
+        filter.setValueChangeMode(ValueChangeMode.EAGER);
+        filter.addValueChangeListener(e -> fillGrid(e.getValue()));
 
 
-        this.grid = new Grid<>(Player.class);
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+
+
+        pagePlayers.add(actions,grid, editor);
+
+        pagePlayers.setWidthFull();
+
+
+        // Instantiate and edit new Customer the new button is clicked
+        addNewBtn.addClickListener(e -> editor.editCustomer(new Player()));
+
+        // Listen changes made by the editor, refresh data from backend
+        editor.setChangeHandler(() -> {
+            editor.setVisible(false);
+            fillGrid(filter.getValue());
+        });
+
+        fillGrid("");
+
+        return pagePlayers;
+    }
+
+    private void setupGridPlayers() {
+
+        grid = new Grid<>(Player.class);
 
         grid.removeColumnByKey("creationDate");
         grid.removeColumnByKey("picture");
@@ -135,7 +186,6 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         }).setHeader("Time").setKey("time");
 
 
-
         List<Grid.Column<Player>> orderColumn = new ArrayList<>();
 
         orderColumn.add(grid.getColumnByKey("picture"));
@@ -146,59 +196,14 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         orderColumn.add(grid.getColumnByKey("ballServe"));
         orderColumn.add(grid.getColumnByKey("time"));
 
-
-
         grid.setColumnOrder(orderColumn);
 
-
-        TextField filter = new TextField();
-        filter.setPlaceholder("Filter by last name");
-        filter.setValueChangeMode(ValueChangeMode.EAGER);
-        filter.addValueChangeListener(e -> fillGrid(e.getValue()));
-
         grid.setWidthFull();
-
-        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-
-
-        pagePlayers.add(actions,grid, editor);
-
-        pagePlayers.setWidthFull();
-
-        Map<Tab, Component> tabsToPages = new HashMap<>();
-        tabsToPages.put(tabPlayer, pagePlayers);
-        tabsToPages.put(tabGame, pageGame);
-
-        Tabs tabs = new Tabs(tabPlayer, tabGame);
-        tabs.setWidthFull();
-        tabs.setFlexGrowForEnclosedTabs(1);
-
-        Div pages = new Div(pagePlayers, pageGame);
-        pages.setWidthFull();
-
-        tabs.addSelectedChangeListener(event -> {
-            tabsToPages.values().forEach(page -> page.setVisible(false));
-            Component selectedPage = tabsToPages.get(tabs.getSelectedTab());
-            selectedPage.setVisible(true);
-        });
-
-        add(tabs, pages);
 
         // Connect selected Customer to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
             editor.editCustomer(e.getValue());
         });
-
-        // Instantiate and edit new Customer the new button is clicked
-        addNewBtn.addClickListener(e -> editor.editCustomer(new Player()));
-
-        // Listen changes made by the editor, refresh data from backend
-        editor.setChangeHandler(() -> {
-            editor.setVisible(false);
-            fillGrid(filter.getValue());
-        });
-
-        fillGrid("");
     }
 
     private Div buildPageGame() {
@@ -212,6 +217,8 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
         Div pageGame = new Div();
         pageGame.setWidthFull();
+        pageGame.setVisible(false);
+
 
         GameSetting gameSetting = new GameSetting(ServicesRest.listPlayer(""), pageGame);
         gameSetting.setVisible(true);
