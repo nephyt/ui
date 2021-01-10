@@ -45,19 +45,25 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
         Tab tabPlayer = new Tab("Players");
         Tab tabGame = new Tab("Game");
+        Tab tabGamePaused = new Tab("Game Paused");
 
-        Div pagePlayers = buildPagePlayers();
-        Div pageGame = buildPageGame();
-
-        Map<Tab, Component> tabsToPages = new HashMap<>();
-        tabsToPages.put(tabPlayer, pagePlayers);
-        tabsToPages.put(tabGame, pageGame);
-
-        Tabs tabs = new Tabs(tabPlayer, tabGame);
+        Tabs tabs = new Tabs(tabPlayer, tabGamePaused, tabGame);
         tabs.setWidthFull();
         tabs.setFlexGrowForEnclosedTabs(1);
 
-        Div pages = new Div(pagePlayers, pageGame);
+
+        Div pagePlayers = buildPagePlayers();
+        Div pageGame = buildPageGame();
+        Div pageGamePaused = new PausedGameVIew(pageGame, tabs);
+
+
+
+        Map<Tab, Component> tabsToPages = new HashMap<>();
+        tabsToPages.put(tabPlayer, pagePlayers);
+        tabsToPages.put(tabGamePaused, pageGamePaused);
+        tabsToPages.put(tabGame, pageGame);
+
+        Div pages = new Div(pagePlayers, pageGamePaused, pageGame);
         pages.setWidthFull();
 
         tabs.addSelectedChangeListener(event -> {

@@ -1,7 +1,6 @@
 package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Game;
-import com.pingpong.basicclass.game.GameTime;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.servicesrest.ServicesRest;
@@ -13,8 +12,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-
-import java.util.concurrent.TimeUnit;
 
 public class WinnerScreen extends VerticalLayout {
 
@@ -42,7 +39,7 @@ public class WinnerScreen extends VerticalLayout {
 
         String finalScoreStr = "";
 
-        if (winnerTeamId == game.getTeamA().getId()) {
+        if (winnerTeamId.equals(game.getTeamA().getId())) {
             finalScoreStr = game.getTeamA().getScore() + " - " + game.getTeamB().getScore();
             loserDisplayTeam = displayTeamB;
             loserTeam = game.getTeamB();
@@ -103,7 +100,7 @@ public class WinnerScreen extends VerticalLayout {
 
 
 
-        Html time = new Html("<font>Time : " + getTimePlayed(game) + "</font>");
+        Html time = new Html("<font>Time : " + game.toStringTimePlayed() + "</font>");
         loserName.getElement().getStyle().set("font-size", "24px");
 
 
@@ -139,27 +136,14 @@ public class WinnerScreen extends VerticalLayout {
 
     }
 
-    private String getTimePlayed(Game game) {
-        long millis = 0;
 
-        for (GameTime time : game.getGameTime()) {
-               millis += (time.getEndDate().getTime() - time.getCreationDate().getTime());
-
-        }
-
-        return String.format("%02d min, %02d sec",
-                TimeUnit.MILLISECONDS.toMinutes(millis),
-                TimeUnit.MILLISECONDS.toSeconds(millis) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-        );
-    }
 
     private Team createTeam(Integer player1, Integer player2, boolean hasService) {
         return new Team(player1, player2, hasService);
     }
 
     private boolean teamWin(Integer idTeamWin, Integer idTeam) {
-        return idTeamWin == idTeam;
+        return idTeamWin.equals(idTeam);
     }
 
     private Team createNewTeam(Integer teamWinId, Team team) {
@@ -189,12 +173,9 @@ public class WinnerScreen extends VerticalLayout {
         Game gameInProgress = ServicesRest.saveGame(newGame);
 
         GameScore gameScore = new GameScore(pageGame, gameInProgress, displayTeamA, displayTeamB);
-        gameScore.setVisible(true);
-
         gameScore.refreshScreen();
-
         pageGame.add(gameScore);
-
+        gameScore.setVisible(true);
 
     }
 

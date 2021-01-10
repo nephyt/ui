@@ -47,13 +47,14 @@ public class GameScore extends VerticalLayout {
 
     Button pauseResumeGame;
 
-    AllServiceCount serviceCountStats = new AllServiceCount();
+    AllServiceCount serviceCountStats;
 
     public GameScore(Div pageGame, Game gameToManage, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
         this.game = gameToManage;
         this.pageGame = pageGame;
         this.displayTeamA = displayTeamA;
         this.displayTeamB = displayTeamB;
+        this.serviceCountStats = new AllServiceCount(gameToManage.getId());
 
         clickListener = new ClickThread(this);
         thread = new Thread(clickListener);

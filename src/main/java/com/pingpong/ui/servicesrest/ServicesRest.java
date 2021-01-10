@@ -1,6 +1,7 @@
 package com.pingpong.ui.servicesrest;
 
 import com.pingpong.basicclass.game.Game;
+import com.pingpong.basicclass.game.ListOfGames;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 public class ServicesRest {
 
@@ -51,17 +53,34 @@ public class ServicesRest {
     }
 
 
+    public static List<Game> getPausedGames() {
+        String uri = Constants.SERVICE_GAME_URL +  "getPausedGames";
+
+        ListOfGames result = restTemplate.getForObject(uri, ListOfGames.class);
+
+        return result.getGames();
+    }
 
     public static List<Player> listPlayer(String filterText) {
+        ListOfPlayers result = getListOfPlayers(filterText);
+
+        return result.getPlayers();
+    }
+
+    public static Map<Integer, Player> mapPlayer(String filterText) {
+        ListOfPlayers result = getListOfPlayers(filterText);
+
+        return result.getMapPlayers();
+    }
+
+    private static ListOfPlayers getListOfPlayers(String filterText) {
         String uri = Constants.SERVICE_PLAYER_URL +  "Players";
 
         if (!StringUtils.isEmpty(filterText)) {
             uri = Constants.SERVICE_PLAYER_URL +  "PlayersWithName/" + filterText;
         }
 
-        ListOfPlayers result = restTemplate.getForObject(uri, ListOfPlayers.class);
-
-        return result.getPlayers();
+        return restTemplate.getForObject(uri, ListOfPlayers.class);
     }
 
     public static Game saveGame(Game game) {
