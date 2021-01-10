@@ -49,12 +49,18 @@ public class GameScore extends VerticalLayout {
 
     AllServiceCount serviceCountStats;
 
+    AudioPlayer pointSound = new AudioPlayer();
+    AudioPlayer matchPointSound = new AudioPlayer();
+
     public GameScore(Div pageGame, Game gameToManage, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
         this.game = gameToManage;
         this.pageGame = pageGame;
         this.displayTeamA = displayTeamA;
         this.displayTeamB = displayTeamB;
         this.serviceCountStats = new AllServiceCount(gameToManage.getId());
+
+        setupAudio(pointSound, "Super Mario Bros.-Coin Sound Effect.mp3");
+        setupAudio(matchPointSound, "Legend of Zelda A Link to the Past sound effect - Treasure!.mp3");
 
         clickListener = new ClickThread(this);
         thread = new Thread(clickListener);
@@ -96,9 +102,18 @@ public class GameScore extends VerticalLayout {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         add(pauseResumeGame);
+        add(pointSound);
+        add(matchPointSound);
 
         pauseResumeGame.addClickListener(e-> pauseResumeGame());
 
+    }
+
+    private void setupAudio(AudioPlayer audio, String src) {
+        audio.getElement().getStyle().set("display", "none");
+        audio.getElement().getStyle().set("display", "none");
+
+        audio.setSource("sounds/" + src);
     }
 
     private void pauseResumeGame() {
@@ -189,9 +204,18 @@ public class GameScore extends VerticalLayout {
                 WinnerScreen winnerScreen = new WinnerScreen(pageGame);
                 winnerScreen.showWinner(game, displayTeamA, displayTeamB);
             } else {
+                if (game.isMatchPoint()) {
+                    playSound(matchPointSound);
+                } else {
+                    playSound(pointSound);
+                }
                 refreshScreen();
             }
         }
+    }
+
+    private void playSound(AudioPlayer audio) {
+        audio.getElement().callJsFunction("play");
     }
 
     private void updateServiceCount(Team teamScored, Team teamLost) {
