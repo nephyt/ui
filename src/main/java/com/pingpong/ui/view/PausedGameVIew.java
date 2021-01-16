@@ -82,7 +82,7 @@ public class PausedGameVIew extends Div {
         grid.addColumn(game -> getTeamPlayerName(mapPlayer, game.getTeamA()) + " VS " + getTeamPlayerName(mapPlayer, game.getTeamB()))
                 .setAutoWidth(true).setSortable(true).setHeader("Players").setKey("players");
 
-        grid.addColumn(game -> game.getTeamA().getScore() + " - " + game.getTeamB().getScore())
+        grid.addColumn(game -> game.getScoreTeamA() + " - " + game.getScoreTeamB())
                 .setAutoWidth(true).setSortable(true).setHeader("Score").setKey("score");
 
        // grid.addColumn(game -> getTeamPlayerName(mapPlayer, game.getTeamB()))

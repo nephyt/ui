@@ -2,8 +2,8 @@ package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.GameStatus;
-import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.game.TeamEnum;
+import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.ui.servicesrest.ServicesRest;
@@ -132,15 +132,15 @@ public class GameScore extends VerticalLayout {
 
     public void refreshScreen() {
 
-        displayTeamA.refreshTeam(game.getTeamA(), TeamEnum.TEAM_A);
+        displayTeamA.refreshTeam(game.getTeamStateA(), TeamEnum.TEAM_A);
 
         // Ici score
 
-        displayScoreTeamA.refreshImageScore(game.getTeamA().getScore());
-        displayScoreTeamB.refreshImageScore(game.getTeamB().getScore());
+        displayScoreTeamA.refreshImageScore(game.getScoreTeamA());
+        displayScoreTeamB.refreshImageScore(game.getScoreTeamB());
 
 
-        displayTeamB.refreshTeam(game.getTeamB(), TeamEnum.TEAM_B);
+        displayTeamB.refreshTeam(game.getTeamStateB(), TeamEnum.TEAM_B);
     }
 
 
@@ -171,22 +171,21 @@ public class GameScore extends VerticalLayout {
 
         if (game != null && GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
             if (TeamEnum.TEAM_A.getCode().equals(teamScored.getCode() )) {
-                updateServiceCount(game.getTeamA(), game.getTeamB());
+                updateServiceCount(game.getTeamStateA(), game.getTeamStateB());
 
-                game.getTeamA().incrementScore();
+                game.incrementScoreTeamA();
                 game.updateGame();
             }
             else if (TeamEnum.TEAM_B.getCode().equals(teamScored.getCode() )) {
-                updateServiceCount(game.getTeamB(), game.getTeamA());
+                updateServiceCount(game.getTeamStateB(), game.getTeamStateA());
 
-                game.getTeamB().incrementScore();
+                game.incrementScoreTeamB();
                 game.updateGame();
             }
 
             // done after the click or double click to end the game correctly
             game.updateGameIfFinish();
 
-            game = ServicesRest.saveGame(game); // save state in DB
 
             if (game.getTeamWinnerId() != null) {
                 clickScore.remove();
@@ -204,6 +203,8 @@ public class GameScore extends VerticalLayout {
                 WinnerScreen winnerScreen = new WinnerScreen(pageGame);
                 winnerScreen.showWinner(game, displayTeamA, displayTeamB);
             } else {
+                game = ServicesRest.saveGame(game); // save state in DB
+
                 if (game.isMatchPoint()) {
                     playSound(matchPointSound);
                 } else {
@@ -218,7 +219,7 @@ public class GameScore extends VerticalLayout {
         audio.getElement().callJsFunction("play");
     }
 
-    private void updateServiceCount(Team teamScored, Team teamLost) {
+    private void updateServiceCount(TeamState teamScored, TeamState teamLost) {
         boolean winServe = false;
         Integer server = teamLost.getServer();
         if (teamScored.hasService()) {

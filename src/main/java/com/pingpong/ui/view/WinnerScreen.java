@@ -1,7 +1,8 @@
 package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Game;
-import com.pingpong.basicclass.game.Team;
+import com.pingpong.basicclass.game.TeamEnum;
+import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.pingpong.ui.util.Utils;
@@ -35,39 +36,39 @@ public class WinnerScreen extends VerticalLayout {
         Player winner2 = null;
 
         DisplayTeam loserDisplayTeam;
-        Team loserTeam;
+        TeamState loserTeam;
 
         String finalScoreStr = "";
 
         if (winnerTeamId.equals(game.getTeamA().getId())) {
-            finalScoreStr = game.getTeamA().getScore() + " - " + game.getTeamB().getScore();
+            finalScoreStr = game.getScoreTeamA() + " - " + game.getScoreTeamB();
             loserDisplayTeam = displayTeamB;
-            loserTeam = game.getTeamB();
+            loserTeam = game.getTeamStateB();
 
-            if (game.getTeamA().getRightPlayer() != null) {
-                winner1 = displayTeamA.getPlayerById(game.getTeamA().getRightPlayer());
+            if (game.getTeamStateA().getRightPlayer() != null) {
+                winner1 = displayTeamA.getPlayerById(game.getTeamStateA().getRightPlayer());
 
-                if (game.getTeamA().getLeftPlayer() != null) {
-                    winner2 = displayTeamA.getPlayerById(game.getTeamA().getLeftPlayer());
+                if (game.getTeamStateA().getLeftPlayer() != null) {
+                    winner2 = displayTeamA.getPlayerById(game.getTeamStateA().getLeftPlayer());
                 }
             } else {
-                winner1 = displayTeamA.getPlayerById(game.getTeamA().getLeftPlayer());
-                if (game.getTeamA().getLeftPlayer() != null) {
-                    winner1 = displayTeamA.getPlayerById(game.getTeamA().getLeftPlayer());
+                winner1 = displayTeamA.getPlayerById(game.getTeamStateA().getLeftPlayer());
+                if (game.getTeamStateA().getLeftPlayer() != null) {
+                    winner1 = displayTeamA.getPlayerById(game.getTeamStateA().getLeftPlayer());
                 }
             }
         } else {
-            finalScoreStr = game.getTeamB().getScore() + " - " + game.getTeamA().getScore();
+            finalScoreStr = game.getScoreTeamB() + " - " + game.getScoreTeamA();
             loserDisplayTeam = displayTeamA;
-            loserTeam = game.getTeamA();
-            if (game.getTeamB().getRightPlayer() != null) {
-                winner1 = displayTeamB.getPlayerById(game.getTeamB().getRightPlayer());
+            loserTeam = game.getTeamStateA();
+            if (game.getTeamStateB().getRightPlayer() != null) {
+                winner1 = displayTeamB.getPlayerById(game.getTeamStateB().getRightPlayer());
 
-                if (game.getTeamB().getLeftPlayer() != null) {
-                    winner2 = displayTeamB.getPlayerById(game.getTeamB().getLeftPlayer());
+                if (game.getTeamStateB().getLeftPlayer() != null) {
+                    winner2 = displayTeamB.getPlayerById(game.getTeamStateB().getLeftPlayer());
                 }
             } else {
-                winner1 = displayTeamB.getPlayerById(game.getTeamB().getLeftPlayer());
+                winner1 = displayTeamB.getPlayerById(game.getTeamStateB().getLeftPlayer());
             }
         }
 
@@ -130,34 +131,27 @@ public class WinnerScreen extends VerticalLayout {
 
         add(buttonsDiv);
 
+        // save game after using TeamState for the Winning screen
+        ServicesRest.saveGame(game); // save state in DB
+
+
         pageGame.add(this);
 
 
 
     }
 
-
-
-    private Team createTeam(Integer player1, Integer player2, boolean hasService) {
-        return new Team(player1, player2, hasService);
-    }
-
-    private boolean teamWin(Integer idTeamWin, Integer idTeam) {
-        return idTeamWin.equals(idTeam);
-    }
-
-    private Team createNewTeam(Integer teamWinId, Team team) {
-        return createTeam(team.getTeamPlayer1Id(), team.getTeamPlayer2Id(), teamWin(teamWinId, team.getId()));
+    private TeamEnum getTeamEnumWin(Integer idTeamWin, Integer idTeamA) {
+        if (idTeamWin.equals(idTeamA)) {
+            return TeamEnum.TEAM_A;
+        }
+        return TeamEnum.TEAM_B;
     }
 
     private void changePlayers() {
         pageGame.removeAll();
-
-
         GameController.setGameScore(null);
-
         pageGame.add(new GameSetting(ServicesRest.listPlayer(""), pageGame));
-
     }
 
     private void rematchGame(Game game, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
@@ -165,10 +159,7 @@ public class WinnerScreen extends VerticalLayout {
         GameController.setGameScore(null);
         pageGame.removeAll();
 
-        Team teamA = createNewTeam(game.getTeamWinnerId(), game.getTeamA());
-        Team teamB = createNewTeam(game.getTeamWinnerId(), game.getTeamB());
-
-        Game newGame = new Game(teamA, teamB,game.getMaxScore());
+        Game newGame = new Game(game.getTeamA(), game.getTeamB(), getTeamEnumWin(game.getTeamWinnerId(), game.getTeamA().getId()), game.getMaxScore());
 
         Game gameInProgress = ServicesRest.saveGame(newGame);
 

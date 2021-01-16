@@ -34,7 +34,7 @@ public class GameController {
     public String getTeamService() {
 
         String result = "A";
-        if (gameScore != null && gameScore.getGame().getTeamB().hasService()) {
+        if (gameScore != null && gameScore.getGame().getTeamStateB().hasService()) {
             result = "B";
         }
 

@@ -77,8 +77,8 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         });
     }
 
-    public Team createTeam(boolean hasService) {
-        return new Team(player1.getId(),  (player2==null? null :player2.getId()), hasService);
+    public Team createTeam() {
+        return new Team(player1.getId(),  (player2==null? null :player2.getId()));
     }
 
     public byte[] getPicturePlayer1() {

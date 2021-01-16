@@ -2,6 +2,7 @@ package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
+import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.vaadin.flow.component.button.Button;
@@ -100,10 +101,10 @@ public class GameSetting extends VerticalLayout {
 
         setVisible(false);
 
-        Team teamA = playerSelectorTeamA.createTeam(true);
-        Team teamB = playerSelectorTeamB.createTeam(false);
+        Team teamA = playerSelectorTeamA.createTeam();
+        Team teamB = playerSelectorTeamB.createTeam();
 
-        Game game = new Game(teamA, teamB,scoreMaxSelected);
+        Game game = new Game(teamA, teamB, TeamEnum.TEAM_A,scoreMaxSelected);
 
         gameInProgress = ServicesRest.saveGame(game);
 
