@@ -75,6 +75,10 @@ public class PausedGameVIew extends Div {
         grid.removeColumnByKey("teamA");
         grid.removeColumnByKey("teamB");
         grid.removeColumnByKey("teamWinnerId");
+        grid.removeColumnByKey("teamStateA");
+        grid.removeColumnByKey("teamStateB");
+        grid.removeColumnByKey("scoreTeamA");
+        grid.removeColumnByKey("scoreTeamB");
 
         mapPlayer = ServicesRest.mapPlayer("");
 
