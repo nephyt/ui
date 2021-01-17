@@ -17,9 +17,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 public class WinnerScreen extends VerticalLayout {
 
     Div pageGame;
+    boolean isMute = false;
 
-    public WinnerScreen(Div pageGame) {
+    public WinnerScreen(Div pageGame, boolean isMute) {
         this.pageGame = pageGame;
+        this.isMute = isMute;
 
         pageGame.removeAll();
 
@@ -117,7 +119,7 @@ public class WinnerScreen extends VerticalLayout {
       //  add(winnerImg);
 
         DisplayPlayer winnerDisplaySong = new DisplayPlayer();
-        add(winnerDisplaySong.getVictorySong(winner1));
+        add(winnerDisplaySong.getVictorySong(winner1, isMute));
 
         HorizontalLayout buttonsDiv = new HorizontalLayout();
 

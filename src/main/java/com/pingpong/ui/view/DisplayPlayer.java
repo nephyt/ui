@@ -27,12 +27,17 @@ public class DisplayPlayer {
 
     }
 
-    public IFrame getVictorySong(Player playerToDisplay) {
+    public IFrame getVictorySong(Player playerToDisplay, boolean isMute) {
         IFrame frame = new IFrame();
 
         setupIframe(frame, "480px", "600px", true);
 
-        String emdebSong = playerToDisplay.getYoutubeEmbedVictorySongPath() + "?autoplay=1";
+        String autoPlay = "?autoplay=1";
+        if (isMute) {
+            autoPlay = "";
+        }
+
+        String emdebSong = playerToDisplay.getYoutubeEmbedVictorySongPath() + autoPlay;
 
         frame.setSrc(emdebSong);
 

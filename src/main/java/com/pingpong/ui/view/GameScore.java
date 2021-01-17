@@ -6,8 +6,10 @@ import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
+import com.pingpong.ui.Constants;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.pingpong.ui.thread.ClickThread;
+import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameController;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
@@ -15,7 +17,10 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.shared.Registration;
+
+import javax.servlet.http.Cookie;
 
 
 public class GameScore extends VerticalLayout {
@@ -45,11 +50,15 @@ public class GameScore extends VerticalLayout {
 
     Div pageGame;
 
+
+    Button muteUnmuteSounds;
+    Boolean isMute = false;
     Button pauseResumeGame;
 
     AllServiceCount serviceCountStats;
 
-    AudioPlayer pointSound = new AudioPlayer();
+    AudioPlayer pointSoundTeamA = new AudioPlayer();
+    AudioPlayer pointSoundTeamB = new AudioPlayer();
     AudioPlayer matchPointSound = new AudioPlayer();
 
     public GameScore(Div pageGame, Game gameToManage, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
@@ -59,7 +68,8 @@ public class GameScore extends VerticalLayout {
         this.displayTeamB = displayTeamB;
         this.serviceCountStats = new AllServiceCount(gameToManage.getId());
 
-        setupAudio(pointSound, "Super Mario Bros.-Coin Sound Effect.mp3");
+        setupAudio(pointSoundTeamA, "Super Mario Bros.-Coin Sound Effect.mp3");
+        setupAudio(pointSoundTeamB, "Yoshi's Mlem Sound Effect.mp3");
         setupAudio(matchPointSound, "Legend of Zelda A Link to the Past sound effect - Treasure!.mp3");
 
         clickListener = new ClickThread(this);
@@ -99,14 +109,41 @@ public class GameScore extends VerticalLayout {
 
         pauseResumeGame = new Button("Pause Game");
 
+        muteUnmuteSounds = new Button("Mute Sounds");
+
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         add(pauseResumeGame);
-        add(pointSound);
+        add(muteUnmuteSounds);
+        add(pointSoundTeamA);
+        add(pointSoundTeamB);
         add(matchPointSound);
 
         pauseResumeGame.addClickListener(e-> pauseResumeGame());
+        muteUnmuteSounds.addClickListener(e-> muteUnmuteSounds());
 
+        Cookie cookie = Utils.getCookieByName(Constants.COOKIE_MUTE, "false");
+        if (Boolean.valueOf(cookie.getValue())) {
+            muteUnmuteSounds.setText("Unmute Sounds");
+            isMute = true;
+        }
+
+
+    }
+
+
+    private void muteUnmuteSounds() {
+        Cookie cookie = Utils.getCookieByName(Constants.COOKIE_MUTE, isMute.toString());
+
+        if (isMute) {
+            isMute = false;
+            muteUnmuteSounds.setText("Mute Sounds");
+        } else {
+            isMute = true;
+            muteUnmuteSounds.setText("Unmute Sounds");
+        }
+        cookie.setValue(isMute.toString());
+        VaadinService.getCurrentResponse().addCookie(cookie);
     }
 
     private void setupAudio(AudioPlayer audio, String src) {
@@ -200,7 +237,7 @@ public class GameScore extends VerticalLayout {
                 // update count for service when the game is completec
                 ServicesRest.updatePlayersCountService(serviceCountStats);
 
-                WinnerScreen winnerScreen = new WinnerScreen(pageGame);
+                WinnerScreen winnerScreen = new WinnerScreen(pageGame, isMute);
                 winnerScreen.showWinner(game, displayTeamA, displayTeamB);
             } else {
                 game = ServicesRest.saveGame(game); // save state in DB
@@ -208,7 +245,11 @@ public class GameScore extends VerticalLayout {
                 if (game.isMatchPoint()) {
                     playSound(matchPointSound);
                 } else {
-                    playSound(pointSound);
+                    if (teamScored.equals(TeamEnum.TEAM_A)) {
+                        playSound(pointSoundTeamA);
+                    } else {
+                        playSound(pointSoundTeamB);
+                    }
                 }
                 refreshScreen();
             }
@@ -216,7 +257,9 @@ public class GameScore extends VerticalLayout {
     }
 
     private void playSound(AudioPlayer audio) {
-        audio.getElement().callJsFunction("play");
+        if (!isMute) {
+            audio.getElement().callJsFunction("play");
+        }
     }
 
     private void updateServiceCount(TeamState teamScored, TeamState teamLost) {

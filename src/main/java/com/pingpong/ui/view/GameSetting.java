@@ -29,7 +29,7 @@ public class GameSetting extends VerticalLayout {
 
     Div pageGame;
 
-    int scoreMaxSelected = 21;
+    int scoreMaxSelected = 11;
 
     public Game getGameInProgress() {
         return gameInProgress;
@@ -76,7 +76,7 @@ public class GameSetting extends VerticalLayout {
         Label selectScoreMax = new Label("Select score max :");
         ComboBox<Integer> scoreMax = new ComboBox<>();
         scoreMax.setItems(11, 21);
-        scoreMax.setValue(21);
+        scoreMax.setValue(scoreMaxSelected);
 
         scoreMax.addValueChangeListener(event -> {
             if (event.getValue() != null) {
