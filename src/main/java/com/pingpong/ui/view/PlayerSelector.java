@@ -1,6 +1,7 @@
 package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.game.Team;
+import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.player.Player;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -15,16 +16,16 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     Player player1;
     Player player2;
 
-    String namePlayer1 = null;
-    String namePlayer2 = null;
-
     List<Player> listPlayer1;
     List<Player> listPlayer2;
 
+    TeamEnum teamEnum = TeamEnum.TEAM_A;
     Label selectTeam = new Label("Select player(s) team A :");
 
     Label labelPlayer1 = new Label("Player 1 : ");
     Label labelPlayer2 = new Label("Player 2 : ");
+
+    GameSetting parent;
 
     public Player getPlayer1() {
         return player1;
@@ -34,12 +35,17 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         return player2;
     }
 
-    public PlayerSelector(List<Player> listPlayer, String textSelectTeam) {
+    public PlayerSelector(List<Player> listPlayer, TeamEnum teamEnum, GameSetting parent) {
 
         this.listPlayer1 = listPlayer;
         this.listPlayer2 = listPlayer;
 
-        selectTeam.setText(textSelectTeam);
+        this.parent = parent;
+
+        if (TeamEnum.TEAM_B.getCode().equals(teamEnum.getCode())) {
+            this.teamEnum = teamEnum;
+            selectTeam.setText("Select player(s) team B :");
+        }
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -63,21 +69,40 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         cboPlayer1.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 player1 = event.getValue();
-                namePlayer1 = event.getValue().getName();
                 labelPlayer2.setVisible(true);
                 cboPlayer2.setVisible(true);
+            } else {
+                player2 = null;
+                player1 = null;
+                labelPlayer2.setVisible(false);
+                cboPlayer2.setVisible(false);
+                cboPlayer2.setValue(null);
             }
+
+            informParent();
         });
 
         cboPlayer2.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 player2 = event.getValue();
-                namePlayer2 = event.getValue().getName();
+            } else {
+                player2 = null;
             }
+
+            informParent();
         });
     }
 
+    private void informParent() {
+        if (parent != null) {
+            parent.updatePlayerStats(teamEnum);
+        }
+    }
+
     public Team createTeam() {
+        if (player1 == null) {
+            return null;
+        }
         return new Team(player1.getId(),  (player2==null? null :player2.getId()));
     }
 
@@ -93,7 +118,14 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     }
 
     public String getLabelTeam() {
-        return namePlayer1 + (namePlayer2 != null ? " & " + namePlayer2: "");
+        String names = "";
+        if (player1 != null) {
+            names = player1.getName();
+        }
+        if (player2 != null) {
+            names += (" & " + player2.getName());
+        }
+        return names;
     }
 
 

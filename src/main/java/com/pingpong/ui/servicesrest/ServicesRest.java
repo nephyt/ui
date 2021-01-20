@@ -2,11 +2,13 @@ package com.pingpong.ui.servicesrest;
 
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.ListOfGames;
+import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.UpdatePlayer;
 import com.pingpong.basicclass.stats.PlayersStats;
+import com.pingpong.basicclass.stats.TeamStats;
 import com.pingpong.ui.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -52,6 +54,38 @@ public class ServicesRest {
         return result;
     }
 
+    public static TeamStats getTeamStatsByPlayer(Team team) {
+        String uri = Constants.SERVICE_GAME_URL +  "getTeamStatsByPlayer/";
+
+        String teamAParam = getParamStringForPlayers(team);
+
+        uri += (teamAParam);
+
+        TeamStats teamStats = restTemplate.getForObject(uri, TeamStats.class);
+
+        return teamStats;
+    }
+
+    public static TeamStats getTeamVSStatsByPlayer(Team teamA, Team teamB) {
+        String uri = Constants.SERVICE_GAME_URL +  "getTeamVSStatsByPlayer/";
+
+        String teamAParam = getParamStringForPlayers(teamA);
+        String teamBParam = getParamStringForPlayers(teamB);
+
+        uri += (teamAParam + "/" + teamBParam);
+
+        TeamStats teamStats = restTemplate.getForObject(uri, TeamStats.class);
+
+        return teamStats;
+    }
+
+    private static String getParamStringForPlayers(Team teamA) {
+        String paramTeamA = teamA.getTeamPlayer1Id().toString();
+        if (teamA.getTeamPlayer2() != null) {
+            paramTeamA +=  ("_" + teamA.getTeamPlayer1Id());
+        }
+        return paramTeamA;
+    }
 
     public static List<Game> getPausedGames() {
         String uri = Constants.SERVICE_GAME_URL +  "getPausedGames";

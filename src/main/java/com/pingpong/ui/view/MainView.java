@@ -6,6 +6,7 @@ import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.basicclass.stats.PlayersStats;
 import com.pingpong.ui.servicesrest.ServicesRest;
+import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Push
 @Route("")
@@ -176,18 +176,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         grid.addColumn(player -> {
             PlayerStats stats = playersStats.getPlayerStatsForPlayer(player.getId());
 
-            long timeInSeconde = stats.getTimePlayed();
-
-            long hours = TimeUnit.SECONDS.toHours(timeInSeconde);
-            long minutes = TimeUnit.SECONDS.toMinutes(timeInSeconde) -
-                           TimeUnit.HOURS.toSeconds(hours);
-
-            long secondes = timeInSeconde - TimeUnit.HOURS.toSeconds(hours) - TimeUnit.MINUTES.toSeconds(minutes);
-
-            return String.format("%02d:%02d:%02d",
-                    hours,
-                    minutes,
-                    secondes);
+            return Utils.formatTimePlayed(stats.getTimePlayed());
 
         }).setHeader("Time").setKey("time");
 

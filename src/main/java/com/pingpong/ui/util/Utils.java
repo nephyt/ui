@@ -3,9 +3,22 @@ package com.pingpong.ui.util;
 import com.vaadin.flow.server.VaadinService;
 
 import javax.servlet.http.Cookie;
+import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
+    public static String formatTimePlayed(long timeInSeconde) {
+        long hours = TimeUnit.SECONDS.toHours(timeInSeconde);
+        long minutes = TimeUnit.SECONDS.toMinutes(timeInSeconde) -
+                TimeUnit.HOURS.toSeconds(hours);
+
+        long secondes = timeInSeconde - TimeUnit.HOURS.toSeconds(hours) - TimeUnit.MINUTES.toSeconds(minutes);
+
+        return String.format("%02d:%02d:%02d",
+                hours,
+                minutes,
+                secondes);
+    }
 
     public static void disableSelection(com.vaadin.flow.component.Component scoreImg) {
         scoreImg.getElement().getStyle().set("user-select", "none");
