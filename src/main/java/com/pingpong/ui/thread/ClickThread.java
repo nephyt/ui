@@ -1,6 +1,6 @@
 package com.pingpong.ui.thread;
 
-import com.pingpong.basicclass.game.TeamEnum;
+import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.ui.view.GameScore;
 import com.vaadin.flow.component.ClickEvent;
 

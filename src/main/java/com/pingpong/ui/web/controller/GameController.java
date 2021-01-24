@@ -1,6 +1,6 @@
 package com.pingpong.ui.web.controller;
 
-import com.pingpong.basicclass.game.TeamEnum;
+import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.ui.view.GameScore;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

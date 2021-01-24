@@ -1,7 +1,7 @@
 package com.pingpong.ui.view;
 
+import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Team;
-import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.player.Player;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.combobox.ComboBox;

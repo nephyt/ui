@@ -1,6 +1,6 @@
 package com.pingpong.ui.view;
 
-import com.pingpong.basicclass.game.TeamEnum;
+import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
 import com.vaadin.flow.component.Component;

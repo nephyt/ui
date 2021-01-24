@@ -1,8 +1,8 @@
 package com.pingpong.ui.view;
 
+import com.pingpong.basicclass.enumeration.GameStatus;
+import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
-import com.pingpong.basicclass.game.GameStatus;
-import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
@@ -66,7 +66,7 @@ public class GameScore extends VerticalLayout {
         this.pageGame = pageGame;
         this.displayTeamA = displayTeamA;
         this.displayTeamB = displayTeamB;
-        this.serviceCountStats = new AllServiceCount(gameToManage.getId());
+        this.serviceCountStats = new AllServiceCount(gameToManage);
 
         setupAudio(pointSoundTeamA, "Super Mario Bros.-Coin Sound Effect.mp3");
         setupAudio(pointSoundTeamB, "Yoshi's Mlem Sound Effect.mp3");

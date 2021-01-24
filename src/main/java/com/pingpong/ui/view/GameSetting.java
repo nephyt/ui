@@ -1,8 +1,8 @@
 package com.pingpong.ui.view;
 
+import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
-import com.pingpong.basicclass.game.TeamEnum;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.stats.TeamStats;
 import com.pingpong.ui.servicesrest.ServicesRest;
