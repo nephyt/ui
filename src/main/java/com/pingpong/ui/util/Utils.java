@@ -10,7 +10,7 @@ public class Utils {
     public static String formatTimePlayed(long timeInSeconde) {
         long hours = TimeUnit.SECONDS.toHours(timeInSeconde);
         long minutes = TimeUnit.SECONDS.toMinutes(timeInSeconde) -
-                TimeUnit.HOURS.toSeconds(hours);
+                TimeUnit.HOURS.toMinutes(hours);
 
         long secondes = timeInSeconde - TimeUnit.HOURS.toSeconds(hours) - TimeUnit.MINUTES.toSeconds(minutes);
 
