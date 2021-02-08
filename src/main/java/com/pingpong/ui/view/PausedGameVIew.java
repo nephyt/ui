@@ -21,12 +21,15 @@ public class PausedGameVIew extends Div {
 
     private Game gameSelected = null;
     private Tabs tabs;
+    Grid<Game> grid = new Grid<>(Game.class);
+
 
     public PausedGameVIew(Div pageGame, Tabs tabs) {
         this.pageGame = pageGame;
         this.tabs = tabs;
 
         setupGrid();
+        fillGrid();
 
         resumeGameBtn.addClickListener(e -> resumeGame());
         resumeGameBtn.setVisible(false);
@@ -65,10 +68,12 @@ public class PausedGameVIew extends Div {
         return map;
     }
 
-    private void setupGrid() {
-        Grid<Game> grid = new Grid<>(Game.class);
-
+    public void fillGrid() {
         grid.setItems(ServicesRest.getPausedGames());
+
+    }
+
+    private void setupGrid() {
 
         grid.removeColumnByKey("gameTime");
         grid.removeColumnByKey("id");

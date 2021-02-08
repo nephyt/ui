@@ -19,12 +19,21 @@ public class GameController {
     @GetMapping(value = "/teamScored/{teamScored}")
     public String teamScored(@PathVariable TeamEnum teamScored) {
 
-        String result = "YES";
         if (gameScore != null) {
             gameScore.getUI().get().access(() -> {
                 gameScore.updateGame(teamScored);
                 //     gameScore.getUI().get().access(() -> gameScore.getUI().get().push());
             });
+        }
+        String result = "A";
+        if (gameScore != null && gameScore.getGame().getTeamStateB().hasService()) {
+            result = "B";
+        }
+        if (gameScore != null && gameScore.getGame().getTeamWinnerId() != null) {
+            result = "WIN_A";
+            if (gameScore.getGame().getTeamB().getId().equals(gameScore.getGame().getTeamWinnerId())) {
+                result = "WIN_B";
+            }
         }
 
         return result;

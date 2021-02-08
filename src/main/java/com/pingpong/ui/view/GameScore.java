@@ -128,6 +128,7 @@ public class GameScore extends VerticalLayout {
             isMute = true;
         }
 
+        ServicesRest.startMatchButton();
 
     }
 

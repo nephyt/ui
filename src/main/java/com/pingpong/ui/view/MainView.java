@@ -22,6 +22,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 
@@ -33,6 +34,7 @@ import java.util.Map;
 
 @Push
 @Route("")
+@PreserveOnRefresh
 public class MainView extends VerticalLayout implements KeyNotifier {
 
     private PlayerEditor editor = new PlayerEditor();
@@ -40,6 +42,10 @@ public class MainView extends VerticalLayout implements KeyNotifier {
     private Grid<Player> grid;
 
     private Button addNewBtn;
+
+    PlayersStats playersStats;
+    AllServiceCount serviceCount;
+
 
     public MainView() {
 
@@ -51,12 +57,9 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         tabs.setWidthFull();
         tabs.setFlexGrowForEnclosedTabs(1);
 
-
         Div pagePlayers = buildPagePlayers();
         Div pageGame = buildPageGame();
-        Div pageGamePaused = new PausedGameVIew(pageGame, tabs);
-
-
+        PausedGameVIew pageGamePaused = new PausedGameVIew(pageGame, tabs);
 
         Map<Tab, Component> tabsToPages = new HashMap<>();
         tabsToPages.put(tabPlayer, pagePlayers);
@@ -70,6 +73,14 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             tabsToPages.values().forEach(page -> page.setVisible(false));
             Component selectedPage = tabsToPages.get(tabs.getSelectedTab());
             selectedPage.setVisible(true);
+
+            if (tabs.getSelectedIndex() == 0) {
+                fillGrid("");
+            }
+            if (tabs.getSelectedIndex() == 1) {
+                ((PausedGameVIew)selectedPage).fillGrid();
+            }
+
         });
 
         add(tabs, pages);
@@ -149,8 +160,6 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             return result;
         }).setHeader("Victory Song").setKey("song");
 
-        PlayersStats playersStats = ServicesRest.getPlayersStats();
-
         grid.addColumn(player -> {
             PlayerStats stats = playersStats.getPlayerStatsForPlayer(player.getId());
 
@@ -161,7 +170,6 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             return result;
         }).setHeader("#Games/W/L").setKey("gamePlayed");
 
-        AllServiceCount serviceCount = ServicesRest.getPlayerCountService();
 
         grid.addColumn(player -> {
             ServiceCount stats = serviceCount.getServiceCountForPlayer(player.getId());
@@ -225,7 +233,10 @@ public class MainView extends VerticalLayout implements KeyNotifier {
     }
 
     private void fillGrid(String filterText) {
-
+        if ("".equals(filterText)){
+            playersStats = ServicesRest.getPlayersStats();
+            serviceCount = ServicesRest.getPlayerCountService();
+        }
         grid.setItems(ServicesRest.listPlayer(filterText));
     }
 

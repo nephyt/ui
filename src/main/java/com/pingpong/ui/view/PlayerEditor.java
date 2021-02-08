@@ -1,7 +1,7 @@
 package com.pingpong.ui.view;
 
+import com.pingpong.basicclass.enumeration.PlayerStatus;
 import com.pingpong.basicclass.player.Player;
-import com.pingpong.basicclass.player.PlayerStatus;
 import com.pingpong.ui.Constants;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
