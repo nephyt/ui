@@ -16,7 +16,12 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     Player player1;
     Player player2;
 
+
+    ComboBox<Player> cboPlayer1 = new ComboBox<>();
+    ComboBox<Player> cboPlayer2 = new ComboBox<>();
+
     List<Player> listPlayer1;
+    int inddexPlayer1 = -1;
     List<Player> listPlayer2;
 
     TeamEnum teamEnum = TeamEnum.TEAM_A;
@@ -35,6 +40,17 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         return player2;
     }
 
+
+    public void nextPlayer1() {
+        ++inddexPlayer1;
+
+        if (inddexPlayer1 >= listPlayer1.size()) {
+            inddexPlayer1 = 0;
+        }
+
+        cboPlayer1.setValue(listPlayer1.get(inddexPlayer1));
+    }
+
     public PlayerSelector(List<Player> listPlayer, TeamEnum teamEnum, GameSetting parent) {
 
         this.listPlayer1 = listPlayer;
@@ -50,11 +66,9 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        ComboBox<Player> cboPlayer1 = new ComboBox<>();
         cboPlayer1.setItemLabelGenerator(Player::getName);
         cboPlayer1.setItems(listPlayer1);
 
-        ComboBox<Player> cboPlayer2 = new ComboBox<>();
         cboPlayer2.setItemLabelGenerator(Player::getName);
         cboPlayer2.setItems(listPlayer2);
         cboPlayer2.setVisible(false);
@@ -71,7 +85,16 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
                 player1 = event.getValue();
                 labelPlayer2.setVisible(true);
                 cboPlayer2.setVisible(true);
+
+                for (int i = 0; i < listPlayer1.size() ; ++i) {
+                    if (listPlayer1.get(i).getId().equals(player1.getId())) {
+                        inddexPlayer1 = i;
+                        break;
+                    }
+                }
+
             } else {
+                inddexPlayer1 = -1;
                 player2 = null;
                 player1 = null;
                 labelPlayer2.setVisible(false);

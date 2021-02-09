@@ -6,7 +6,6 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
-import com.pingpong.ui.Constants;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.pingpong.ui.thread.ClickThread;
 import com.pingpong.ui.util.Utils;
@@ -17,10 +16,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.shared.Registration;
-
-import javax.servlet.http.Cookie;
 
 
 public class GameScore extends VerticalLayout {
@@ -122,8 +118,7 @@ public class GameScore extends VerticalLayout {
         pauseResumeGame.addClickListener(e-> pauseResumeGame());
         muteUnmuteSounds.addClickListener(e-> muteUnmuteSounds());
 
-        Cookie cookie = Utils.getCookieByName(Constants.COOKIE_MUTE, "false");
-        if (Boolean.valueOf(cookie.getValue())) {
+        if (Utils.isMute()) {
             muteUnmuteSounds.setText("Unmute Sounds");
             isMute = true;
         }
@@ -134,8 +129,6 @@ public class GameScore extends VerticalLayout {
 
 
     private void muteUnmuteSounds() {
-        Cookie cookie = Utils.getCookieByName(Constants.COOKIE_MUTE, isMute.toString());
-
         if (isMute) {
             isMute = false;
             muteUnmuteSounds.setText("Mute Sounds");
@@ -143,8 +136,7 @@ public class GameScore extends VerticalLayout {
             isMute = true;
             muteUnmuteSounds.setText("Unmute Sounds");
         }
-        cookie.setValue(isMute.toString());
-        VaadinService.getCurrentResponse().addCookie(cookie);
+        Utils.setIsMute(isMute);
     }
 
     private void setupAudio(AudioPlayer audio, String src) {

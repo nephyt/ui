@@ -35,6 +35,11 @@ public class GameSetting extends VerticalLayout {
 
     int scoreMaxSelected = 11;
 
+
+    public PlayerSelector getPlayerSelectorTeamA() {
+        return playerSelectorTeamA;
+    }
+
     public Game getGameInProgress() {
         return gameInProgress;
     }
@@ -155,7 +160,7 @@ public class GameSetting extends VerticalLayout {
         return result;
     }
 
-    private void startGame() {
+    public void startGame() {
 
         setVisible(false);
 

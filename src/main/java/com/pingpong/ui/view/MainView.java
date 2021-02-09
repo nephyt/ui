@@ -7,6 +7,7 @@ import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.basicclass.stats.PlayersStats;
 import com.pingpong.ui.servicesrest.ServicesRest;
 import com.pingpong.ui.util.Utils;
+import com.pingpong.ui.web.controller.GameSettingController;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -48,6 +49,9 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
 
     public MainView() {
+
+        // init cookie for mute
+        Utils.isMute();
 
         Tab tabPlayer = new Tab("Players");
         Tab tabGame = new Tab("Game");
@@ -225,6 +229,8 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
         GameSetting gameSetting = new GameSetting(ServicesRest.listPlayer(""), pageGame);
         gameSetting.setVisible(true);
+
+        GameSettingController.setGameSetting(gameSetting);
 
         pageGame.add(gameSetting);
 
