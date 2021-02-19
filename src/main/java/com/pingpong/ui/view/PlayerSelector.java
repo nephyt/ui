@@ -21,8 +21,9 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     ComboBox<Player> cboPlayer2 = new ComboBox<>();
 
     List<Player> listPlayer1;
-    int inddexPlayer1 = -1;
+    int indexPlayer1 = -1;
     List<Player> listPlayer2;
+    int indexPlayer2 = -1;
 
     TeamEnum teamEnum = TeamEnum.TEAM_A;
     Label selectTeam = new Label("Select player(s) team A :");
@@ -42,13 +43,23 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
 
 
     public void nextPlayer1() {
-        ++inddexPlayer1;
+        ++indexPlayer1;
 
-        if (inddexPlayer1 >= listPlayer1.size()) {
-            inddexPlayer1 = 0;
+        if (indexPlayer1 >= listPlayer1.size()) {
+            indexPlayer1 = 0;
         }
 
-        cboPlayer1.setValue(listPlayer1.get(inddexPlayer1));
+        cboPlayer1.setValue(listPlayer1.get(indexPlayer1));
+    }
+
+    public void nextPlayer2() {
+        ++indexPlayer2;
+
+        if (indexPlayer2 >= listPlayer2.size()) {
+            indexPlayer2 = 0;
+        }
+
+        cboPlayer2.setValue(listPlayer2.get(indexPlayer2));
     }
 
     public PlayerSelector(List<Player> listPlayer, TeamEnum teamEnum, GameSetting parent) {
@@ -86,15 +97,10 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
                 labelPlayer2.setVisible(true);
                 cboPlayer2.setVisible(true);
 
-                for (int i = 0; i < listPlayer1.size() ; ++i) {
-                    if (listPlayer1.get(i).getId().equals(player1.getId())) {
-                        inddexPlayer1 = i;
-                        break;
-                    }
-                }
+                indexPlayer1 = findIndexPlayer(listPlayer1, player1);
 
             } else {
-                inddexPlayer1 = -1;
+                indexPlayer1 = -1;
                 player2 = null;
                 player1 = null;
                 labelPlayer2.setVisible(false);
@@ -108,12 +114,24 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         cboPlayer2.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 player2 = event.getValue();
+
+                indexPlayer2 = findIndexPlayer(listPlayer2, player2);
             } else {
                 player2 = null;
+                indexPlayer2 = -1;
             }
 
             informParent();
         });
+    }
+
+    private int findIndexPlayer(List<Player> listPlayer, Player player) {
+        for (int i = 0; i < listPlayer.size() ; ++i) {
+            if (listPlayer.get(i).getId().equals(player.getId())) {
+                return i;
+            }
+        }
+        throw new RuntimeException("Player Id not found in the list : findIndexPlayer");
     }
 
     private void informParent() {

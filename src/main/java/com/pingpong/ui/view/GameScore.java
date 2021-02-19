@@ -6,7 +6,7 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
-import com.pingpong.ui.servicesrest.ServicesRest;
+import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.thread.ClickThread;
 import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameController;

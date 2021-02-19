@@ -1,7 +1,7 @@
 package com.pingpong.ui.thread;
 
 import com.pingpong.basicclass.servicecount.UpdatePlayer;
-import com.pingpong.ui.servicesrest.ServicesRest;
+import com.pingpong.ui.services.ServicesRest;
 
 public class ServiceCountThread implements Runnable {
 

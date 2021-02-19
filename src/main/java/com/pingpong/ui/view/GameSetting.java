@@ -5,7 +5,7 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.stats.TeamStats;
-import com.pingpong.ui.servicesrest.ServicesRest;
+import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -38,6 +38,10 @@ public class GameSetting extends VerticalLayout {
 
     public PlayerSelector getPlayerSelectorTeamA() {
         return playerSelectorTeamA;
+    }
+
+    public PlayerSelector getPlayerSelectorTeamB() {
+        return playerSelectorTeamB;
     }
 
     public Game getGameInProgress() {

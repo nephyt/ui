@@ -1,4 +1,4 @@
-package com.pingpong.ui.servicesrest;
+package com.pingpong.ui.services;
 
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.ListOfGames;

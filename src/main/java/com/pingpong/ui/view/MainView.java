@@ -5,7 +5,7 @@ import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.basicclass.stats.PlayersStats;
-import com.pingpong.ui.servicesrest.ServicesRest;
+import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameSettingController;
 import com.vaadin.flow.component.Component;

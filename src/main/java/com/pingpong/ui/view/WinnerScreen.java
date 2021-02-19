@@ -4,7 +4,7 @@ import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
-import com.pingpong.ui.servicesrest.ServicesRest;
+import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameController;
 import com.pingpong.ui.web.controller.GameSettingController;
