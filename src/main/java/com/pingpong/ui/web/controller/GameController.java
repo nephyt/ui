@@ -36,9 +36,9 @@ public class GameController {
     @GetMapping(value = "/teamService")
     public String getTeamService() {
 
-        String result = "A";
-        if (gameScore != null && gameScore.getGame().getTeamStateB().hasService()) {
-            result = "B";
+        String result = "";
+        if (gameScore != null) {
+            result = gameScore.getGame().determineServerState();
         }
 
         return result;

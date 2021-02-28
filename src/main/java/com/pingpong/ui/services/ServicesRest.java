@@ -48,10 +48,7 @@ public class ServicesRest {
     }
 
 
-    public static void startMatchButton() {
-        String uri = Constants.BUTTONS_URL +  "startMatch";
-//        restTemplate.getForObject(uri, String.class);
-    }
+
 
     public static PlayersStats getPlayersStats() {
         String uri = Constants.SERVICE_GAME_URL +  "getPlayersStats";

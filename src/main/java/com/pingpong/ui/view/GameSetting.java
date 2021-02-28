@@ -7,6 +7,7 @@ import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.stats.TeamStats;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
+import com.pingpong.ui.web.controller.GameSettingController;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -22,19 +23,17 @@ import java.util.Map;
 
 public class GameSetting extends VerticalLayout {
 
+    ComboBox<Integer> scoreMax = new ComboBox<>();
+
 
     Div playerSelect = new Div();
 
     PlayerSelector playerSelectorTeamA;
     PlayerSelector playerSelectorTeamB;
 
-    Game gameInProgress = null;
-
-
-    Div pageGame;
+    PageGame pageGame;
 
     int scoreMaxSelected = 11;
-
 
     public PlayerSelector getPlayerSelectorTeamA() {
         return playerSelectorTeamA;
@@ -44,8 +43,12 @@ public class GameSetting extends VerticalLayout {
         return playerSelectorTeamB;
     }
 
-    public Game getGameInProgress() {
-        return gameInProgress;
+    public void nextScoreMax() {
+        if (scoreMaxSelected == 11) {
+            scoreMax.setValue(21);
+        } else {
+            scoreMax.setValue(11);
+        }
     }
 
     public Map<Integer, Player> getDisplayPlayerTeamA() {
@@ -71,7 +74,9 @@ public class GameSetting extends VerticalLayout {
     }
 
 
-    public GameSetting(List<Player> listPlayer, Div pageGame) {
+    public GameSetting(List<Player> listPlayer, PageGame pageGame) {
+
+        GameSettingController.setGameSetting(this);
 
         this.pageGame = pageGame;
 
@@ -87,7 +92,6 @@ public class GameSetting extends VerticalLayout {
 
 
         Label selectScoreMax = new Label("Select score max :");
-        ComboBox<Integer> scoreMax = new ComboBox<>();
         scoreMax.setItems(11, 21);
         scoreMax.setValue(scoreMaxSelected);
 
@@ -173,15 +177,10 @@ public class GameSetting extends VerticalLayout {
 
         Game game = new Game(teamA, teamB, TeamEnum.TEAM_A,scoreMaxSelected);
 
-        gameInProgress = ServicesRest.saveGame(game);
+        game = ServicesRest.saveGame(game);
 
-        GameScore gameScore = new GameScore(pageGame, getGameInProgress(), new DisplayTeam(getDisplayPlayerTeamA()), new DisplayTeam(getDisplayPlayerTeamB()));
-        gameScore.setVisible(true);
-
-        gameScore.refreshScreen();
-
-        pageGame.add(gameScore);
-
+        pageGame.initialiseGameScore(game, getDisplayPlayerTeamA(), getDisplayPlayerTeamB());
+        pageGame.showGameScore();
     }
 
 }

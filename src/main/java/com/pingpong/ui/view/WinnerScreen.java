@@ -6,33 +6,43 @@ import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
-import com.pingpong.ui.web.controller.GameController;
-import com.pingpong.ui.web.controller.GameSettingController;
+import com.pingpong.ui.web.controller.WinnerScreenController;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class WinnerScreen extends VerticalLayout {
 
-    Div pageGame;
-    boolean isMute = false;
+    PageGame pageGame;
 
-    public WinnerScreen(Div pageGame, boolean isMute) {
+    Button rematch = new Button("Rematch");
+    Button changePlayers = new Button("Change Players");
+
+    HorizontalLayout buttonsDiv = new HorizontalLayout();
+    IFrame frame = new IFrame();
+
+    public WinnerScreen(PageGame pageGame) {
         this.pageGame = pageGame;
-        this.isMute = isMute;
 
-        pageGame.removeAll();
+        WinnerScreenController.setWinnerScreen(this);
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
+        buttonsDiv.add(rematch);
+        buttonsDiv.add(changePlayers);
+
+        setupIframe(frame, "480px", "600px", true);
+
+        rematch.addClickListener(e -> rematchGame());
+        changePlayers.addClickListener(e -> changePlayers());
+
         Utils.disableSelection(this);
     }
 
-    public void showWinner(Game game, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
+    public void showWinner(Game game, DisplayTeam displayTeamA, DisplayTeam displayTeamB, boolean isMute) {
 
         Integer winnerTeamId = game.getTeamWinnerId();
         Player winner1;
@@ -42,6 +52,8 @@ public class WinnerScreen extends VerticalLayout {
         TeamState loserTeam;
 
         String finalScoreStr = "";
+
+        removeAll();
 
         if (winnerTeamId.equals(game.getTeamA().getId())) {
             finalScoreStr = game.getScoreTeamA() + " - " + game.getScoreTeamB();
@@ -75,7 +87,6 @@ public class WinnerScreen extends VerticalLayout {
             }
         }
 
-
         String playersNames = winner1.getName();
 
         if (winner2 != null) {
@@ -103,34 +114,16 @@ public class WinnerScreen extends VerticalLayout {
         loserName.getElement().getStyle().set("font-size", "24px");
 
 
-
         Html time = new Html("<font>Time : " + game.toStringTimePlayed() + "</font>");
         loserName.getElement().getStyle().set("font-size", "24px");
-
-
-        Image winnerImg = new Image();
-        winnerImg.setWidth("25%");
-        winnerImg.setSrc("winner/winner1.jpg");
 
 
         add(winnerName);
         add(finalScore);
         add(loserName);
         add(time);
-      //  add(winnerImg);
 
-        DisplayPlayer winnerDisplaySong = new DisplayPlayer();
-        add(winnerDisplaySong.getVictorySong(winner1, isMute));
-
-        HorizontalLayout buttonsDiv = new HorizontalLayout();
-
-        Button rematch = new Button("Rematch");
-        Button changePlayers = new Button("Change Players");
-
-        buttonsDiv.add(rematch);
-        buttonsDiv.add(changePlayers);
-        rematch.addClickListener(e -> rematchGame(game, displayTeamA, displayTeamB));
-        changePlayers.addClickListener(e -> changePlayers());
+        add(getVictorySong(winner1, isMute));
 
         add(buttonsDiv);
 
@@ -138,10 +131,34 @@ public class WinnerScreen extends VerticalLayout {
         ServicesRest.saveGame(game); // save state in DB
 
 
-        pageGame.add(this);
+    }
 
+    public IFrame getVictorySong(Player playerToDisplay, boolean isMute) {
 
+        String autoPlay = "?autoplay=1";
+        if (isMute) {
+            autoPlay = "";
+        }
 
+        String emdebSong = playerToDisplay.getYoutubeEmbedVictorySongPath() + autoPlay;
+
+        frame.setSrc(emdebSong);
+
+        return frame;
+
+    }
+
+    private void setupIframe(IFrame frame, String height, String witdth, boolean isVisible) {
+        frame.setHeight("315px");
+        frame.setWidth("560px");
+        frame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
+        frame.getElement().setAttribute("allowfullscreen", true);
+        frame.getElement().setAttribute("frameborder", "0");
+        frame.setVisible(isVisible);
+    }
+
+    public void newMatch() {
+        changePlayers.click();
     }
 
     private TeamEnum getTeamEnumWin(Integer idTeamWin, Integer idTeamA) {
@@ -152,29 +169,21 @@ public class WinnerScreen extends VerticalLayout {
     }
 
     private void changePlayers() {
-        pageGame.removeAll();
-        GameController.setGameScore(null);
-
-
-        GameSetting gameSetting = new GameSetting(ServicesRest.listPlayer(""), pageGame);
-        GameSettingController.setGameSetting(gameSetting);
-        pageGame.add(gameSetting);
+        pageGame.showGameSetting();
     }
 
-    private void rematchGame(Game game, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
+    public void rematchGame() {
 
-        GameController.setGameScore(null);
-        pageGame.removeAll();
+        Game game = pageGame.gameScore.getGame();
+        DisplayTeam displayTeamA = pageGame.gameScore.getDisplayTeamA();
+        DisplayTeam displayTeamB = pageGame.gameScore.getDisplayTeamB();
 
         Game newGame = new Game(game.getTeamA(), game.getTeamB(), getTeamEnumWin(game.getTeamWinnerId(), game.getTeamA().getId()), game.getMaxScore());
 
         Game gameInProgress = ServicesRest.saveGame(newGame);
 
-        GameScore gameScore = new GameScore(pageGame, gameInProgress, displayTeamA, displayTeamB);
-        gameScore.refreshScreen();
-        pageGame.add(gameScore);
-        gameScore.setVisible(true);
-
+        pageGame.initialiseGameScore(gameInProgress, displayTeamA.getMapIdPlayer(), displayTeamB.getMapIdPlayer());
+        pageGame.showGameScore();
     }
 
 }

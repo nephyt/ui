@@ -2,7 +2,6 @@ package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.util.Utils;
-import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.server.StreamResource;
 
@@ -27,32 +26,7 @@ public class DisplayPlayer {
 
     }
 
-    public IFrame getVictorySong(Player playerToDisplay, boolean isMute) {
-        IFrame frame = new IFrame();
 
-        setupIframe(frame, "480px", "600px", true);
-
-        String autoPlay = "?autoplay=1";
-        if (isMute) {
-            autoPlay = "";
-        }
-
-        String emdebSong = playerToDisplay.getYoutubeEmbedVictorySongPath() + autoPlay;
-
-        frame.setSrc(emdebSong);
-
-        return frame;
-
-    }
-
-    private void setupIframe(IFrame frame, String height, String witdth, boolean isVisible) {
-        frame.setHeight("315px");
-        frame.setWidth("560px");
-        frame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
-        frame.getElement().setAttribute("allowfullscreen", true);
-        frame.getElement().setAttribute("frameborder", "0");
-        frame.setVisible(isVisible);
-    }
 
     public Image getPlayerImage() {
 

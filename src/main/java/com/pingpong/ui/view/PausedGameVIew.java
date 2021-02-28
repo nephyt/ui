@@ -15,7 +15,7 @@ import java.util.Map;
 public class PausedGameVIew extends Div {
 
     private Button resumeGameBtn = new Button("Resume Game");
-    Div pageGame;
+    PageGame pageGame;
 
     Map<Integer, Player> mapPlayer;
 
@@ -24,7 +24,7 @@ public class PausedGameVIew extends Div {
     Grid<Game> grid = new Grid<>(Game.class);
 
 
-    public PausedGameVIew(Div pageGame, Tabs tabs) {
+    public PausedGameVIew(PageGame pageGame, Tabs tabs) {
         this.pageGame = pageGame;
         this.tabs = tabs;
 
@@ -41,13 +41,10 @@ public class PausedGameVIew extends Div {
 
     private void resumeGame() {
         if (gameSelected != null) {
-
-            pageGame.removeAll();
             gameSelected.resumeGame();
 
-            GameScore gameScore = new GameScore(pageGame, gameSelected, new DisplayTeam(getMapPlayerTeam(gameSelected.getTeamA(), mapPlayer)), new DisplayTeam(getMapPlayerTeam(gameSelected.getTeamB(), mapPlayer)));
-            gameScore.refreshScreen();
-            pageGame.add(gameScore);
+            pageGame.initialiseGameScore(gameSelected, getMapPlayerTeam(gameSelected.getTeamA(), mapPlayer), getMapPlayerTeam(gameSelected.getTeamB(), mapPlayer));
+            pageGame.showGameScore();
 
             tabs.setSelectedIndex(2);
         }

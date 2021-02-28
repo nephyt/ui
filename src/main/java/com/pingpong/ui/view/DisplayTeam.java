@@ -17,15 +17,21 @@ public class DisplayTeam extends VerticalLayout {
     DisplayPlayer player1 = new DisplayPlayer();
     DisplayPlayer player2 = new DisplayPlayer();
 
-    public DisplayTeam(Map<Integer, Player> mapIdPlayer) {
-
-        this.mapIdPlayer = mapIdPlayer;
+    public DisplayTeam() {
 
         setWidth("25%");
 
         displayTeam.add(player1.getPlayerImage(), player2.getPlayerImage());
 
         add(displayTeam);
+    }
+
+    public Map<Integer, Player> getMapIdPlayer() {
+        return mapIdPlayer;
+    }
+
+    public void setMapIdPlayer(Map<Integer, Player> mapIdPlayer) {
+        this.mapIdPlayer = mapIdPlayer;
     }
 
     public Player getPlayerById(Integer id) { return mapIdPlayer.get(id);}
@@ -35,13 +41,10 @@ public class DisplayTeam extends VerticalLayout {
         if (TeamEnum.TEAM_A.getCode().equals(teamSide.getCode())) {
             player1.refreshDisplayPlayer(mapIdPlayer.get(team.getLeftPlayer()), hasServe(team.getServer(), team.getLeftPlayer()));
             player2.refreshDisplayPlayer(mapIdPlayer.get(team.getRightPlayer()), hasServe(team.getServer(), team.getRightPlayer()));
-
         } else {
             player1.refreshDisplayPlayer(mapIdPlayer.get(team.getRightPlayer()), hasServe(team.getServer(), team.getRightPlayer()));
             player2.refreshDisplayPlayer(mapIdPlayer.get(team.getLeftPlayer()), hasServe(team.getServer(), team.getLeftPlayer()));
-
         }
-
 
         return this;
     }

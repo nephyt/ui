@@ -5,9 +5,9 @@ import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.basicclass.stats.PlayersStats;
+import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
-import com.pingpong.ui.web.controller.GameSettingController;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -62,7 +62,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         tabs.setFlexGrowForEnclosedTabs(1);
 
         Div pagePlayers = buildPagePlayers();
-        Div pageGame = buildPageGame();
+        PageGame pageGame = buildPageGame();
         PausedGameVIew pageGamePaused = new PausedGameVIew(pageGame, tabs);
 
         Map<Tab, Component> tabsToPages = new HashMap<>();
@@ -79,10 +79,15 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             selectedPage.setVisible(true);
 
             if (tabs.getSelectedIndex() == 0) {
+                ServicesButtons.getInstance().standBy();
                 fillGrid("");
             }
             if (tabs.getSelectedIndex() == 1) {
+                ServicesButtons.getInstance().standBy();
                 ((PausedGameVIew)selectedPage).fillGrid();
+            }
+            if (tabs.getSelectedIndex() == 2) {
+                ((PageGame)selectedPage).refreshStatPage();
             }
 
         });
@@ -104,12 +109,9 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         filter.setValueChangeMode(ValueChangeMode.EAGER);
         filter.addValueChangeListener(e -> fillGrid(e.getValue()));
 
-
         HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
 
-
         pagePlayers.add(actions,grid, editor);
-
         pagePlayers.setWidthFull();
 
 
@@ -213,29 +215,8 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         });
     }
 
-    private Div buildPageGame() {
-/*
-        byte[] targetArray = FileUtils.readFileToByteArray(new File(player.getPicturePath()));
-        StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(targetArray));
-
-        image.setSrc(resource);
-        image.setVisible(true);
-*/
-
-        Div pageGame = new Div();
-        pageGame.setWidthFull();
-        pageGame.setVisible(false);
-
-
-        GameSetting gameSetting = new GameSetting(ServicesRest.listPlayer(""), pageGame);
-        gameSetting.setVisible(true);
-
-        GameSettingController.setGameSetting(gameSetting);
-
-        pageGame.add(gameSetting);
-
-        return pageGame;
-
+    private PageGame buildPageGame() {
+        return new PageGame();
     }
 
     private void fillGrid(String filterText) {

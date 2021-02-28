@@ -16,7 +16,6 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     Player player1;
     Player player2;
 
-
     ComboBox<Player> cboPlayer1 = new ComboBox<>();
     ComboBox<Player> cboPlayer2 = new ComboBox<>();
 
@@ -46,20 +45,36 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         ++indexPlayer1;
 
         if (indexPlayer1 >= listPlayer1.size()) {
-            indexPlayer1 = 0;
+            indexPlayer1 = -1;
+            cboPlayer1.setValue(null);
+        } else {
+           cboPlayer1.setValue(listPlayer1.get(indexPlayer1));
         }
-
-        cboPlayer1.setValue(listPlayer1.get(indexPlayer1));
     }
 
     public void nextPlayer2() {
         ++indexPlayer2;
 
         if (indexPlayer2 >= listPlayer2.size()) {
-            indexPlayer2 = 0;
+            indexPlayer2 = -1;
+            cboPlayer2.setValue(null);
+        } else {
+            cboPlayer2.setValue(listPlayer2.get(indexPlayer2));
         }
+    }
 
-        cboPlayer2.setValue(listPlayer2.get(indexPlayer2));
+    public void refreshListPlayer(List<Player> listPlayer) {
+        this.listPlayer1 = listPlayer;
+        this.listPlayer2 = listPlayer;
+
+        cboPlayer1.setItems(listPlayer1);
+        cboPlayer2.setItems(listPlayer2);
+
+        cboPlayer1.setValue(null);
+        cboPlayer2.setValue(null);
+
+        indexPlayer1 = -1;
+        indexPlayer2 = -1;
     }
 
     public PlayerSelector(List<Player> listPlayer, TeamEnum teamEnum, GameSetting parent) {

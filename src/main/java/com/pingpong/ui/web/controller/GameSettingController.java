@@ -52,6 +52,15 @@ public class GameSettingController {
         }
     }
 
+    @GetMapping(value = "/nextScoreMax")
+    public void nextScoreMax() {
+        if (gameSetting != null) {
+            gameSetting.getUI().get().access(() -> {
+                gameSetting.nextScoreMax();
+            });
+        }
+    }
+
 
     @GetMapping(value = "/startGame")
     public void startGame() {

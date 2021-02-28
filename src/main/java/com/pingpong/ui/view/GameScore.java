@@ -4,19 +4,22 @@ import com.pingpong.basicclass.enumeration.GameStatus;
 import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamState;
+import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
+import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.thread.ClickThread;
 import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameController;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
+
+import java.util.Map;
 
 
 public class GameScore extends VerticalLayout {
@@ -28,14 +31,10 @@ public class GameScore extends VerticalLayout {
 
     HorizontalLayout scoring = new HorizontalLayout();
 
-    public Game getGame() {
-        return game;
-    }
-
     Game game;
 
-    DisplayTeam displayTeamA;
-    DisplayTeam displayTeamB;
+    private DisplayTeam displayTeamA = new DisplayTeam();
+    private DisplayTeam displayTeamB = new DisplayTeam();
 
     DisplayScore displayScoreTeamA = new DisplayScore();
     DisplayScore displayScoreTeamB = new DisplayScore();
@@ -44,12 +43,13 @@ public class GameScore extends VerticalLayout {
     Registration clickTeamA;
     Registration clickTeamB;
 
-    Div pageGame;
+    PageGame pageGame;
 
+    Button muteUnmuteSounds = new Button("Mute Sounds");
 
-    Button muteUnmuteSounds;
-    Boolean isMute = false;
-    Button pauseResumeGame;
+    private Boolean isMute = false;
+    Button pauseResumeGame = new Button("Pause Game");
+    Button newGame = new Button("New Game");
 
     AllServiceCount serviceCountStats;
 
@@ -57,12 +57,12 @@ public class GameScore extends VerticalLayout {
     AudioPlayer pointSoundTeamB = new AudioPlayer();
     AudioPlayer matchPointSound = new AudioPlayer();
 
-    public GameScore(Div pageGame, Game gameToManage, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
-        this.game = gameToManage;
-        this.pageGame = pageGame;
-        this.displayTeamA = displayTeamA;
-        this.displayTeamB = displayTeamB;
-        this.serviceCountStats = new AllServiceCount(gameToManage);
+    public boolean isMute() {
+        return isMute;
+    }
+
+    public GameScore() {
+        GameController.setGameScore(this);
 
         setupAudio(pointSoundTeamA, "Super Mario Bros.-Coin Sound Effect.mp3");
         setupAudio(pointSoundTeamB, "Yoshi's Mlem Sound Effect.mp3");
@@ -71,8 +71,6 @@ public class GameScore extends VerticalLayout {
         clickListener = new ClickThread(this);
         thread = new Thread(clickListener);
         thread.start();
-
-        GameController.setGameScore(this);
 
         setWidthFull();
         displayScore.setWidthFull();
@@ -91,10 +89,7 @@ public class GameScore extends VerticalLayout {
         scoring.add(displayScoreTeamB.getScore());
 
         displayScore.add(scoring);
-
-
         displayScore.add(displayTeamB);
-
 
         add(displayScore);
 
@@ -103,19 +98,20 @@ public class GameScore extends VerticalLayout {
         clickTeamA = displayTeamA.addClickListener(e -> updateGame(TeamEnum.TEAM_A));
         clickTeamB = displayTeamB.addClickListener(e -> updateGame(TeamEnum.TEAM_B));
 
-        pauseResumeGame = new Button("Pause Game");
 
-        muteUnmuteSounds = new Button("Mute Sounds");
+        newGame.setVisible(false);
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         add(pauseResumeGame);
+        add(newGame);
         add(muteUnmuteSounds);
         add(pointSoundTeamA);
         add(pointSoundTeamB);
         add(matchPointSound);
 
         pauseResumeGame.addClickListener(e-> pauseResumeGame());
+        newGame.addClickListener(e-> createNewGame());
         muteUnmuteSounds.addClickListener(e-> muteUnmuteSounds());
 
         if (Utils.isMute()) {
@@ -123,8 +119,34 @@ public class GameScore extends VerticalLayout {
             isMute = true;
         }
 
-        ServicesRest.startMatchButton();
+    }
 
+    public DisplayTeam getDisplayTeamA() {
+        return displayTeamA;
+    }
+
+    public DisplayTeam getDisplayTeamB() {
+        return displayTeamB;
+    }
+
+
+    public void createNewGame() {
+        pageGame.showGameSetting();
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void initGameScore(PageGame pageGame, Game gameToManage, Map<Integer, Player> mapPlayerTeamA, Map<Integer, Player> mapPlayerTeamB) {
+        this.game = gameToManage;
+        this.pageGame = pageGame;
+        this.displayTeamA.setMapIdPlayer(mapPlayerTeamA);
+        this.displayTeamB.setMapIdPlayer(mapPlayerTeamB);
+        this.serviceCountStats = new AllServiceCount(gameToManage);
+
+        pauseResumeGame.setText("Pause Game");
+        newGame.setVisible(false);
     }
 
 
@@ -149,23 +171,29 @@ public class GameScore extends VerticalLayout {
     private void pauseResumeGame() {
         if (game != null) {
             if (GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
+                ServicesButtons.getInstance().pauseGame();
                 game.pauseGame();
                 game = ServicesRest.saveGame(game);
+                ServicesRest.updatePlayersCountService(serviceCountStats);
+                serviceCountStats.getServiceCount().clear();
                 pauseResumeGame.setText("Resume Game");
+                newGame.setVisible(true);
             } else if (GameStatus.PAUSE.getCode().equals(game.getGameStatus().getCode())) {
+                ServicesButtons.getInstance().startServerModeButton(game.determineServerState());
                 game.resumeGame();
                 game = ServicesRest.saveGame(game);
                 pauseResumeGame.setText("Pause Game");
+                newGame.setVisible(false);
             }
         }
     }
 
     public void refreshScreen() {
+        ServicesButtons.getInstance().startServerModeButton(game.determineServerState());
 
         displayTeamA.refreshTeam(game.getTeamStateA(), TeamEnum.TEAM_A);
 
         // Ici score
-
         displayScoreTeamA.refreshImageScore(game.getScoreTeamA());
         displayScoreTeamB.refreshImageScore(game.getScoreTeamB());
 
@@ -218,20 +246,11 @@ public class GameScore extends VerticalLayout {
 
 
             if (game.getTeamWinnerId() != null) {
-                clickScore.remove();
-                clickTeamA.remove();
-                clickTeamB.remove();
 
-                synchronized (clickListener) {
-                    clickListener.stopThread();
-                    clickListener.notify();
-                }
-
-                // update count for service when the game is completec
+                // update count for service when the game is complete
                 ServicesRest.updatePlayersCountService(serviceCountStats);
 
-                WinnerScreen winnerScreen = new WinnerScreen(pageGame, isMute);
-                winnerScreen.showWinner(game, displayTeamA, displayTeamB);
+                pageGame.showWinnerScreen();
             } else {
                 game = ServicesRest.saveGame(game); // save state in DB
 
