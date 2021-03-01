@@ -10,6 +10,15 @@ public class Utils {
 
     private static Boolean isMute = null;
 
+    private static Boolean needUpdate = false;
+
+    public static void setNeedUpdate(Boolean pNeedUpdate) {
+        needUpdate = pNeedUpdate;
+    }
+
+    public static Boolean getNeedUpdate() {
+        return needUpdate;
+    }
 
     public static String formatTimePlayed(long timeInSeconde) {
         long hours = TimeUnit.SECONDS.toHours(timeInSeconde);

@@ -5,6 +5,7 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
+import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.html.Div;
 
 import java.util.Map;
@@ -33,7 +34,10 @@ public class PageGame extends Div {
     public void refreshStatPage() {
         if (gameSetting.isVisible()) {
             ServicesButtons.getInstance().playerSelection();
-            gameSetting.getPlayerSelectorTeamA().refreshListPlayer(ServicesRest.listPlayer(""));
+            if (Utils.getNeedUpdate()) {
+                Utils.setNeedUpdate(false);
+                gameSetting.getPlayerSelectorTeamA().refreshListPlayer(ServicesRest.listPlayer(""));
+            }
         } else if (gameScore.isVisible()) {
             if (GameStatus.ACTIVE.getCode().equals(gameScore.getGame().getGameStatus().getCode())) {
                 ServicesButtons.getInstance().startServerModeButton(gameScore.getGame().determineServerState());

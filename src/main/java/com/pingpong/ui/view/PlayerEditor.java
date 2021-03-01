@@ -3,6 +3,7 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.enumeration.PlayerStatus;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.Constants;
+import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
@@ -128,6 +129,7 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
     }
 
     void save() {
+        Utils.setNeedUpdate(true);
         savePlayer(player);
         changeHandler.onChange();
     }
