@@ -97,8 +97,6 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
 
         cboPlayer2.setItemLabelGenerator(Player::getName);
         cboPlayer2.setItems(listPlayer2);
-        cboPlayer2.setVisible(false);
-        labelPlayer2.setVisible(false);
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.add(labelPlayer1, cboPlayer1, labelPlayer2, cboPlayer2);
@@ -109,18 +107,12 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         cboPlayer1.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 player1 = event.getValue();
-                labelPlayer2.setVisible(true);
-                cboPlayer2.setVisible(true);
 
                 indexPlayer1 = findIndexPlayer(listPlayer1, player1);
 
             } else {
                 indexPlayer1 = -1;
-                player2 = null;
                 player1 = null;
-                labelPlayer2.setVisible(false);
-                cboPlayer2.setVisible(false);
-                cboPlayer2.setValue(null);
             }
 
             informParent();
@@ -160,17 +152,6 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
             return null;
         }
         return new Team(player1.getId(),  (player2==null? null :player2.getId()));
-    }
-
-    public byte[] getPicturePlayer1() {
-        return player1.getPicture();
-    }
-
-    public byte[] getPicturePlayer2() {
-        if (player2 != null) {
-            return player2.getPicture();
-        }
-        return new byte[1];
     }
 
     public String getLabelTeam() {

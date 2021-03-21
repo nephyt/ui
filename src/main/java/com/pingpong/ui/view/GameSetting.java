@@ -25,6 +25,7 @@ public class GameSetting extends VerticalLayout {
 
     ComboBox<Integer> scoreMax = new ComboBox<>();
 
+    Button btnStartGame = new Button("Start Game");
 
     Div playerSelect = new Div();
 
@@ -101,10 +102,10 @@ public class GameSetting extends VerticalLayout {
             }
         });
 
-        Button btnStartGame = new Button("Start Game");
 
         btnStartGame.addClickListener(e -> startGame());
 
+        btnStartGame.setEnabled(false);
         scoreMaxDiv.add(selectScoreMax, scoreMax, btnStartGame);
 
         playerSelect.add(playerSelectorTeamA, playerSelectorTeamB);
@@ -131,12 +132,16 @@ public class GameSetting extends VerticalLayout {
             displayNotification(formatTeamStats(playerSelectorTeamB, teamStats));
         }
 
-        if (teamA != null && teamB != null) {
+        if (teamA != null && teamB != null
+                && teamA.getTeamPlayer1() != null && teamB.getTeamPlayer1() != null) {
             // show stat team A vs team B
-
             TeamStats teamStats = ServicesRest.getTeamVSStatsByPlayer(teamA, teamB);
             displayNotification(formatTeamVsTeamStats(teamStats));
+            btnStartGame.setEnabled(true);
+        } else {
+            btnStartGame.setEnabled(false);
         }
+
     }
 
     private void displayNotification(String text) {
