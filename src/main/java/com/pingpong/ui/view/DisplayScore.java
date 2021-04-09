@@ -4,10 +4,15 @@ import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DisplayScore {
 
     Image scoreDizaine;
     Image scoreUnit;
+
+    Map<Integer, String> cacheDigitScore = new HashMap<>();
 
     Div score = new Div();
 
@@ -17,10 +22,12 @@ public class DisplayScore {
         scoreDizaine = getImageScore();
         scoreUnit = getImageScore();
 
+        for (int i = 0; i < 10; ++i) {
+            cacheDigitScore.put(i,"digits/" + i + ".jpg");
+        }
+
         refreshImageScore(0);
-
         score.add(scoreDizaine, scoreUnit);
-
     }
 
     public Div getScore() {
@@ -38,15 +45,12 @@ public class DisplayScore {
     }
 
     public void refreshImageScore(int score) {
-
-        String scoreStr = String.valueOf(score);
-
         if (score < 10) {
             scoreDizaine.setSrc("digits/0.jpg");
-            scoreUnit.setSrc("digits/" + scoreStr + ".jpg");
+            scoreUnit.setSrc(cacheDigitScore.get(score));
         } else {
-            scoreDizaine.setSrc("digits/" + scoreStr.charAt(0) + ".jpg");
-            scoreUnit.setSrc("digits/" + scoreStr.charAt(1) +  ".jpg");
+            scoreDizaine.setSrc(cacheDigitScore.get(score/10));
+            scoreUnit.setSrc(cacheDigitScore.get(score%10));
         }
     }
 
