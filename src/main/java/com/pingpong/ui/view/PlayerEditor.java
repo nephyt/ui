@@ -63,7 +63,6 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
 
 
     /* Action buttons */
-    // TODO why more code?
     Button save = new Button("Save", VaadinIcon.CHECK.create());
     Button cancel = new Button("Cancel");
     Button delete = new Button("Delete", VaadinIcon.TRASH.create());
@@ -114,8 +113,6 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
         victorySongPath.addValueChangeListener(e -> previewSong());
 
         setVisible(false);
-
-
     }
 
     void delete() {
@@ -163,7 +160,6 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
         else {
             player = c;
         }
-
 
         previewSong();
 

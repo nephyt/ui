@@ -56,21 +56,24 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         Tab tabPlayer = new Tab("Players");
         Tab tabGame = new Tab("Game");
         Tab tabGamePaused = new Tab("Game Paused");
+        Tab tabGameHistoric = new Tab("Game Historic");
 
-        Tabs tabs = new Tabs(tabPlayer, tabGamePaused, tabGame);
+        Tabs tabs = new Tabs(tabPlayer, tabGamePaused, tabGame, tabGameHistoric);
         tabs.setWidthFull();
         tabs.setFlexGrowForEnclosedTabs(1);
 
         Div pagePlayers = buildPagePlayers();
         PageGame pageGame = buildPageGame();
         PausedGameVIew pageGamePaused = new PausedGameVIew(pageGame, tabs);
+        HistoricGameVIew pageGameHistoric = new HistoricGameVIew(pageGame);
 
         Map<Tab, Component> tabsToPages = new HashMap<>();
         tabsToPages.put(tabPlayer, pagePlayers);
         tabsToPages.put(tabGamePaused, pageGamePaused);
         tabsToPages.put(tabGame, pageGame);
+        tabsToPages.put(tabGameHistoric, pageGameHistoric);
 
-        Div pages = new Div(pagePlayers, pageGamePaused, pageGame);
+        Div pages = new Div(pagePlayers, pageGamePaused, pageGame, pageGameHistoric);
         pages.setWidthFull();
 
         tabs.addSelectedChangeListener(event -> {
@@ -88,6 +91,9 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             }
             if (tabs.getSelectedIndex() == 2) {
                 ((PageGame)selectedPage).refreshStatPage();
+            }
+            if (tabs.getSelectedIndex() == 3) {
+                ((HistoricGameVIew)selectedPage).fillGrid();
             }
 
         });

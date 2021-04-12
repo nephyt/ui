@@ -29,7 +29,7 @@ public class PausedGameVIew extends Div {
         this.tabs = tabs;
 
         setupGrid();
-        fillGrid();
+        
 
         resumeGameBtn.addClickListener(e -> resumeGame());
         resumeGameBtn.setVisible(false);

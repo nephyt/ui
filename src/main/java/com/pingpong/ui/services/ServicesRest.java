@@ -98,6 +98,15 @@ public class ServicesRest {
         return result.getGames();
     }
 
+    public static List<Game> getHistoricGames(Integer nbHours) {
+        String uri = Constants.SERVICE_GAME_URL +  "getHistoricGames/" + nbHours;
+
+        ListOfGames result = restTemplate.getForObject(uri, ListOfGames.class);
+
+        return result.getGames();
+    }
+
+
     public static List<Player> listPlayer(String filterText) {
         ListOfPlayers result = getListOfPlayers(filterText);
 
