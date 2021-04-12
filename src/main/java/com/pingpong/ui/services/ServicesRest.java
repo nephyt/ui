@@ -2,6 +2,7 @@ package com.pingpong.ui.services;
 
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.ListOfGames;
+import com.pingpong.basicclass.game.ListOfTeams;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
@@ -98,8 +99,20 @@ public class ServicesRest {
         return result.getGames();
     }
 
-    public static List<Game> getHistoricGames(Integer nbHours) {
+    public static List<Team> getAllTeams() {
+        String uri = Constants.SERVICE_GAME_URL +  "getAllTeams";
+
+        ListOfTeams result = restTemplate.getForObject(uri, ListOfTeams.class);
+
+        return result.getTeams();
+    }
+
+    public static List<Game> getHistoricGames(Integer nbHours, Integer teamId) {
         String uri = Constants.SERVICE_GAME_URL +  "getHistoricGames/" + nbHours;
+
+        if (teamId != null) {
+            uri += "/" + teamId;
+        }
 
         ListOfGames result = restTemplate.getForObject(uri, ListOfGames.class);
 

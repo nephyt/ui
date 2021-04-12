@@ -5,6 +5,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 
 public class IntegerField extends TextField {
     private Integer value;
+    private Integer defaultValue;
 
     public Integer getIntValue() {
         return value;
@@ -13,6 +14,7 @@ public class IntegerField extends TextField {
     public IntegerField(String label, Integer defaultValue, String placeHolder) {
         super(label);
         value = defaultValue;
+        this.defaultValue = defaultValue;
         setPlaceholder(placeHolder);
         setValueChangeMode(ValueChangeMode.EAGER);
         addValueChangeListener(e -> textChange(e));
@@ -21,12 +23,17 @@ public class IntegerField extends TextField {
     public void textChange(ComponentValueChangeEvent event) {
         try {
             if (event.getValue() == null || ((String) event.getValue()).isEmpty()) {
-                value = 3;
+                value = defaultValue;
+                setValue("");
             } else {
                 value = Integer.parseInt((String)event.getValue());
             }
         } catch (NumberFormatException e) {
-            value = Integer.parseInt((String)event.getOldValue());
+            if (((String)event.getOldValue()).isEmpty()) {
+                value = defaultValue;
+            } else {
+                value = Integer.parseInt((String) event.getOldValue());
+            }
             setValue((String)event.getOldValue());
         }
     }

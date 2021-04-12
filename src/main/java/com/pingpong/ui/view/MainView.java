@@ -65,7 +65,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         Div pagePlayers = buildPagePlayers();
         PageGame pageGame = buildPageGame();
         PausedGameVIew pageGamePaused = new PausedGameVIew(pageGame, tabs);
-        HistoricGameVIew pageGameHistoric = new HistoricGameVIew(pageGame);
+        HistoricGameVIew pageGameHistoric = new HistoricGameVIew();
 
         Map<Tab, Component> tabsToPages = new HashMap<>();
         tabsToPages.put(tabPlayer, pagePlayers);
@@ -93,7 +93,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
                 ((PageGame)selectedPage).refreshStatPage();
             }
             if (tabs.getSelectedIndex() == 3) {
-                ((HistoricGameVIew)selectedPage).fillGrid();
+                ((HistoricGameVIew)selectedPage).refreshPage();
             }
 
         });

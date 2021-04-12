@@ -4,26 +4,38 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.services.ServicesRest;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 import java.util.Map;
 
 public class HistoricGameVIew extends Div {
 
-    PageGame pageGame;
+    private final Integer DEFAULT_TIME = 3;
 
-    Map<Integer, Player> mapPlayer;
+    private Map<Integer, Player> mapPlayer;
 
-    IntegerField txtNbHours = new IntegerField("Nombre d'heures", 3,"Temps de recul en heure");
+    private IntegerField txtNbHours = new IntegerField("Nombre d'heures", DEFAULT_TIME,"Temps de recul en heure");
 
-    Grid<Game> grid = new Grid<>(Game.class);
+    private ComboBox<Team> cboTeam = new ComboBox<>();
 
-    public HistoricGameVIew(PageGame pageGame) {
-        this.pageGame = pageGame;
+    private Grid<Game> grid = new Grid<>(Game.class);
+
+    public HistoricGameVIew() {
+        cboTeam.setLabel("Equipe");
+        cboTeam.setItemLabelGenerator(e -> getTeamPlayerName(mapPlayer, e));
+        cboTeam.addValueChangeListener(event -> {
+            fillGrid(txtNbHours.getIntValue());
+        });
 
         txtNbHours.addValueChangeListener(e -> fillGrid(txtNbHours.getIntValue()));
-        add(txtNbHours);
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.add(txtNbHours, cboTeam);
+
+        add(horizontalLayout);
 
         setupGrid();
 
@@ -31,11 +43,19 @@ public class HistoricGameVIew extends Div {
 
     }
 
-    public void fillGrid() {
+    public void refreshPage() {
+        cboTeam.setItems(ServicesRest.getAllTeams());
+        cboTeam.setValue(null);
+        txtNbHours.setValue("");
         fillGrid(txtNbHours.getIntValue());
     }
+
     public void fillGrid(Integer nbHours) {
-        grid.setItems(ServicesRest.getHistoricGames(nbHours));
+        Integer teamId = null;
+        if (cboTeam.getValue() != null) {
+            teamId = cboTeam.getValue().getId();
+        }
+        grid.setItems(ServicesRest.getHistoricGames(nbHours, teamId));
     }
 
     private void setupGrid() {
@@ -110,6 +130,10 @@ public class HistoricGameVIew extends Div {
             }
         }
 
+        return getTeamPlayerName(mapPlayer, team);
+    }
+
+    private String getTeamPlayerName(Map<Integer, Player> mapPlayer, Team team) {
         String result = mapPlayer.get(team.getTeamPlayer1().getPlayerId()).getName();
 
         if (team.getTeamPlayer2() != null) {
