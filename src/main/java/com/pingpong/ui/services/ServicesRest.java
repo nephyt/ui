@@ -55,7 +55,12 @@ public class ServicesRest {
         return result;
     }
 
+    public static AllServiceCount getTeamsServiceCount(Integer teamId1, Integer teamId2) {
+        String uri = Constants.SERVICE_COUNT_URL +  "getServiceCountForTeams/" + teamId1 + "/" + teamId2;
+        AllServiceCount result = restTemplate.getForObject(uri, AllServiceCount.class);
 
+        return result;
+    }
 
     public static PlayersStats getPlayersStats() {
         String uri = Constants.SERVICE_GAME_URL +  "getPlayersStats";
@@ -92,7 +97,7 @@ public class ServicesRest {
     private static String getParamStringForPlayers(Team teamA) {
         String paramTeamA = teamA.getTeamPlayer1Id().toString();
         if (teamA.getTeamPlayer2() != null) {
-            paramTeamA +=  ("_" + teamA.getTeamPlayer1Id());
+            paramTeamA +=  ("_" + teamA.getTeamPlayer2Id());
         }
         return paramTeamA;
     }

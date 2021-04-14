@@ -4,6 +4,8 @@ import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.basicclass.servicecount.AllServiceCount;
+import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.basicclass.stats.TeamStats;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
@@ -17,6 +19,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +61,28 @@ public class GameSetting extends VerticalLayout {
 
     public Map<Integer, Player> getDisplayPlayerTeamB() {
         return getPlayer(playerSelectorTeamB);
+    }
+
+    private boolean validatePlayerSelection() {
+        ArrayList<Player> listPlayer = new ArrayList<>(4);
+
+        listPlayer.add(playerSelectorTeamA.getPlayer1());
+        listPlayer.add(playerSelectorTeamA.getPlayer2());
+        listPlayer.add(playerSelectorTeamB.getPlayer1());
+        listPlayer.add(playerSelectorTeamB.getPlayer2());
+
+        Map<Integer, Integer> validate = new HashMap<>();
+
+        for (int i = 0; i < listPlayer.size(); ++i) {
+            if (listPlayer.get(i) != null) {
+                if (validate.containsKey(listPlayer.get(i).getId())) {
+                    return false;
+                } else {
+                    validate.put(listPlayer.get(i).getId(), 0);
+                }
+            }
+        }
+        return true;
     }
 
     private Map<Integer, Player> getPlayer(PlayerSelector team) {
@@ -123,17 +148,17 @@ public class GameSetting extends VerticalLayout {
         if (teamEnum.getCode().equals(TeamEnum.TEAM_A.getCode()) && teamA != null) {
             // show stat team A
             TeamStats teamStats = ServicesRest.getTeamStatsByPlayer(teamA);
-
             displayNotification(formatTeamStats(playerSelectorTeamA, teamStats));
         }
         if (teamEnum.getCode().equals(TeamEnum.TEAM_B.getCode()) && teamB != null) {
             // show stat team B
-            TeamStats teamStats = ServicesRest.getTeamStatsByPlayer(teamA);
+            TeamStats teamStats = ServicesRest.getTeamStatsByPlayer(teamB);
             displayNotification(formatTeamStats(playerSelectorTeamB, teamStats));
         }
 
         if (teamA != null && teamB != null
-                && teamA.getTeamPlayer1() != null && teamB.getTeamPlayer1() != null) {
+                && teamA.getTeamPlayer1() != null && teamB.getTeamPlayer1() != null
+                && validatePlayerSelection()) {
             // show stat team A vs team B
             TeamStats teamStats = ServicesRest.getTeamVSStatsByPlayer(teamA, teamB);
             displayNotification(formatTeamVsTeamStats(teamStats));
@@ -154,22 +179,56 @@ public class GameSetting extends VerticalLayout {
     private String formatTeamStats(PlayerSelector teamSelector, TeamStats teamStats) {
 
         String result = "<DIV><b>" + teamSelector.getLabelTeam() + "</b><br/>";
-        result += "# game played : " + teamStats.getNumberOfGamePlayed() + "<br/>";
-        result += "# game win : " + teamStats.getNumberOfGameWin() + "<br/>";
-        result += "# game lost : " + teamStats.getNumberOfGameLost() + "<br/>";
-        result += "time played : " + Utils.formatTimePlayed(teamStats.getTimePlayed());
-        result += "<DIV>";
+
+        if (teamStats.getNumberOfGamePlayed() > 0) {
+            result += "# game played : " + teamStats.getNumberOfGamePlayed() + "<br/>";
+            result += "# game win : " + teamStats.getNumberOfGameWin() + "<br/>";
+            result += "# game lost : " + teamStats.getNumberOfGameLost() + "<br/>";
+            result += "time played : " + Utils.formatTimePlayed(teamStats.getTimePlayed());
+            result += "<DIV>";
+        } else {
+            if (teamSelector.getPlayer2() == null) {
+                result += "Premier match!! Bonne chance!!";
+            } else {
+                result += "Première fois ensemble!! Have FUN!!";
+            }
+        }
+
         return result;
     }
 
     private String formatTeamVsTeamStats(TeamStats teamStats) {
 
-        String result = "<DIV><b>" + playerSelectorTeamA.getLabelTeam() + " VS " + playerSelectorTeamB.getLabelTeam() + "</b><br/>";
-        result += "# game played : " + teamStats.getNumberOfGamePlayed() + "<br/>";
-        result += "# game win by " + playerSelectorTeamA.getLabelTeam() + " : " + teamStats.getNumberOfGameWin() + "<br/>";
-        result += "# game win by " + playerSelectorTeamB.getLabelTeam() + " : " + teamStats.getNumberOfGameLost() + "<br/>";
-        result += "time played together : " + Utils.formatTimePlayed(teamStats.getTimePlayed());
+        String result = "<DIV>";
+
+        result += "<b>" + playerSelectorTeamA.getLabelTeam() + " VS " + playerSelectorTeamB.getLabelTeam() + "</b><br/>";
+
+        if (teamStats.getNumberOfGamePlayed() > 0) {
+            result += "# game played : " + teamStats.getNumberOfGamePlayed() + "<br/>";
+            result += "# game win by " + playerSelectorTeamA.getLabelTeam() + " : " + teamStats.getNumberOfGameWin() + "<br/>";
+            result += "# game win by " + playerSelectorTeamB.getLabelTeam() + " : " + teamStats.getNumberOfGameLost() + "<br/>";
+            result += "time played together : " + Utils.formatTimePlayed(teamStats.getTimePlayed()) + "<br/>";
+
+            if (teamStats.getTeamId() != null && teamStats.getOpponentTeamId() != null) {
+                AllServiceCount allServiceCount = ServicesRest.getTeamsServiceCount(teamStats.getTeamId(), teamStats.getOpponentTeamId());
+
+                result += getServePercentage(teamStats.getTeamId(), allServiceCount, playerSelectorTeamA);
+                result += getServePercentage(teamStats.getOpponentTeamId(), allServiceCount, playerSelectorTeamB);
+            }
+        } else {
+            result += "Première fois!!";
+        }
         result += "<DIV>";
+
+        return result;
+    }
+
+    private String getServePercentage(Integer teamId, AllServiceCount allServiceCount, PlayerSelector playerSelectorTeam) {
+        String result = "% serve win by " + playerSelectorTeam.getLabelTeam() + " : ";
+        ServiceCount temp = allServiceCount.getServiceCountForPlayer(teamId);
+        double winPrct = temp.getBallServeWin().doubleValue() / temp.getBallServe().doubleValue();
+        int display = (int)(winPrct * 100);
+        result += display + "%<br/>";
         return result;
     }
 
