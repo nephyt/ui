@@ -3,6 +3,7 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.ui.services.ServicesRest;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -60,40 +61,32 @@ public class HistoricGameVIew extends Div {
 
     private void setupGrid() {
 
-        grid.removeColumnByKey("gameStatus");
-        grid.removeColumnByKey("gameTime");
-        grid.removeColumnByKey("matchPoint");
-        grid.removeColumnByKey("maxScore");
-        grid.removeColumnByKey("id");
-        grid.removeColumnByKey("teamA");
-        grid.removeColumnByKey("teamB");
-        grid.removeColumnByKey("teamWinnerId");
-        grid.removeColumnByKey("teamStateA");
-        grid.removeColumnByKey("teamStateB");
-        grid.removeColumnByKey("scoreTeamA");
-        grid.removeColumnByKey("scoreTeamB");
-        grid.removeColumnByKey("gameType");
+        grid.removeAllColumns();
 
         mapPlayer = ServicesRest.mapPlayer("");
 
-
         grid.addColumn(game -> getTeamPlayerName(mapPlayer, game, true) )
-                .setAutoWidth(true).setSortable(true).setHeader("Winner").setKey("winner");
+                .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Winner").setKey("winner");
 
         grid.addColumn(game -> getTeamPlayerName(mapPlayer, game, false))
-                .setAutoWidth(true).setSortable(true).setHeader("Loser").setKey("loser");
+                .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Loser").setKey("loser");
 
         grid.addColumn(game -> formatScore(game))
-                .setAutoWidth(true).setSortable(true).setHeader("Score").setKey("score");
+                .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Score").setKey("score");
+
+
+        grid.addColumn(game -> formatServingStats(game))
+                .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("#BallsServe/W/L").setKey("ballServe");
+
 
         grid.addColumn(game -> game.toStringFirstTimePlayed())
-                .setAutoWidth(true).setSortable(true).setHeader("Start on").setKey("StartOn");
+                .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Start on").setKey("StartOn");
 
         grid.addColumn(game -> game.toStringLastTimePlayed())
-                .setAutoWidth(true).setSortable(true).setHeader("Complete on").setKey("CompleteOn");
+                .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Complete on").setKey("CompleteOn");
 
         grid.addColumn(game -> game.toStringTimePlayed())
-                .setAutoWidth(true).setSortable(true).setHeader("Time Played").setKey("timePlayed");
+                .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Time Played").setKey("timePlayed");
 
 
         // Connect selected Customer to editor or hide if none is selected
@@ -105,10 +98,32 @@ public class HistoricGameVIew extends Div {
         add(grid);
     }
 
+    private String formatServingStats(Game game) {
+        AllServiceCount allServiceCount = ServicesRest.getGameCountService(game.getId());
+
+        String stats = getServiceStatForTeam(allServiceCount, game.getWinnerTeam());
+        stats += " vs ";
+        stats += getServiceStatForTeam(allServiceCount, game.getLoserTeam());
+
+        return stats;
+    }
+
+    private String getServiceStatForTeam(AllServiceCount allServiceCount, Team teamWinner) {
+        String stats;
+        stats = allServiceCount.getServiceCountForPlayer(teamWinner.getTeamPlayer1Id()).toStringBallServe();
+
+
+        if (teamWinner.getTeamPlayer2Id() != null) {
+            stats += " & ";
+            stats += allServiceCount.getServiceCountForPlayer(teamWinner.getTeamPlayer2Id()).toStringBallServe();
+        }
+        return stats;
+    }
+
     private String formatScore(Game game) {
         String score = null;
 
-        if (game.getTeamWinnerId() == game.getTeamA().getId()) {
+        if (game.getTeamWinnerId().equals(game.getTeamA().getId())) {
             score = game.getScoreTeamA() + " - " + game.getScoreTeamB();
         } else {
             score = game.getScoreTeamB() + " - " + game.getScoreTeamA();

@@ -2,7 +2,6 @@ package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
-import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.basicclass.stats.PlayersStats;
 import com.pingpong.ui.services.ServicesButtons;
@@ -183,15 +182,9 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         }).setHeader("#Games/W/L").setKey("gamePlayed");
 
 
-        grid.addColumn(player -> {
-            ServiceCount stats = serviceCount.getServiceCountForPlayer(player.getId());
-
-            String result = stats.getBallServe() + "/";
-            result += stats.getBallServeWin() + "/";
-            result += stats.getBallServeFail();
-
-            return result;
-        }).setHeader("#BallsServe/W/L").setKey("ballServe");
+        grid.addColumn(player ->
+            serviceCount.getServiceCountForPlayer(player.getId()).toStringBallServe()
+        ).setHeader("#BallsServe/W/L").setKey("ballServe");
 
         grid.addColumn(player -> {
             PlayerStats stats = playersStats.getPlayerStatsForPlayer(player.getId());

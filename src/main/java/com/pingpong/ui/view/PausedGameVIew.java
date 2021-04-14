@@ -73,6 +73,8 @@ public class PausedGameVIew extends Div {
     private void setupGrid() {
 
         grid.removeColumnByKey("gameTime");
+        grid.removeColumnByKey("winnerTeam");
+        grid.removeColumnByKey("loserTeam");
         grid.removeColumnByKey("id");
         grid.removeColumnByKey("teamA");
         grid.removeColumnByKey("teamB");

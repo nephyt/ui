@@ -48,6 +48,12 @@ public class ServicesRest {
         return result;
     }
 
+    public static AllServiceCount getGameCountService(Integer gameId) {
+        String uri = Constants.SERVICE_COUNT_URL +  "getGameCountService/" + gameId;
+        AllServiceCount result = restTemplate.getForObject(uri, AllServiceCount.class);
+
+        return result;
+    }
 
 
 
