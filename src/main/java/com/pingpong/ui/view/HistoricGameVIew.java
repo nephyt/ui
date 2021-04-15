@@ -86,6 +86,8 @@ public class HistoricGameVIew extends Div {
         grid.addColumn(game -> game.toStringTimePlayed())
                 .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Time Played").setKey("timePlayed");
 
+        grid.setMultiSort(true);
+
         add(grid);
     }
 
