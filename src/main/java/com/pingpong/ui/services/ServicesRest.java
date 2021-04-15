@@ -94,12 +94,12 @@ public class ServicesRest {
         return teamStats;
     }
 
-    private static String getParamStringForPlayers(Team teamA) {
-        String paramTeamA = teamA.getTeamPlayer1Id().toString();
-        if (teamA.getTeamPlayer2() != null) {
-            paramTeamA +=  ("_" + teamA.getTeamPlayer2Id());
+    private static String getParamStringForPlayers(Team team) {
+        String paramTeam = team.getTeamPlayer1Id().toString();
+        if (team.getTeamPlayer2() != null) {
+            paramTeam +=  ("_" + team.getTeamPlayer2Id());
         }
-        return paramTeamA;
+        return paramTeam;
     }
 
     public static List<Game> getPausedGames() {

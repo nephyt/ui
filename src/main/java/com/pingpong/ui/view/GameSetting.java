@@ -149,16 +149,13 @@ public class GameSetting extends VerticalLayout {
             // show stat team A
             TeamStats teamStats = ServicesRest.getTeamStatsByPlayer(teamA);
             displayNotification(formatTeamStats(playerSelectorTeamA, teamStats));
-        }
-        if (teamEnum.getCode().equals(TeamEnum.TEAM_B.getCode()) && teamB != null) {
+        } else if (teamEnum.getCode().equals(TeamEnum.TEAM_B.getCode()) && teamB != null) {
             // show stat team B
             TeamStats teamStats = ServicesRest.getTeamStatsByPlayer(teamB);
             displayNotification(formatTeamStats(playerSelectorTeamB, teamStats));
         }
 
-        if (teamA != null && teamB != null
-                && teamA.getTeamPlayer1() != null && teamB.getTeamPlayer1() != null
-                && validatePlayerSelection()) {
+        if (teamA != null && teamB != null && validatePlayerSelection()) {
             // show stat team A vs team B
             TeamStats teamStats = ServicesRest.getTeamVSStatsByPlayer(teamA, teamB);
             displayNotification(formatTeamVsTeamStats(teamStats));

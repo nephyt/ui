@@ -65,19 +65,17 @@ public class HistoricGameVIew extends Div {
 
         mapPlayer = ServicesRest.mapPlayer("");
 
-        grid.addColumn(game -> getTeamPlayerName(mapPlayer, game, true) )
+        grid.addColumn(game -> getTeamPlayerName(mapPlayer, game.getWinnerTeam()) )
                 .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Winner").setKey("winner");
 
-        grid.addColumn(game -> getTeamPlayerName(mapPlayer, game, false))
+        grid.addColumn(game -> getTeamPlayerName(mapPlayer, game.getLoserTeam()))
                 .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Loser").setKey("loser");
 
         grid.addColumn(game -> formatScore(game))
                 .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Score").setKey("score");
 
-
         grid.addColumn(game -> formatServingStats(game))
                 .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("#BallsServe/W/L").setKey("ballServe");
-
 
         grid.addColumn(game -> game.toStringFirstTimePlayed())
                 .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Start on").setKey("StartOn");
@@ -87,13 +85,6 @@ public class HistoricGameVIew extends Div {
 
         grid.addColumn(game -> game.toStringTimePlayed())
                 .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Time Played").setKey("timePlayed");
-
-
-        // Connect selected Customer to editor or hide if none is selected
-        /*grid.asSingleSelect().addValueChangeListener(e -> {
-            resumeGameBtn.setVisible(true);
-            gameSelected = e.getValue();
-        });*/
 
         add(grid);
     }
@@ -109,19 +100,17 @@ public class HistoricGameVIew extends Div {
     }
 
     private String getServiceStatForTeam(AllServiceCount allServiceCount, Team teamWinner) {
-        String stats;
-        stats = allServiceCount.getServiceCountForPlayer(teamWinner.getTeamPlayer1Id()).toStringBallServe();
-
+        String stats = allServiceCount.getServiceCountForPlayer(teamWinner.getTeamPlayer1Id()).toStringBallServe();
 
         if (teamWinner.getTeamPlayer2Id() != null) {
-            stats += " & ";
+            stats += " - ";
             stats += allServiceCount.getServiceCountForPlayer(teamWinner.getTeamPlayer2Id()).toStringBallServe();
         }
         return stats;
     }
 
     private String formatScore(Game game) {
-        String score = null;
+        String score;
 
         if (game.getTeamWinnerId().equals(game.getTeamA().getId())) {
             score = game.getScoreTeamA() + " - " + game.getScoreTeamB();
@@ -130,22 +119,6 @@ public class HistoricGameVIew extends Div {
         }
 
         return score;
-    }
-
-    private String getTeamPlayerName(Map<Integer, Player> mapPlayer, Game game, boolean winner) {
-
-        Team team = game.getTeamA();
-        if (winner) {
-            if (!game.getTeamWinnerId().equals(team.getId())) {
-                team = game.getTeamB();
-            }
-        } else {
-            if (game.getTeamWinnerId().equals(team.getId())) {
-                team = game.getTeamB();
-            }
-        }
-
-        return getTeamPlayerName(mapPlayer, team);
     }
 
     private String getTeamPlayerName(Map<Integer, Player> mapPlayer, Team team) {

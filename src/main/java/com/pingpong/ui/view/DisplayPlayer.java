@@ -16,17 +16,11 @@ public class DisplayPlayer {
     Map<Integer, StreamResource> playerPicture = new HashMap<>();
 
     public DisplayPlayer() {
-
-        //imgPlayer.setWidthFull();
-
         imgPlayer.setWidth("200px");
         imgPlayer.setHeight("200px");
 
         Utils.disableSelection(imgPlayer);
-
     }
-
-
 
     public Image getPlayerImage() {
 

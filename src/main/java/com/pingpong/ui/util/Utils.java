@@ -57,10 +57,7 @@ public class Utils {
         }
 
         return isMute;
-
     }
-
-
 
     public static Cookie getCookieByName(String name, String defaultValue) {
         // Fetch all cookies from the request

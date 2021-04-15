@@ -3,7 +3,6 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.Map;
@@ -36,8 +35,7 @@ public class DisplayTeam extends VerticalLayout {
 
     public Player getPlayerById(Integer id) { return mapIdPlayer.get(id);}
 
-    public Component refreshTeam(TeamState team, TeamEnum teamSide) {
-
+    public void refreshTeam(TeamState team, TeamEnum teamSide) {
         if (TeamEnum.TEAM_A.getCode().equals(teamSide.getCode())) {
             player1.refreshDisplayPlayer(mapIdPlayer.get(team.getLeftPlayer()), hasServe(team.getServer(), team.getLeftPlayer()));
             player2.refreshDisplayPlayer(mapIdPlayer.get(team.getRightPlayer()), hasServe(team.getServer(), team.getRightPlayer()));
@@ -45,15 +43,13 @@ public class DisplayTeam extends VerticalLayout {
             player1.refreshDisplayPlayer(mapIdPlayer.get(team.getRightPlayer()), hasServe(team.getServer(), team.getRightPlayer()));
             player2.refreshDisplayPlayer(mapIdPlayer.get(team.getLeftPlayer()), hasServe(team.getServer(), team.getLeftPlayer()));
         }
-
-        return this;
     }
 
     private boolean hasServe(Integer server, Integer playerId) {
         if (server == null) {
             return false;
         }
-        return server == playerId;
+        return server.equals(playerId);
 
     }
 

@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class DisplayScore {
 
-    Image scoreDizaine;
-    Image scoreUnit;
+    Image scoreDizaine = new Image();
+    Image scoreUnit = new Image();
 
     Map<Integer, String> cacheDigitScore = new HashMap<>();
 
@@ -19,8 +19,9 @@ public class DisplayScore {
     public DisplayScore() {
 
         score.setWidth("50%");
-        scoreDizaine = getImageScore();
-        scoreUnit = getImageScore();
+
+        setupImageScore(scoreDizaine);
+        setupImageScore(scoreUnit);
 
         for (int i = 0; i < 10; ++i) {
             cacheDigitScore.put(i,"digits/" + i + ".jpg");
@@ -34,14 +35,9 @@ public class DisplayScore {
         return score;
     }
 
-    private Image getImageScore() {
-        Image scoreImg = new Image();
-
+    private void setupImageScore(Image scoreImg) {
         scoreImg.setWidth("50%");
-
         Utils.disableSelection(scoreImg);
-
-        return scoreImg;
     }
 
     public void refreshImageScore(int score) {

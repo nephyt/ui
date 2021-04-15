@@ -36,7 +36,7 @@ public class ServicesButtons  {
 
     public void startModeWinner(Game game) {
         TeamEnum teamWinner = TeamEnum.TEAM_A;
-        if (game.getTeamB().getId() == game.getTeamWinnerId()) {
+        if (game.getTeamB().getId().equals(game.getTeamWinnerId())) {
             teamWinner = TeamEnum.TEAM_B;
         }
         buttonsThread.startModeWinner(teamWinner);

@@ -14,7 +14,6 @@ import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameController;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
@@ -74,7 +73,6 @@ public class GameScore extends VerticalLayout {
 
         setWidthFull();
         displayScore.setWidthFull();
-
         displayScore.add(displayTeamA);
 
         // Table ping pong
@@ -163,8 +161,6 @@ public class GameScore extends VerticalLayout {
 
     private void setupAudio(AudioPlayer audio, String src) {
         audio.getElement().getStyle().set("display", "none");
-        audio.getElement().getStyle().set("display", "none");
-
         audio.setSource("sounds/" + src);
     }
 
@@ -201,20 +197,6 @@ public class GameScore extends VerticalLayout {
         displayTeamB.refreshTeam(game.getTeamStateB(), TeamEnum.TEAM_B);
     }
 
-
-
-    private Label generateLabelScore(int score) {
-        Label scoreLabel = new Label("");
-        String scoreStr = "";
-        if (score < 10) {
-            scoreStr = "0";
-        }
-        scoreStr += score;
-        scoreLabel.setText(scoreStr);
-
-        return scoreLabel;
-    }
-
     private void addClick(ClickEvent event) {
 
         if (game != null) {
@@ -243,7 +225,6 @@ public class GameScore extends VerticalLayout {
 
             // done after the click or double click to end the game correctly
             game.updateGameIfFinish();
-
 
             if (game.getTeamWinnerId() != null) {
 
@@ -282,7 +263,7 @@ public class GameScore extends VerticalLayout {
             server = teamScored.getServer();
         }
 
-        ServiceCount  serviceCount = serviceCountStats.getServiceCountForPlayer(server);
+        ServiceCount serviceCount = serviceCountStats.getServiceCountForPlayer(server);
         serviceCount.incrementCounter(winServe);
         serviceCountStats.putServiceCount(serviceCount);
 
