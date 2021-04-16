@@ -2,7 +2,7 @@ package com.pingpong.ui.view;
 
 import com.pingpong.basicclass.enumeration.PlayerStatus;
 import com.pingpong.basicclass.player.Player;
-import com.pingpong.ui.Constants;
+import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
@@ -22,7 +22,6 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import elemental.json.Json;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,12 +38,6 @@ import java.io.InputStream;
 @SpringComponent
 @UIScope
 public class PlayerEditor extends VerticalLayout implements KeyNotifier {
-
-    //private final CustomerRepository repository;
-
-    @Autowired
-    RestTemplate restTemplate = new RestTemplate();
-
 
     /**
      * The currently edited customer
@@ -116,18 +109,18 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
     }
 
     void delete() {
-        deletePlayer(player);
+        ServicesRest.deletePlayer(player);
         changeHandler.onChange();
     }
 
     void restore() {
-        restorePlayer(player);
+        ServicesRest.restorePlayer(player);
         changeHandler.onChange();
     }
 
     void save() {
         Utils.setNeedUpdate(true);
-        savePlayer(player);
+        ServicesRest.savePlayer(player);
         changeHandler.onChange();
     }
 
@@ -155,7 +148,7 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
         final boolean persisted = c.getId() != null;
         if (persisted) {
             // Find fresh entity for editing
-            player = getAPlayer(c.getId());
+            player = ServicesRest.getAPlayer(c.getId());
         }
         else {
             player = c;
@@ -186,8 +179,6 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
         upload.setMaxFiles(1);
 
         upload.addFinishedListener(e -> {
-
-
             InputStream inputStream = memoryBuffer.getInputStream();
 
             try {
@@ -195,8 +186,6 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
                 inputStream.read(targetArray);
 
                 player.setPicture(targetArray);
-
-                //FileUtils.writeByteArrayToFile(new File(FileUtils.getUserDirectoryPath() + "/PlayersPictures/" + memoryBuffer.getFileName()), targetArray);
 
                 StreamResource resource = new StreamResource(memoryBuffer.getFileName(), () -> new ByteArrayInputStream(targetArray));
                 image.setSrc(resource);
@@ -246,28 +235,6 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
         // ChangeHandler is notified when either save or delete
         // is clicked
         changeHandler = h;
-    }
-
-    private void deletePlayer(Player player) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + player.getId();
-        restTemplate.delete(uri, player, Player.class);
-    }
-
-    private void restorePlayer(Player player) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + player.getId();
-        restTemplate.put(uri, player, Player.class);
-    }
-
-    private void savePlayer(Player player) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "SavePlayer";
-        restTemplate.postForEntity(uri, player, Player.class);
-    }
-
-    private Player getAPlayer(int id) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + id;
-        Player result = restTemplate.getForObject(uri, Player.class);
-
-        return result;
     }
 
 }

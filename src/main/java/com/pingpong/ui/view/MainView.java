@@ -62,7 +62,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         tabs.setFlexGrowForEnclosedTabs(1);
 
         Div pagePlayers = buildPagePlayers();
-        PageGame pageGame = buildPageGame();
+        PageGame pageGame = new PageGame();
         PausedGameVIew pageGamePaused = new PausedGameVIew(pageGame, tabs);
         HistoricGameVIew pageGameHistoric = new HistoricGameVIew();
 
@@ -89,7 +89,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
                 ((PausedGameVIew)selectedPage).fillGrid();
             }
             if (tabs.getSelectedIndex() == 2) {
-                ((PageGame)selectedPage).refreshStatPage();
+                ((PageGame)selectedPage).refreshStatePage();
             }
             if (tabs.getSelectedIndex() == 3) {
                 ((HistoricGameVIew)selectedPage).refreshPage();
@@ -118,7 +118,6 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
         pagePlayers.add(actions,grid, editor);
         pagePlayers.setWidthFull();
-
 
         // Instantiate and edit new Customer the new button is clicked
         addNewBtn.addClickListener(e -> editor.editCustomer(new Player()));
@@ -212,10 +211,6 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         grid.asSingleSelect().addValueChangeListener(e -> {
             editor.editCustomer(e.getValue());
         });
-    }
-
-    private PageGame buildPageGame() {
-        return new PageGame();
     }
 
     private void fillGrid(String filterText) {

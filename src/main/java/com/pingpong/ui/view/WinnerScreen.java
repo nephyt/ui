@@ -20,7 +20,7 @@ public class WinnerScreen extends VerticalLayout {
     Button rematch = new Button("Rematch");
     Button changePlayers = new Button("Change Players");
 
-    HorizontalLayout buttonsDiv = new HorizontalLayout();
+    HorizontalLayout buttonsDiv = new HorizontalLayout(rematch, changePlayers);
     IFrame frame = new IFrame();
 
     public WinnerScreen(PageGame pageGame) {
@@ -31,10 +31,7 @@ public class WinnerScreen extends VerticalLayout {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        buttonsDiv.add(rematch);
-        buttonsDiv.add(changePlayers);
-
-        setupIframe(frame, "480px", "600px", true);
+        setupIframe(frame, "315px", "560px", true);
 
         rematch.addClickListener(e -> rematchGame());
         changePlayers.addClickListener(e -> changePlayers());
@@ -51,7 +48,7 @@ public class WinnerScreen extends VerticalLayout {
         DisplayTeam loserDisplayTeam;
         TeamState loserTeam;
 
-        String finalScoreStr = "";
+        String finalScoreStr;
 
         removeAll();
 
@@ -149,8 +146,8 @@ public class WinnerScreen extends VerticalLayout {
     }
 
     private void setupIframe(IFrame frame, String height, String witdth, boolean isVisible) {
-        frame.setHeight("315px");
-        frame.setWidth("560px");
+        frame.setHeight(height);
+        frame.setWidth(witdth);
         frame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
         frame.getElement().setAttribute("allowfullscreen", true);
         frame.getElement().setAttribute("frameborder", "0");

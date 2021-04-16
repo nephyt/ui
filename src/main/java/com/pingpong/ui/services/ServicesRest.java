@@ -130,6 +130,27 @@ public class ServicesRest {
         return result.getGames();
     }
 
+    public static void deletePlayer(Player player) {
+        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + player.getId();
+        restTemplate.delete(uri, player, Player.class);
+    }
+
+    public static void restorePlayer(Player player) {
+        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + player.getId();
+        restTemplate.put(uri, player, Player.class);
+    }
+
+    public static void savePlayer(Player player) {
+        String uri = Constants.SERVICE_PLAYER_URL +  "SavePlayer";
+        restTemplate.postForEntity(uri, player, Player.class);
+    }
+
+    public static Player getAPlayer(int id) {
+        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + id;
+        Player result = restTemplate.getForObject(uri, Player.class);
+
+        return result;
+    }
 
     public static List<Player> listPlayer(String filterText) {
         ListOfPlayers result = getListOfPlayers(filterText);

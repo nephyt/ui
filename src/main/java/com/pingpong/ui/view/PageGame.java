@@ -8,6 +8,7 @@ import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.html.Div;
 
+import java.util.List;
 import java.util.Map;
 
 public class PageGame extends Div {
@@ -23,7 +24,6 @@ public class PageGame extends Div {
         setVisible(false);
 
         gameSetting.setVisible(true);
-
         gameScore.setVisible(false);
 
         add(gameSetting);
@@ -31,12 +31,14 @@ public class PageGame extends Div {
         add(winnerScreen);
     }
 
-    public void refreshStatPage() {
+    public void refreshStatePage() {
         if (gameSetting.isVisible()) {
             ServicesButtons.getInstance().playerSelection();
             if (Utils.getNeedUpdate()) {
                 Utils.setNeedUpdate(false);
-                gameSetting.getPlayerSelectorTeamA().refreshListPlayer(ServicesRest.listPlayer(""));
+                List<Player> listPlayers = ServicesRest.listPlayer("");
+                gameSetting.getPlayerSelectorTeamA().refreshListPlayer(listPlayers);
+                gameSetting.getPlayerSelectorTeamB().refreshListPlayer(listPlayers);
             }
         } else if (gameScore.isVisible()) {
             if (GameStatus.ACTIVE.getCode().equals(gameScore.getGame().getGameStatus().getCode())) {

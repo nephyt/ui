@@ -67,11 +67,11 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         this.listPlayer1 = listPlayer;
         this.listPlayer2 = listPlayer;
 
-        cboPlayer1.setItems(listPlayer1);
-        cboPlayer2.setItems(listPlayer2);
-
         cboPlayer1.setValue(null);
         cboPlayer2.setValue(null);
+
+        cboPlayer1.setItems(listPlayer1);
+        cboPlayer2.setItems(listPlayer2);
 
         indexPlayer1 = -1;
         indexPlayer2 = -1;
@@ -164,7 +164,5 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         }
         return names;
     }
-
-
 
 }

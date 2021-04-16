@@ -67,7 +67,6 @@ public class PausedGameVIew extends Div {
 
     public void fillGrid() {
         grid.setItems(ServicesRest.getPausedGames());
-
     }
 
     private void setupGrid() {
@@ -92,9 +91,6 @@ public class PausedGameVIew extends Div {
 
         grid.addColumn(game -> game.getScoreTeamA() + " - " + game.getScoreTeamB())
                 .setAutoWidth(true).setSortable(true).setHeader("Score").setKey("score");
-
-       // grid.addColumn(game -> getTeamPlayerName(mapPlayer, game.getTeamB()))
-       //         .setHeader("Team B").setKey("teamB");
 
         grid.addColumn(game -> game.toStringLastTimePlayed())
                 .setSortable(true).setHeader("Last Time Played").setKey("lastTimePlayed");

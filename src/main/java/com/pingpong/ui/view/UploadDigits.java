@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+// NOT USE
 @Route("UploadDigits")
 public class UploadDigits extends VerticalLayout {
 

@@ -16,8 +16,6 @@ public class WinnerScreenController {
 
     @GetMapping(value = "/rematch")
     public String rematch() {
-    String result;
-
         if (winnerScreen != null) {
             winnerScreen.getUI().get().access(() -> {
                 winnerScreen.rematchGame();
@@ -25,8 +23,7 @@ public class WinnerScreenController {
             });
         }
 
-        GameController gameController = new GameController();
-        return gameController.getTeamService();
+        return new GameController().getTeamService();
     }
 
     @GetMapping(value = "/newGame")
