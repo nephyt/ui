@@ -96,6 +96,8 @@ public class GameScore extends VerticalLayout {
         clickTeamA = displayTeamA.addClickListener(e -> updateGame(TeamEnum.TEAM_A));
         clickTeamB = displayTeamB.addClickListener(e -> updateGame(TeamEnum.TEAM_B));
 
+        displayTeamA.setId("displayTeamA");
+        displayTeamB.setId("displayTeamB");
 
         newGame.setVisible(false);
 

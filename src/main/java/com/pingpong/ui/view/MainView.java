@@ -54,6 +54,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
         Tab tabPlayer = new Tab("Players");
         Tab tabGame = new Tab("Game");
+        tabGame.setId("tabGame");
         Tab tabGamePaused = new Tab("Game Paused");
         Tab tabGameHistoric = new Tab("Game Historic");
 

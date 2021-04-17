@@ -118,8 +118,10 @@ public class GameSetting extends VerticalLayout {
 
 
         Label selectScoreMax = new Label("Select score max :");
+        selectScoreMax.setId("lblScoreMax");
         scoreMax.setItems(11, 21);
         scoreMax.setValue(scoreMaxSelected);
+        scoreMax.setId("scoreMax");
 
         scoreMax.addValueChangeListener(event -> {
             if (event.getValue() != null) {
@@ -129,6 +131,7 @@ public class GameSetting extends VerticalLayout {
 
 
         btnStartGame.addClickListener(e -> startGame());
+        btnStartGame.setId("btnStartGame");
 
         btnStartGame.setEnabled(false);
         scoreMaxDiv.add(selectScoreMax, scoreMax, btnStartGame);

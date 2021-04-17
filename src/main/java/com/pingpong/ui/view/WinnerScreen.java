@@ -34,7 +34,9 @@ public class WinnerScreen extends VerticalLayout {
         setupIframe(frame, "315px", "560px", true);
 
         rematch.addClickListener(e -> rematchGame());
+        rematch.setId("rematch");
         changePlayers.addClickListener(e -> changePlayers());
+        changePlayers.setId("changePlayers");
 
         Utils.disableSelection(this);
     }

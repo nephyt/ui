@@ -92,9 +92,12 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
+        cboPlayer1.setId("player1" + teamEnum.getCode());
         cboPlayer1.setItemLabelGenerator(Player::getName);
         cboPlayer1.setItems(listPlayer1);
 
+
+        cboPlayer2.setId("player2" + teamEnum.getCode());
         cboPlayer2.setItemLabelGenerator(Player::getName);
         cboPlayer2.setItems(listPlayer2);
 
