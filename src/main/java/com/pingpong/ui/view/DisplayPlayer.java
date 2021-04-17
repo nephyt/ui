@@ -32,7 +32,7 @@ public class DisplayPlayer {
         if (player.getPicture() != null) {
             StreamResource resource = playerPicture.get(player.getId());
             if (resource == null) {
-                resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(player.getPicture()));
+                resource = new StreamResource(player.getName() + "-DisplayPlayer.jpg", () -> new ByteArrayInputStream(player.getPicture()));
                 playerPicture.put(player.getId(), resource);
             }
             imgPlayer.setSrc(resource);

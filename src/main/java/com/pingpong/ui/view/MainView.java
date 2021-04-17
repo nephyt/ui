@@ -149,7 +149,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             result.setWidth("60px");
             result.setHeight("60px");
             if (player.getPicture() != null) {
-                StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(player.getPicture()));
+                StreamResource resource = new StreamResource(player.getName() + "-MainView.jpg", () -> new ByteArrayInputStream(player.getPicture()));
 
                 result.setSrc(resource);
             }

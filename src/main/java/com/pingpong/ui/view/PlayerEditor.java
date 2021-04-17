@@ -205,7 +205,7 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
         image.setVisible(false);
 
         if (player.getPicture() != null) {
-            StreamResource resource = new StreamResource("dummyImageName.jpg", () -> new ByteArrayInputStream(player.getPicture()));
+            StreamResource resource = new StreamResource(player.getName() + "-PlayerEditor.jpg", () -> new ByteArrayInputStream(player.getPicture()));
 
             image.setSrc(resource);
             image.setVisible(true);
