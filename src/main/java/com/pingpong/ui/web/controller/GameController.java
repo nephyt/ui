@@ -24,7 +24,7 @@ public class GameController {
         if (gameScore != null) {
             gameScore.getUI().get().access(() -> {
                 gameScore.updateGame(teamScored);
-                //     gameScore.getUI().get().access(() -> gameScore.getUI().get().push());
+                gameScore.getUI().get().access(() -> gameScore.getUI().get().push());
             });
 
             result = gameScore.getGame().determineServerState(); // equip A right player
