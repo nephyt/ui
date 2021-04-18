@@ -122,7 +122,7 @@ public class WinnerScreen extends VerticalLayout {
         add(loserName);
         add(time);
 
-        add(getVictorySong(winner1, isMute));
+      //  add(getVictorySong(winner1, isMute));
 
         add(buttonsDiv);
 
