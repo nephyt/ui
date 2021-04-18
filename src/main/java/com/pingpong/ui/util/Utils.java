@@ -64,10 +64,12 @@ public class Utils {
         if (VaadinService.getCurrentRequest() != null) {
             Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 
-            // Iterate to find cookie by its name
-            for (Cookie cookie : cookies) {
-                if (name.equals(cookie.getName())) {
-                    return cookie;
+            if (cookies != null) {
+                // Iterate to find cookie by its name
+                for (Cookie cookie : cookies) {
+                    if (name.equals(cookie.getName())) {
+                        return cookie;
+                    }
                 }
             }
         }
