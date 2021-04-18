@@ -122,8 +122,9 @@ public class WinnerScreen extends VerticalLayout {
         add(loserName);
         add(time);
 
-        add(getVictorySong(winner1, isMute));
-
+        if (winner1.getVictorySongPath() != null) {
+            add(getVictorySong(winner1, isMute));
+        }
         add(buttonsDiv);
 
         // save game after using TeamState for the Winning screen
@@ -140,7 +141,6 @@ public class WinnerScreen extends VerticalLayout {
         }
 
         String emdebSong = playerToDisplay.getYoutubeEmbedVictorySongPath() + autoPlay;
-
         frame.setSrc(emdebSong);
 
         return frame;
