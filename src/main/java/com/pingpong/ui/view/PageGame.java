@@ -60,17 +60,18 @@ public class PageGame extends Div {
     public void showGameSetting() {
         ServicesButtons.getInstance().playerSelection();
 
-        gameScore.setVisible(false);
-        gameSetting.setVisible(true);
         remove(winnerScreen);
+        gameSetting.setVisible(true);
+        gameScore.setVisible(false);
     }
 
     public void showGameScore() {
         ServicesButtons.getInstance().startMatch(gameScore.getGame().determineServerState());
 
-        gameSetting.setVisible(false);
-        gameScore.setVisible(true);
         remove(winnerScreen);
+        gameScore.setVisible(true);
+        gameSetting.setVisible(false);
+
     }
 
     public void showWinnerScreen() {
