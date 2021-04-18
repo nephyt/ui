@@ -36,7 +36,7 @@ public class WinnerScreen extends VerticalLayout {
         rematch.addClickListener(e -> rematchGame());
         rematch.setId("rematch");
         changePlayers.addClickListener(e -> changePlayers());
-        changePlayers.setId("changePlayers");
+        changePlayers.setId("changementJoueur");
 
         Utils.disableSelection(this);
     }
@@ -122,7 +122,7 @@ public class WinnerScreen extends VerticalLayout {
         add(loserName);
         add(time);
 
-      //  add(getVictorySong(winner1, isMute));
+        add(getVictorySong(winner1, isMute));
 
         add(buttonsDiv);
 
