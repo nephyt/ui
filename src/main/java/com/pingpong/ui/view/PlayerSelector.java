@@ -40,6 +40,21 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         return player2;
     }
 
+    public String getPlayer1Name() {
+        String name = "NONE";
+        if (cboPlayer1.getValue() != null) {
+            name = cboPlayer1.getValue().getName();
+        }
+        return name;
+    }
+
+    public String getPlayer2Name() {
+        String name = "NONE";
+        if (cboPlayer2.getValue() != null) {
+            name = cboPlayer2.getValue().getName();
+        }
+        return name;
+    }
 
     public void nextPlayer1() {
         ++indexPlayer1;

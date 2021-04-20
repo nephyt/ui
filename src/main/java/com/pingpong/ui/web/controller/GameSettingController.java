@@ -17,39 +17,43 @@ public class GameSettingController {
 
 
     @GetMapping(value = "/nextPlayer0")
-    public void nextPlayer1TeamA() {
+    public String nextPlayer1TeamA() {
         if (gameSetting != null) {
             gameSetting.getUI().get().access(() -> {
                 gameSetting.getPlayerSelectorTeamA().nextPlayer1();
             });
         }
+        return gameSetting.getPlayerSelectorTeamA().getPlayer1Name();
     }
 
     @GetMapping(value = "/nextPlayer1")
-    public void nextPlayer2TeamA() {
+    public String nextPlayer2TeamA() {
         if (gameSetting != null) {
             gameSetting.getUI().get().access(() -> {
                 gameSetting.getPlayerSelectorTeamA().nextPlayer2();
           });
         }
+        return gameSetting.getPlayerSelectorTeamA().getPlayer2Name();
     }
 
     @GetMapping(value = "/nextPlayer2")
-    public void nextPlayer1TeamB() {
+    public String nextPlayer1TeamB() {
         if (gameSetting != null) {
             gameSetting.getUI().get().access(() -> {
                 gameSetting.getPlayerSelectorTeamB().nextPlayer1();
             });
         }
+        return gameSetting.getPlayerSelectorTeamB().getPlayer1Name();
     }
 
     @GetMapping(value = "/nextPlayer3")
-    public void nextPlayer2TeamB() {
+    public String nextPlayer2TeamB() {
         if (gameSetting != null) {
             gameSetting.getUI().get().access(() -> {
                 gameSetting.getPlayerSelectorTeamB().nextPlayer2();
             });
         }
+        return gameSetting.getPlayerSelectorTeamB().getPlayer2Name();
     }
 
     @GetMapping(value = "/nextScoreMax")

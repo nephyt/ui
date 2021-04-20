@@ -2,7 +2,6 @@ package com.pingpong.ui;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,10 +12,20 @@ import org.springframework.web.client.RestTemplate;
 public class AutomaticTest {
 
     String urlToTest = "http://localhost:8080/";
+    //String urlToTest = "https://pingpongchezced.herokuapp.com/";
     RestTemplate restTemplate = new RestTemplate();
+
+    WebElement player1A;
+    WebElement player2A;
+    WebElement player1B;
+    WebElement player2B;
+
+    int timeOut = 30;
 
     @Test
     public void testUI() {
+
+        int scoreMax = 11;
 
        // System.setProperty("webdriver.gecko.driver", "C:\\Users\\Ced\\Documents\\Cedric\\Pingpong\\ui\\src\\test\\resources\\geckodriver.exe");
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\Ced\\Documents\\Cedric\\Pingpong\\ui\\src\\test\\resources\\chromedriver.exe");
@@ -30,44 +39,151 @@ public class AutomaticTest {
         tabGame.click();
 
         // explicit wait condition
-        WebDriverWait w = new WebDriverWait(driver, 3);
+        WebDriverWait w = new WebDriverWait(driver, timeOut);
         // presenceOfElementLocated condition
         w.until(ExpectedConditions.presenceOfElementLocated(By.id("player1A")));
 
-        WebElement player1A = driver.findElement(By.id("player1A"));
-        player1A.sendKeys("Jeff");
+        player1A = driver.findElement(By.id("player1A"));
+        player2A = driver.findElement(By.id("player2A"));
+        player1B = driver.findElement(By.id("player1B"));
+        player2B = driver.findElement(By.id("player2B"));
 
-        WebElement player1B = driver.findElement(By.id("player1B"));
-        player1B.sendKeys("Doctor Octopus");
-        player1B.sendKeys(Keys.TAB);
+       // player1A.sendKeys("Forest Gump");
+       // player1A.sendKeys(Keys.TAB);
 
-        for (int j = 0; j < 30; ++j) {
+        changePlayer(0);
+        changePlayer(1);
+        changePlayer(1);
+        changePlayer(2);
+        changePlayer(2);
+        changePlayer(2);
+        changePlayer(3);
+        changePlayer(3);
+        changePlayer(3);
+        changePlayer(3);
 
-            WebElement btnStartMatch = driver.findElement(By.id("btnStartGame"));
-            btnStartMatch.click();
+       // player1B.sendKeys("Doctor Octopus");
+       // player1B.sendKeys(Keys.TAB);
+
+        for (int j = 0; j < 200; ++j) {
+
+            changeScoreMax();
+
+
+            final String[] playerName = new String[4];
+            for (int k = 0; k < 4; ++k) {
+                playerName[k] = changePlayer(k);
+                try {
+                    Thread.sleep(600);
+                } catch (Exception e) {
+
+                }
+            }
+            int playerToChange;
+            do {
+                playerToChange = isPlayerSelectionValid(playerName);
+                if (playerToChange >= 0) {
+                    playerName[playerToChange] = changePlayer(playerToChange);
+                    try {
+                        Thread.sleep(600);
+                    } catch (Exception e) {
+
+                    }
+                }
+            } while(playerToChange >= 0);
+
+
+            if (j%2 == 0) {
+                scoreMax = 21;
+            } else {
+                scoreMax = 11;
+            }
+
+            clickButton(driver, "btnStartGame", true);
 
             // explicit wait condition
-            w = new WebDriverWait(driver, 3);
+            w = new WebDriverWait(driver, timeOut);
             // presenceOfElementLocated condition
             w.until(ExpectedConditions.presenceOfElementLocated(By.id("displayTeamA")));
-
-            for (int i = 0; i < 11; ++i) {
+            w.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("displayTeamA"))));
+            //
+            for (int i = 0; i < scoreMax; ++i) {
                 if (j%2 == 0) {
                     teamScore("TEAM_A");
                 } else {
                     teamScore("TEAM_B");
                 }
+
             }
 
-            // explicit wait condition
-            w = new WebDriverWait(driver, 3);
-            // presenceOfElementLocated condition
-            w.until(ExpectedConditions.presenceOfElementLocated(By.id("changePlayers")));
+           clickButton(driver, "changementJoueur", false);
 
-            WebElement changePlayers = driver.findElement(By.id("changePlayers"));
-//      while (!btnStartMatch.isEnabled()) {}
-            changePlayers.click();
+            newGame();
+      //     rematch();
+    //        clickButton(driver, "rematch");
 
+        }
+    }
+
+
+    private int isPlayerSelectionValid(String[] playerName) {
+
+        System.out.println("IN-----------");
+        System.out.println(playerName[0]);
+        System.out.println(playerName[1]);
+        System.out.println(playerName[2]);
+        System.out.println(playerName[3]);
+        System.out.println("OUT-----------");
+
+        if (playerName[0].equals("NONE")) {
+            return 0;
+        }
+
+        if (playerName[2].equals("NONE")) {
+            return 2;
+        }
+
+        if (playerName[0].equals(playerName[1])) {
+            return 0;
+        }
+
+        if (playerName[0].equals(playerName[2])) {
+            return 0;
+        }
+
+        if (playerName[0].equals(playerName[3])) {
+            return 0;
+        }
+
+        if (playerName[1].equals(playerName[2])) {
+            return 1;
+        }
+
+
+        if (playerName[1].equals(playerName[3])) {
+            return 1;
+        }
+
+        if (playerName[2].equals(playerName[3])) {
+            return 2;
+        }
+
+        return -1;
+    }
+
+    private void clickButton(WebDriver driver, String buttonId, boolean click) {
+
+        // explicit wait condition
+        WebDriverWait w = new WebDriverWait(driver, timeOut);
+        // presenceOfElementLocated condition
+        w.until(ExpectedConditions.presenceOfElementLocated(By.id(buttonId)));
+        WebDriverWait w2 = new WebDriverWait(driver, timeOut);
+        w2.until(ExpectedConditions.visibilityOf(driver.findElement(By.id(buttonId))));
+
+        if (click) {
+            WebElement button = driver.findElement(By.id(buttonId));
+            while (!button.isEnabled()) {}
+            button.click();
         }
     }
 
@@ -75,6 +191,29 @@ public class AutomaticTest {
     public void teamScore(String team) {
         String uri = urlToTest +  "teamScored/" + team;
         String result = restTemplate.getForObject(uri, String.class);
+    }
+
+    public void changeScoreMax() {
+        String uri = urlToTest +  "nextScoreMax";
+        String result = restTemplate.getForObject(uri, String.class);
+    }
+
+    public void newGame() {
+        String uri = urlToTest +  "/newGame";
+        String result = restTemplate.getForObject(uri, String.class);
+    }
+
+    public void rematch() {
+        String uri = urlToTest +  "/rematch";
+        String result = restTemplate.getForObject(uri, String.class);
+    }
+
+
+    public String changePlayer(int playerNbr) {
+        String uri = urlToTest +  "nextPlayer" + playerNbr;
+        String result = restTemplate.getForObject(uri, String.class);
+        System.out.println(result);
+        return result;
     }
 
 
