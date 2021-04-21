@@ -158,7 +158,7 @@ public class GameSetting extends VerticalLayout {
             displayNotification(formatTeamStats(playerSelectorTeamB, teamStats));
         }
 
-        if (teamA != null && teamB != null && validatePlayerSelection()) {
+        if (isTeamValid(teamA, teamB)) {
             // show stat team A vs team B
             TeamStats teamStats = ServicesRest.getTeamVSStatsByPlayer(teamA, teamB);
             displayNotification(formatTeamVsTeamStats(teamStats));
@@ -230,6 +230,21 @@ public class GameSetting extends VerticalLayout {
         int display = (int)(winPrct * 100);
         result += display + "%<br/>";
         return result;
+    }
+
+
+    public void validateAndStartGame() {
+
+        Team teamA = playerSelectorTeamA.createTeam();
+        Team teamB = playerSelectorTeamB.createTeam();
+
+        if (isTeamValid(teamA, teamB)) {
+            startGame();
+        }
+    }
+
+    private boolean isTeamValid(Team teamA, Team teamB) {
+        return teamA != null && teamB != null && validatePlayerSelection();
     }
 
     public void startGame() {

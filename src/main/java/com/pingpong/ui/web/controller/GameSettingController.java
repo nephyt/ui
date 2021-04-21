@@ -71,7 +71,7 @@ public class GameSettingController {
 
         if (gameSetting != null) {
             gameSetting.getUI().get().access(() -> {
-                gameSetting.startGame();
+                gameSetting.validateAndStartGame();
 
                 //     gameScore.getUI().get().access(() -> gameScore.getUI().get().push());
             });
