@@ -11,8 +11,8 @@ import org.springframework.web.client.RestTemplate;
 
 public class AutomaticTest {
 
-    String urlToTest = "http://localhost:8080/";
-    //String urlToTest = "https://pingpongchezced.herokuapp.com/";
+    //String urlToTest = "http://localhost:8080/";
+    String urlToTest = "https://pingpongchezced.herokuapp.com/";
     RestTemplate restTemplate = new RestTemplate();
 
     WebElement player1A;
@@ -21,6 +21,33 @@ public class AutomaticTest {
     WebElement player2B;
 
     int timeOut = 30;
+
+
+
+    @Test
+    public void tv() {
+
+        // System.setProperty("webdriver.gecko.driver", "C:\\Users\\Ced\\Documents\\Cedric\\Pingpong\\ui\\src\\test\\resources\\geckodriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\Ced\\Documents\\Cedric\\Pingpong\\ui\\src\\test\\resources\\chromedriver.exe");
+
+        WebDriver driver = new ChromeDriver();
+
+        String className = ".jw-video";
+
+       // driver.get("blob:https://www.noovo.ca/8fe05566-699b-4500-a4d4-4544c9f1d8a0");
+        driver.get("https://www.noovo.ca/en-direct");
+        WebDriverWait w = new WebDriverWait(driver, timeOut);
+        // presenceOfElementLocated condition
+        w.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(className)));
+        WebDriverWait w2 = new WebDriverWait(driver, timeOut);
+        w2.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector(className))));
+
+        WebElement ele = driver.findElement(By.xpath("//div[@id='vidi_player_instance_1']/div[2]/div[4]/video"));
+
+
+        //ele.findElement(By.className("jw-icon jw-icon-display jw-button-color jw-reset")).click();
+        //driver.findElement(By.cssSelector(className)).click();
+    }
 
     @Test
     public void testUI() {
@@ -50,31 +77,31 @@ public class AutomaticTest {
 
        // player1A.sendKeys("Forest Gump");
        // player1A.sendKeys(Keys.TAB);
-
-        changePlayer(0);
-        changePlayer(1);
-        changePlayer(1);
-        changePlayer(2);
-        changePlayer(2);
-        changePlayer(2);
-        changePlayer(3);
-        changePlayer(3);
-        changePlayer(3);
-        changePlayer(3);
+//
+//        changePlayer(0);
+//        changePlayer(1);
+//        changePlayer(1);
+//        changePlayer(2);
+//        changePlayer(2);
+//        changePlayer(2);
+//        changePlayer(3);
+//        changePlayer(3);
+//        changePlayer(3);
+//        changePlayer(3);
 
        // player1B.sendKeys("Doctor Octopus");
        // player1B.sendKeys(Keys.TAB);
 
-        for (int j = 0; j < 200; ++j) {
+        for (int j = 0; j < 500; ++j) {
+        System.out.println("Match : " + j);
 
             changeScoreMax();
-
 
             final String[] playerName = new String[4];
             for (int k = 0; k < 4; ++k) {
                 playerName[k] = changePlayer(k);
                 try {
-                    Thread.sleep(600);
+                    Thread.sleep(2500);
                 } catch (Exception e) {
 
                 }
@@ -85,7 +112,7 @@ public class AutomaticTest {
                 if (playerToChange >= 0) {
                     playerName[playerToChange] = changePlayer(playerToChange);
                     try {
-                        Thread.sleep(600);
+                        Thread.sleep(2500);
                     } catch (Exception e) {
 
                     }
@@ -100,6 +127,7 @@ public class AutomaticTest {
             }
 
             clickButton(driver, "btnStartGame", true);
+            //startMatch();
 
             // explicit wait condition
             w = new WebDriverWait(driver, timeOut);
@@ -128,12 +156,12 @@ public class AutomaticTest {
 
     private int isPlayerSelectionValid(String[] playerName) {
 
-        System.out.println("IN-----------");
-        System.out.println(playerName[0]);
-        System.out.println(playerName[1]);
-        System.out.println(playerName[2]);
-        System.out.println(playerName[3]);
-        System.out.println("OUT-----------");
+//        System.out.println("IN-----------");
+//        System.out.println(playerName[0]);
+//        System.out.println(playerName[1]);
+//        System.out.println(playerName[2]);
+//        System.out.println(playerName[3]);
+//        System.out.println("OUT-----------");
 
         if (playerName[0].equals("NONE")) {
             return 0;
@@ -205,6 +233,10 @@ public class AutomaticTest {
 
     public void rematch() {
         String uri = urlToTest +  "/rematch";
+        String result = restTemplate.getForObject(uri, String.class);
+    }
+    public void startMatch() {
+        String uri = urlToTest +  "/startGame";
         String result = restTemplate.getForObject(uri, String.class);
     }
 
