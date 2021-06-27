@@ -6,6 +6,9 @@ import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
+import com.pingpong.ui.web.controller.GameController;
+import com.pingpong.ui.web.controller.GameSettingController;
+import com.pingpong.ui.web.controller.WinnerScreenController;
 import com.vaadin.flow.component.html.Div;
 
 import java.util.List;
@@ -34,6 +37,11 @@ public class PageGame extends Div {
     public void refreshStatePage() {
         if (gameSetting.isVisible()) {
             ServicesButtons.getInstance().playerSelection();
+
+            GameSettingController.setGameSetting(gameSetting);
+            GameController.setGameScore(null);
+            WinnerScreenController.setWinnerScreen(null);
+
             if (Utils.getNeedUpdate()) {
                 Utils.setNeedUpdate(false);
                 List<Player> listPlayers = ServicesRest.listPlayer("");
@@ -41,12 +49,20 @@ public class PageGame extends Div {
                 gameSetting.getPlayerSelectorTeamB().refreshListPlayer(listPlayers);
             }
         } else if (gameScore.isVisible()) {
+            GameSettingController.setGameSetting(null);
+            GameController.setGameScore(gameScore);
+            WinnerScreenController.setWinnerScreen(null);
+
             if (GameStatus.ACTIVE.getCode().equals(gameScore.getGame().getGameStatus().getCode())) {
                 ServicesButtons.getInstance().startServerModeButton(gameScore.getGame().determineServerState());
             } else if (GameStatus.PAUSE.getCode().equals(gameScore.getGame().getGameStatus().getCode())) {
                 ServicesButtons.getInstance().pauseGame();
             }
         } else if (winnerScreen.isVisible()) {
+            GameSettingController.setGameSetting(null);
+            GameController.setGameScore(null);
+            WinnerScreenController.setWinnerScreen(winnerScreen);
+
             ServicesButtons.getInstance().startModeWinner(gameScore.getGame());
         }
     }
@@ -58,29 +74,30 @@ public class PageGame extends Div {
     }
 
     public void showGameSetting() {
-        ServicesButtons.getInstance().playerSelection();
 
         remove(winnerScreen);
         gameSetting.setVisible(true);
         gameScore.setVisible(false);
+
+        refreshStatePage();
     }
 
     public void showGameScore() {
-        ServicesButtons.getInstance().startMatch(gameScore.getGame().determineServerState());
-
         remove(winnerScreen);
         gameScore.setVisible(true);
         gameSetting.setVisible(false);
 
+        refreshStatePage();
+
     }
 
     public void showWinnerScreen() {
-        ServicesButtons.getInstance().startModeWinner(gameScore.getGame());
-
         gameScore.setVisible(false);
         add(winnerScreen);
         winnerScreen.showWinner(gameScore.getGame(), gameScore.getDisplayTeamA(), gameScore.getDisplayTeamB(), gameScore.isMute());
         winnerScreen.setVisible(true);
+
+        refreshStatePage();
     }
 
 }
