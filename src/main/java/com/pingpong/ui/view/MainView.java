@@ -93,6 +93,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
                 ((PageGame)selectedPage).refreshStatePage();
             }
             if (tabs.getSelectedIndex() == 3) {
+                ServicesButtons.getInstance().standBy();
                 ((HistoricGameVIew)selectedPage).refreshPage();
             }
 
