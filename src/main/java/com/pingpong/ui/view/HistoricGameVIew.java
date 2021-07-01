@@ -124,7 +124,14 @@ public class HistoricGameVIew extends Div {
     }
 
     private String getTeamPlayerName(Map<Integer, Player> mapPlayer, Team team) {
-        String result = mapPlayer.get(team.getTeamPlayer1().getPlayerId()).getName();
+        Player player = mapPlayer.get(team.getTeamPlayer1().getPlayerId());
+        if (player == null) {
+            // need to refresh the player list
+            mapPlayer = ServicesRest.mapPlayer("");
+            player = mapPlayer.get(team.getTeamPlayer1().getPlayerId());
+        }
+
+        String result = player.getName();
 
         if (team.getTeamPlayer2() != null) {
             result += " & " + mapPlayer.get(team.getTeamPlayer2().getPlayerId()).getName();

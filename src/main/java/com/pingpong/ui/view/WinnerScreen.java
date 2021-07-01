@@ -6,6 +6,7 @@ import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
+import com.pingpong.ui.web.controller.GameController;
 import com.pingpong.ui.web.controller.WinnerScreenController;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -172,6 +173,7 @@ public class WinnerScreen extends VerticalLayout {
     }
 
     public void rematchGame() {
+        GameController.setGameScore(null);
 
         Game game = pageGame.gameScore.getGame();
         DisplayTeam displayTeamA = pageGame.gameScore.getDisplayTeamA();

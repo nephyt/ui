@@ -60,7 +60,7 @@ public class PageGame extends Div {
             }
         } else if (winnerScreen.isVisible()) {
             GameSettingController.setGameSetting(null);
-            GameController.setGameScore(null);
+            //GameController.setGameScore(null); will be set to null in winner screen
             WinnerScreenController.setWinnerScreen(winnerScreen);
 
             ServicesButtons.getInstance().startModeWinner(gameScore.getGame());

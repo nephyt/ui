@@ -109,7 +109,15 @@ public class PausedGameVIew extends Div {
     }
 
     private String getTeamPlayerName(Map<Integer, Player> mapPlayer, Team teamA) {
-        String result = mapPlayer.get(teamA.getTeamPlayer1().getPlayerId()).getName();
+
+        Player player = mapPlayer.get(teamA.getTeamPlayer1().getPlayerId());
+        if (player == null) {
+            // need to refresh the player list
+            mapPlayer = ServicesRest.mapPlayer("");
+            player = mapPlayer.get(teamA.getTeamPlayer1().getPlayerId());
+        }
+
+        String result = player.getName();
 
         if (teamA.getTeamPlayer2() != null) {
             result += " & " + mapPlayer.get(teamA.getTeamPlayer2().getPlayerId()).getName();
