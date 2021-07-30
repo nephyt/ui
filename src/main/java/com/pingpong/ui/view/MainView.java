@@ -180,19 +180,19 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             result += stats.getNumberOfGameLost();
 
             return result;
-        }).setHeader("#Games/W/L").setKey("gamePlayed");
+        }).setHeader("#Games/W/L").setSortable(true).setKey("gamePlayed");
 
 
         grid.addColumn(player ->
             serviceCount.getServiceCountForPlayer(player.getId()).toStringBallServe()
-        ).setHeader("#BallsServe/W/L").setKey("ballServe");
+        ).setHeader("#BallsServe/W/L").setSortable(true).setKey("ballServe");
 
         grid.addColumn(player -> {
             PlayerStats stats = playersStats.getPlayerStatsForPlayer(player.getId());
 
             return Utils.formatTimePlayed(stats.getTimePlayed());
 
-        }).setHeader("Time").setKey("time");
+        }).setSortable(true).setHeader("Time Played").setKey("time");
 
 
         List<Grid.Column<Player>> orderColumn = new ArrayList<>();
