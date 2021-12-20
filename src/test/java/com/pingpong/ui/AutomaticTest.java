@@ -1,6 +1,5 @@
 package com.pingpong.ui;
 
-import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -24,7 +23,7 @@ public class AutomaticTest {
 
 
 
-    @Test
+    //@Test
     public void tv() {
 
         // System.setProperty("webdriver.gecko.driver", "C:\\Users\\Ced\\Documents\\Cedric\\Pingpong\\ui\\src\\test\\resources\\geckodriver.exe");
@@ -49,7 +48,7 @@ public class AutomaticTest {
         //driver.findElement(By.cssSelector(className)).click();
     }
 
-    @Test
+    //@Test
     public void testUI() {
 
         int scoreMax = 11;
