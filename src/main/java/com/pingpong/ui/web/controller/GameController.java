@@ -19,18 +19,18 @@ public class GameController {
     @GetMapping(value = "/teamScored/{teamScored}")
     public String teamScored(@PathVariable TeamEnum teamScored) {
 
-        String result = ""; // next ser
+        final String[] result = {""}; // next ser
 
         if (gameScore != null) {
             gameScore.getUI().get().access(() -> {
                 gameScore.updateGame(teamScored);
+                result[0] = gameScore.getGame().determineServerState();
                 gameScore.getUI().get().push();
             });
 
-            result = gameScore.getGame().determineServerState(); // equip A right player
         }
 
-        return result;
+        return result[0];
     }
 
     @GetMapping(value = "/teamService")
