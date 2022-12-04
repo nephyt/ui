@@ -173,6 +173,8 @@ public class WinnerScreen extends VerticalLayout {
     }
 
     public void rematchGame() {
+
+        System.out.println("Set game score a null dans rematchGame");
         GameController.setGameScore(null);
 
         Game game = pageGame.gameScore.getGame();

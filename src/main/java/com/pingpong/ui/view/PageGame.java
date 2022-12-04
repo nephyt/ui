@@ -39,6 +39,8 @@ public class PageGame extends Div {
             ServicesButtons.getInstance().playerSelection();
 
             GameSettingController.setGameSetting(gameSetting);
+
+            System.out.println("Set game score a null dans refreshStatePage");
             GameController.setGameScore(null);
             WinnerScreenController.setWinnerScreen(null);
 
@@ -50,6 +52,8 @@ public class PageGame extends Div {
             }
         } else if (gameScore.isVisible()) {
             GameSettingController.setGameSetting(null);
+
+            System.out.println("Set game score dans refreshStatePage");
             GameController.setGameScore(gameScore);
             WinnerScreenController.setWinnerScreen(null);
 

@@ -61,6 +61,8 @@ public class GameScore extends VerticalLayout {
     }
 
     public GameScore() {
+
+        System.out.println("Set game score a this dans GameScore");
         GameController.setGameScore(this);
 
         setupAudio(pointSoundTeamA, "Super Mario Bros.-Coin Sound Effect.mp3");
