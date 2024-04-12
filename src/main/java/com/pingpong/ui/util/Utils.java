@@ -2,8 +2,8 @@ package com.pingpong.ui.util;
 
 import com.pingpong.ui.Constants;
 import com.vaadin.flow.server.VaadinService;
+import jakarta.servlet.http.Cookie;
 
-import javax.servlet.http.Cookie;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
@@ -77,8 +77,7 @@ public class Utils {
         Cookie myCookie = new Cookie(name, defaultValue);
         myCookie.setMaxAge(60 * 60 * 3); // define after how many *seconds* the cookie should expire
         myCookie.setPath("/"); // single slash means the cookie is set for your whole application.
-        myCookie.setDomain("pingpongchezced.herokuapp.com");
-        myCookie.setComment("Mute or unmute sound for ping pong website");
+        myCookie.setDomain("localhost");
 
         return myCookie;
     }
