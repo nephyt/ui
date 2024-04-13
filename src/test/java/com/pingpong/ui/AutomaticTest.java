@@ -8,6 +8,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
+
 public class AutomaticTest {
 
     //String urlToTest = "http://localhost:8080/";
@@ -19,7 +21,7 @@ public class AutomaticTest {
     WebElement player1B;
     WebElement player2B;
 
-    int timeOut = 30;
+    Duration timeOut = Duration.ofSeconds(30);
 
 
 
