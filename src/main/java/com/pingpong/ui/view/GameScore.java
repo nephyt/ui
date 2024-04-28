@@ -6,7 +6,6 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
-import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.thread.ClickThread;
@@ -19,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
 
 import java.util.Map;
+import java.util.Stack;
 
 
 public class GameScore extends VerticalLayout {
@@ -32,8 +32,8 @@ public class GameScore extends VerticalLayout {
 
     Game game;
 
-    private DisplayTeam displayTeamA = new DisplayTeam();
-    private DisplayTeam displayTeamB = new DisplayTeam();
+    private final DisplayTeam displayTeamA = new DisplayTeam();
+    private final DisplayTeam displayTeamB = new DisplayTeam();
 
     DisplayScore displayScoreTeamA = new DisplayScore();
     DisplayScore displayScoreTeamB = new DisplayScore();
@@ -48,6 +48,7 @@ public class GameScore extends VerticalLayout {
 
     private Boolean isMute = false;
     Button pauseResumeGame = new Button("Pause Game");
+    Button undo = new Button("Undo");
     Button newGame = new Button("New Game");
 
     AllServiceCount serviceCountStats;
@@ -55,6 +56,8 @@ public class GameScore extends VerticalLayout {
     AudioPlayer pointSoundTeamA = new AudioPlayer();
     AudioPlayer pointSoundTeamB = new AudioPlayer();
     AudioPlayer matchPointSound = new AudioPlayer();
+
+    Stack<TeamEnum> scoringHistory = new Stack<>();
 
     public boolean isMute() {
         return isMute;
@@ -106,6 +109,7 @@ public class GameScore extends VerticalLayout {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         add(pauseResumeGame);
+        add(undo);
         add(newGame);
         add(muteUnmuteSounds);
         add(pointSoundTeamA);
@@ -113,6 +117,7 @@ public class GameScore extends VerticalLayout {
         add(matchPointSound);
 
         pauseResumeGame.addClickListener(e-> pauseResumeGame());
+        undo.addClickListener(e-> undoPoint());
         newGame.addClickListener(e-> createNewGame());
         muteUnmuteSounds.addClickListener(e-> muteUnmuteSounds());
 
@@ -178,12 +183,14 @@ public class GameScore extends VerticalLayout {
                 serviceCountStats.getServiceCount().clear();
                 pauseResumeGame.setText("Resume Game");
                 newGame.setVisible(true);
+                undo.setVisible(false);
             } else if (GameStatus.PAUSE.getCode().equals(game.getGameStatus().getCode())) {
                 ServicesButtons.getInstance().startServerModeButton(game.determineServerState());
                 game.resumeGame();
                 game = ServicesRest.saveGame(game);
                 pauseResumeGame.setText("Pause Game");
                 newGame.setVisible(false);
+                undo.setVisible(true);
             }
         }
     }
@@ -211,17 +218,34 @@ public class GameScore extends VerticalLayout {
         }
     }
 
+    public void undoPoint() {
+
+        if (!scoringHistory.empty()) {
+            if (game != null && GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
+
+                game.undo(scoringHistory.pop());
+                game.determineServerState();
+
+                refreshScreen();
+            }
+        }
+    }
+
     public void updateGame(TeamEnum teamScored) {
 
         if (game != null && GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
             if (TeamEnum.TEAM_A.getCode().equals(teamScored.getCode() )) {
                 updateServiceCount(game.getTeamStateA(), game.getTeamStateB());
 
+                scoringHistory.add(TeamEnum.TEAM_A);
+
                 game.incrementScoreTeamA();
                 game.updateGame();
             }
             else if (TeamEnum.TEAM_B.getCode().equals(teamScored.getCode() )) {
                 updateServiceCount(game.getTeamStateB(), game.getTeamStateA());
+
+                scoringHistory.add(TeamEnum.TEAM_B);
 
                 game.incrementScoreTeamB();
                 game.updateGame();
@@ -260,17 +284,7 @@ public class GameScore extends VerticalLayout {
     }
 
     private void updateServiceCount(TeamState teamScored, TeamState teamLost) {
-        boolean winServe = false;
-        Integer server = teamLost.getServer();
-        if (teamScored.hasService()) {
-            winServe = true;
-            server = teamScored.getServer();
-        }
-
-        ServiceCount serviceCount = serviceCountStats.getServiceCountForPlayer(server);
-        serviceCount.incrementCounter(winServe);
-        serviceCountStats.putServiceCount(serviceCount);
-
+        serviceCountStats.updateServiceCount(teamScored, teamLost);
      //   new ServiceCountThread(server, winServe).run();
      //   new Thread(new ServiceCountThread(server, winServe)).start();
     }
