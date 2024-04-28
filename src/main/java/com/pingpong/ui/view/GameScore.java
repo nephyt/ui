@@ -152,7 +152,9 @@ public class GameScore extends VerticalLayout {
         this.displayTeamB.setMapIdPlayer(mapPlayerTeamB);
         this.serviceCountStats = new AllServiceCount(gameToManage);
 
+        scoringHistory.clear();
         pauseResumeGame.setText("Pause Game");
+        undo.setVisible(true);
         newGame.setVisible(false);
     }
 
@@ -178,6 +180,7 @@ public class GameScore extends VerticalLayout {
             if (GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
                 ServicesButtons.getInstance().pauseGame();
                 game.pauseGame();
+                scoringHistory.clear();
                 game = ServicesRest.saveGame(game);
                 ServicesRest.updatePlayersCountService(serviceCountStats);
                 serviceCountStats.getServiceCount().clear();
@@ -191,6 +194,7 @@ public class GameScore extends VerticalLayout {
                 pauseResumeGame.setText("Pause Game");
                 newGame.setVisible(false);
                 undo.setVisible(true);
+                undo.setEnabled(!scoringHistory.isEmpty());
             }
         }
     }
@@ -206,6 +210,8 @@ public class GameScore extends VerticalLayout {
 
 
         displayTeamB.refreshTeam(game.getTeamStateB(), TeamEnum.TEAM_B);
+
+        undo.setEnabled(!scoringHistory.empty());
     }
 
     private void addClick(ClickEvent event) {
@@ -222,6 +228,8 @@ public class GameScore extends VerticalLayout {
 
         if (!scoringHistory.empty()) {
             if (game != null && GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
+
+                serviceCountStats.undoServiceCount();
 
                 game.undo(scoringHistory.pop());
                 game.determineServerState();

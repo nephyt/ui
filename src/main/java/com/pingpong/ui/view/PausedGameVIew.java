@@ -4,6 +4,7 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.ui.services.ServicesRest;
+import com.pingpong.ui.web.controller.GameController;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -15,6 +16,7 @@ import java.util.Map;
 public class PausedGameVIew extends Div {
 
     private Button resumeGameBtn = new Button("Resume Game");
+    private Button deleteGameBtn = new Button("Delete Game");
     PageGame pageGame;
 
     Map<Integer, Player> mapPlayer;
@@ -29,11 +31,14 @@ public class PausedGameVIew extends Div {
         this.tabs = tabs;
 
         setupGrid();
-        
 
         resumeGameBtn.addClickListener(e -> resumeGame());
         resumeGameBtn.setVisible(false);
         add(resumeGameBtn);
+
+        deleteGameBtn.addClickListener(e -> deleteGame());
+        deleteGameBtn.setVisible(false);
+        add(deleteGameBtn);
 
         setVisible(false);
 
@@ -50,6 +55,15 @@ public class PausedGameVIew extends Div {
         }
     }
 
+    private void deleteGame() {
+        if (gameSelected != null) {
+            GameController gameController = new GameController();
+            gameController.deleteGame(gameSelected.getId());
+            fillGrid();
+            resumeGameBtn.setVisible(false);
+            deleteGameBtn.setVisible(false);
+        }
+    }
 
     private Map<Integer, Player> getMapPlayerTeam(Team team, Map<Integer, Player> mapPlayer) {
         Map<Integer, Player> map = new HashMap<>();
@@ -74,7 +88,7 @@ public class PausedGameVIew extends Div {
         grid.removeColumnByKey("gameTime");
         grid.removeColumnByKey("winnerTeam");
         grid.removeColumnByKey("loserTeam");
-        grid.removeColumnByKey("id");
+       // grid.removeColumnByKey("id");
         grid.removeColumnByKey("teamA");
         grid.removeColumnByKey("teamB");
         grid.removeColumnByKey("teamWinnerId");
@@ -102,6 +116,7 @@ public class PausedGameVIew extends Div {
         // Connect selected Customer to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
             resumeGameBtn.setVisible(true);
+            deleteGameBtn.setVisible(true);
             gameSelected = e.getValue();
         });
 

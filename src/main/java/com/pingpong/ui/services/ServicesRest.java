@@ -31,6 +31,16 @@ public class ServicesRest {
         restTemplate.put(uri, updatePlayer, PlayersStats.class);
     }
 
+    public static void deleteServiceGame(Integer gameId) {
+        String uri = Constants.SERVICE_COUNT_URL +  "deleteServiceGame/" + gameId;
+        restTemplate.delete(uri, List.class);
+    }
+
+    public static void deleteGame(Integer gameId) {
+        String uri = Constants.SERVICE_GAME_URL +  "deleteGame/" + gameId;
+        restTemplate.delete(uri);
+    }
+
     public static void pauseGame(Integer gameId) {
         String uri = Constants.SERVICE_GAME_URL +  "pauseGame/" + gameId;
         restTemplate.put(uri, null);

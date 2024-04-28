@@ -1,7 +1,9 @@
 package com.pingpong.ui.web.controller;
 
 import com.pingpong.basicclass.enumeration.TeamEnum;
+import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.view.GameScore;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,5 +59,16 @@ public class GameController {
 
         return result;
     }
+
+    @DeleteMapping(value = "/deleteGame/{gameId}")
+    public String deleteGame(@PathVariable Integer gameId) {
+        // call service game
+        ServicesRest.deleteGame(gameId);
+        // call serviceCount
+        ServicesRest.deleteServiceGame(gameId);
+
+        return "game id " + gameId + " deleted";
+    }
+
 
 }

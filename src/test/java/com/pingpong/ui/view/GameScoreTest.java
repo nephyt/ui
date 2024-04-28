@@ -7,7 +7,6 @@ import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +23,7 @@ class GameScoreTest {
 
         Team a = new Team(1,2);
 
-        File fi = new File("C:\\Users\\bey_j\\IdeaProjects\\ui\\src\\test\\resources\\blank.png");
         byte[] fileContent = null; //Files.readAllBytes(fi.toPath());
-
 
         //name, byte[] picture, PlayerStatus status, String victorySongPath
         Player player1 = new Player(1, "joueur1",fileContent, PlayerStatus.ACTIVE, "");
