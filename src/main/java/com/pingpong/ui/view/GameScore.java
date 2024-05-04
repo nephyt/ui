@@ -51,11 +51,15 @@ public class GameScore extends VerticalLayout {
     Button undo = new Button("Undo");
     Button newGame = new Button("New Game");
 
+    HorizontalLayout buttonsDiv = new HorizontalLayout(pauseResumeGame, undo, newGame, muteUnmuteSounds);
+
     AllServiceCount serviceCountStats;
 
     AudioPlayer pointSoundTeamA = new AudioPlayer();
     AudioPlayer pointSoundTeamB = new AudioPlayer();
     AudioPlayer matchPointSound = new AudioPlayer();
+    AudioPlayer undoSound = new AudioPlayer();
+    AudioPlayer pauseSound = new AudioPlayer();
 
     Stack<TeamEnum> scoringHistory = new Stack<>();
 
@@ -71,6 +75,8 @@ public class GameScore extends VerticalLayout {
         setupAudio(pointSoundTeamA, "Super Mario Bros.-Coin Sound Effect.mp3");
         setupAudio(pointSoundTeamB, "Yoshi's Mlem Sound Effect.mp3");
         setupAudio(matchPointSound, "Legend of Zelda A Link to the Past sound effect - Treasure!.mp3");
+        setupAudio(undoSound, "Bowser Laugh Epic Sound FX.mp3");
+        setupAudio(pauseSound, "Super Mario Bros.-Pause Sound Effect.mp3");
 
         clickListener = new ClickThread(this);
         thread = new Thread(clickListener);
@@ -108,13 +114,13 @@ public class GameScore extends VerticalLayout {
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
-        add(pauseResumeGame);
-        add(undo);
-        add(newGame);
-        add(muteUnmuteSounds);
+        add(buttonsDiv);
+
         add(pointSoundTeamA);
         add(pointSoundTeamB);
         add(matchPointSound);
+        add(undoSound);
+        add(pauseSound);
 
         pauseResumeGame.addClickListener(e-> pauseResumeGame());
         undo.addClickListener(e-> undoPoint());
@@ -178,6 +184,7 @@ public class GameScore extends VerticalLayout {
     private void pauseResumeGame() {
         if (game != null) {
             if (GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
+                playSound(pauseSound);
                 ServicesButtons.getInstance().pauseGame();
                 game.pauseGame();
                 scoringHistory.clear();
@@ -188,6 +195,7 @@ public class GameScore extends VerticalLayout {
                 newGame.setVisible(true);
                 undo.setVisible(false);
             } else if (GameStatus.PAUSE.getCode().equals(game.getGameStatus().getCode())) {
+                playSound(pauseSound);
                 ServicesButtons.getInstance().startServerModeButton(game.determineServerState());
                 game.resumeGame();
                 game = ServicesRest.saveGame(game);
@@ -228,6 +236,7 @@ public class GameScore extends VerticalLayout {
 
         if (!scoringHistory.empty()) {
             if (game != null && GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
+                playSound(undoSound);
 
                 serviceCountStats.undoServiceCount();
 

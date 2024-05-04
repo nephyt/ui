@@ -37,11 +37,11 @@ public class DisplayTeam extends VerticalLayout {
 
     public void refreshTeam(TeamState team, TeamEnum teamSide) {
         if (TeamEnum.TEAM_A.getCode().equals(teamSide.getCode())) {
-            player1.refreshDisplayPlayer(mapIdPlayer.get(team.getLeftPlayer()), hasServe(team.getServer(), team.getLeftPlayer()));
-            player2.refreshDisplayPlayer(mapIdPlayer.get(team.getRightPlayer()), hasServe(team.getServer(), team.getRightPlayer()));
+            player1.refreshDisplayPlayer(mapIdPlayer.get(team.getLeftPlayer()), hasServe(team.getServer(), team.getLeftPlayer()), "#F9F605");
+            player2.refreshDisplayPlayer(mapIdPlayer.get(team.getRightPlayer()), hasServe(team.getServer(), team.getRightPlayer()), "#23E61D");
         } else {
-            player1.refreshDisplayPlayer(mapIdPlayer.get(team.getRightPlayer()), hasServe(team.getServer(), team.getRightPlayer()));
-            player2.refreshDisplayPlayer(mapIdPlayer.get(team.getLeftPlayer()), hasServe(team.getServer(), team.getLeftPlayer()));
+            player1.refreshDisplayPlayer(mapIdPlayer.get(team.getRightPlayer()), hasServe(team.getServer(), team.getRightPlayer()), "#EC220A");
+            player2.refreshDisplayPlayer(mapIdPlayer.get(team.getLeftPlayer()), hasServe(team.getServer(), team.getLeftPlayer()), "#0A1FEC");
         }
     }
 

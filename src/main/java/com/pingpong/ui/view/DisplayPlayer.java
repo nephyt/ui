@@ -11,14 +11,13 @@ import java.util.Map;
 
 public class DisplayPlayer {
 
+    private final String IMAGE_STYLE = "user-select: none; width: 200px; height: 200px;";
+
     Image imgPlayer = new Image();
 
     Map<Integer, StreamResource> playerPicture = new HashMap<>();
 
     public DisplayPlayer() {
-        imgPlayer.setWidth("200px");
-        imgPlayer.setHeight("200px");
-
         Utils.disableSelection(imgPlayer);
     }
 
@@ -27,7 +26,7 @@ public class DisplayPlayer {
         return imgPlayer;
     }
 
-    public Image refreshDisplayPlayer(Player player, boolean hasServe) {
+    public Image refreshDisplayPlayer(Player player, boolean hasServe, String buttonColor) {
 
         if (player.getPicture() != null) {
             StreamResource resource = playerPicture.get(player.getId());
@@ -42,9 +41,9 @@ public class DisplayPlayer {
         }
 
         if (hasServe) {
-            imgPlayer.getElement().setAttribute("border", "5px solid #73AD21");
+            imgPlayer.getElement().setAttribute("style", IMAGE_STYLE + " border:6px solid " + buttonColor);
         } else {
-            imgPlayer.getElement().removeAttribute("border");
+            imgPlayer.getElement().setAttribute("style", IMAGE_STYLE);
         }
         return imgPlayer;
 
