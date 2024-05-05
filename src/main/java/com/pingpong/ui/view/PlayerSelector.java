@@ -5,7 +5,7 @@ import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
@@ -25,10 +25,7 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     int indexPlayer2 = -1;
 
     TeamEnum teamEnum = TeamEnum.TEAM_A;
-    Label selectTeam = new Label("Select player(s) team A :");
-
-    Label labelPlayer1 = new Label("Player 1 : ");
-    Label labelPlayer2 = new Label("Player 2 : ");
+    H2 selectTeam = new H2("Select player(s) team A :");
 
     GameSetting parent;
 
@@ -104,20 +101,23 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
             selectTeam.setText("Select player(s) team B :");
         }
 
+
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
         cboPlayer1.setId("player1" + teamEnum.getCode());
+        cboPlayer1.setLabel("Player 1 : ");
         cboPlayer1.setItemLabelGenerator(Player::getName);
         cboPlayer1.setItems(listPlayer1);
 
 
         cboPlayer2.setId("player2" + teamEnum.getCode());
+        cboPlayer2.setLabel("Player 2 : ");
         cboPlayer2.setItemLabelGenerator(Player::getName);
         cboPlayer2.setItems(listPlayer2);
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.add(labelPlayer1, cboPlayer1, labelPlayer2, cboPlayer2);
+        horizontalLayout.add(cboPlayer1, cboPlayer2);
         horizontalLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
         add(selectTeam, horizontalLayout);
