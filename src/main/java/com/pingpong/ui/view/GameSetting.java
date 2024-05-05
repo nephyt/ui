@@ -14,7 +14,6 @@ import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -25,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GameSetting extends VerticalLayout {
+
+
 
     ComboBox<Integer> scoreMax = new ComboBox<>();
 
@@ -116,10 +117,8 @@ public class GameSetting extends VerticalLayout {
         scoreMaxDiv.setAlignItems(FlexComponent.Alignment.CENTER);
         scoreMaxDiv.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-
-        Label selectScoreMax = new Label("Select score max :");
-        selectScoreMax.setId("lblScoreMax");
         scoreMax.setItems(11, 21);
+        scoreMax.setLabel("Select score max :");
         scoreMax.setValue(scoreMaxSelected);
         scoreMax.setId("scoreMax");
 
@@ -134,7 +133,7 @@ public class GameSetting extends VerticalLayout {
         btnStartGame.setId("btnStartGame");
 
         btnStartGame.setEnabled(false);
-        scoreMaxDiv.add(selectScoreMax, scoreMax, btnStartGame);
+        scoreMaxDiv.add(scoreMax, btnStartGame);
 
         playerSelect.add(playerSelectorTeamA, playerSelectorTeamB);
         playerSelect.add(scoreMaxDiv);
