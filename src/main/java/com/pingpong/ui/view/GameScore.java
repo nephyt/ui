@@ -72,8 +72,6 @@ public class GameScore extends VerticalLayout {
         System.out.println("Set game score a this dans GameScore");
         GameController.setGameScore(this);
 
-        setupAudio(pointSoundTeamA, "Super Mario Bros.-Coin Sound Effect.mp3");
-        setupAudio(pointSoundTeamB, "Yoshi's Mlem Sound Effect.mp3");
         setupAudio(matchPointSound, "Legend of Zelda A Link to the Past sound effect - Treasure!.mp3");
         setupAudio(undoSound, "Bowser Laugh Epic Sound FX.mp3");
         setupAudio(pauseSound, "Super Mario Bros.-Pause Sound Effect.mp3");
@@ -158,6 +156,19 @@ public class GameScore extends VerticalLayout {
         this.displayTeamB.setMapIdPlayer(mapPlayerTeamB);
         this.serviceCountStats = new AllServiceCount(gameToManage);
 
+
+        if (game.getScoringSoundTeamA() != null) {
+            setupScoringAudio(pointSoundTeamA,  game.getScoringSoundTeamA());
+        } else {
+            setupScoringAudio(pointSoundTeamA, "Super Mario Bros.-Coin Sound Effect.mp3");
+        }
+
+        if (game.getScoringSoundTeamB() != null) {
+            setupScoringAudio(pointSoundTeamB, game.getScoringSoundTeamB());
+        } else {
+            setupScoringAudio(pointSoundTeamB, "Yoshi's Mlem Sound Effect.mp3");
+        }
+
         scoringHistory.clear();
         pauseResumeGame.setText("Pause Game");
         undo.setVisible(true);
@@ -179,6 +190,11 @@ public class GameScore extends VerticalLayout {
     private void setupAudio(AudioPlayer audio, String src) {
         audio.getElement().getStyle().set("display", "none");
         audio.setSource("sounds/" + src);
+    }
+
+    private void setupScoringAudio(AudioPlayer audio, String src) {
+        audio.getElement().getStyle().set("display", "none");
+        audio.setSource("scoringSounds/" + src);
     }
 
     private void pauseResumeGame() {

@@ -3,6 +3,7 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.ui.util.Utils;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H2;
@@ -18,6 +19,7 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
 
     ComboBox<Player> cboPlayer1 = new ComboBox<>();
     ComboBox<Player> cboPlayer2 = new ComboBox<>();
+    ComboBox<String> pointSound = new ComboBox<>();
 
     List<Player> listPlayer1;
     int indexPlayer1 = -1;
@@ -28,6 +30,10 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     H2 selectTeam = new H2("Select player(s) team A :");
 
     GameSetting parent;
+
+    public String getScoringSound() {
+        return pointSound.getValue();
+    }
 
     public Player getPlayer1() {
         return player1;
@@ -116,8 +122,12 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         cboPlayer2.setItemLabelGenerator(Player::getName);
         cboPlayer2.setItems(listPlayer2);
 
+        pointSound.setId("SoundFor_" + teamEnum.getCode());
+        pointSound.setLabel("Scoring sound : ");
+        pointSound.setItems(Utils.listSoundAvalaible("src/main/resources/static/scoringSounds"));
+
         HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.add(cboPlayer1, cboPlayer2);
+        horizontalLayout.add(cboPlayer1, cboPlayer2, pointSound);
         horizontalLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
         add(selectTeam, horizontalLayout);

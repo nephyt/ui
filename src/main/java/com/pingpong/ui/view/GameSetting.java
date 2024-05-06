@@ -25,8 +25,6 @@ import java.util.Map;
 
 public class GameSetting extends VerticalLayout {
 
-
-
     ComboBox<Integer> scoreMax = new ComboBox<>();
 
     Button btnStartGame = new Button("Start Game");
@@ -253,7 +251,7 @@ public class GameSetting extends VerticalLayout {
         Team teamA = playerSelectorTeamA.createTeam();
         Team teamB = playerSelectorTeamB.createTeam();
 
-        Game game = new Game(teamA, teamB, TeamEnum.TEAM_A,scoreMaxSelected);
+        Game game = new Game(teamA, teamB, TeamEnum.TEAM_A,scoreMaxSelected, playerSelectorTeamA.getScoringSound(), playerSelectorTeamB.getScoringSound());
 
         game = ServicesRest.saveGame(game);
 
