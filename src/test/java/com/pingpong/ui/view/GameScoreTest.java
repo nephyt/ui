@@ -5,7 +5,6 @@ import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.Player;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,7 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 //        classes = UiApplication.class)
 class GameScoreTest {
 
-    @Test
+    // call les service et cré des Object invalide dans BD
+    // oups
+    //@Test
     void undoPoint() throws IOException {
 
         Team a = new Team(1,2);

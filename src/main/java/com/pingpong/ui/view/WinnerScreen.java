@@ -181,7 +181,7 @@ public class WinnerScreen extends VerticalLayout {
         DisplayTeam displayTeamA = pageGame.gameScore.getDisplayTeamA();
         DisplayTeam displayTeamB = pageGame.gameScore.getDisplayTeamB();
 
-        Game newGame = new Game(game.getTeamA(), game.getTeamB(), getTeamEnumWin(game.getTeamWinnerId(), game.getTeamA().getId()), game.getMaxScore());
+        Game newGame = new Game(game.getTeamA(), game.getTeamB(), getTeamEnumWin(game.getTeamWinnerId(), game.getTeamA().getId()), game.getMaxScore(), game.getScoringSoundTeamA(), game.getScoringSoundTeamB());
 
         Game gameInProgress = ServicesRest.saveGame(newGame);
 

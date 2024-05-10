@@ -124,7 +124,7 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
 
         pointSound.setId("SoundFor_" + teamEnum.getCode());
         pointSound.setLabel("Scoring sound : ");
-        pointSound.setItems(Utils.listSoundAvalaible("src/main/resources/static/scoringSounds"));
+        pointSound.setItems(Utils.listSoundAvalaible());
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.add(cboPlayer1, cboPlayer2, pointSound);

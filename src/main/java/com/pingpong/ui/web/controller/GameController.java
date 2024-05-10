@@ -70,5 +70,19 @@ public class GameController {
         return "game id " + gameId + " deleted";
     }
 
+    @DeleteMapping(value = "/deleteGames/{gameIds}")
+    public String deleteGames(@PathVariable String gameIds) {
+
+        for (String gameId : gameIds.split("-")) {
+
+            // call service game
+            ServicesRest.deleteGame(Integer.parseInt(gameId));
+            // call serviceCount
+            ServicesRest.deleteServiceGame(Integer.parseInt(gameId));
+        }
+
+        return "game ids " + gameIds + " deleted";
+    }
+
 
 }

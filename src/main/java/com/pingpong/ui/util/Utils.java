@@ -4,33 +4,32 @@ import com.pingpong.ui.Constants;
 import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
-
     private static Boolean isMute = null;
 
     private static Boolean needUpdate = false;
 
 
-    public static List<String> listSoundAvalaible(String path) {
-
-        Path dir = Paths.get(path);
+    public static List<String> listSoundAvalaible() {
         List<String> filenames = new ArrayList<>();
-        try {
-            Files.walk(dir).filter(Files::isRegularFile).forEach(file -> {
-                filenames.add(file.getFileName().toString());
-            });
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+
+        filenames.add("DingSoundEffect.mp3");
+        filenames.add("I'm On A Boat.mp3");
+        filenames.add("LetsGoToTheBeach.mp3");
+        filenames.add("Nelson HaHa sound effect.mp3");
+        filenames.add("Super Mario Bros.-Coin Sound Effect.mp3");
+        filenames.add("Yoshi's Mlem Sound Effect.mp3");
+        filenames.add("Chuis Bo.mp3");
+        filenames.add("HERE WE GO SOUND EFFECT (MARIO).mp3");
+        filenames.add("PikaCheeringSmash 64.mp3");
+        filenames.add("Witch Doctor - Ooh Eeh Ooh .mp3");
+        filenames.add("YAHOO SOUND EFFECT (MARIO).mp3");
+
         return filenames;
     }
 
