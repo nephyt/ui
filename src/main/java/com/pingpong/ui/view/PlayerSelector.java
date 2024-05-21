@@ -32,7 +32,13 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
     GameSetting parent;
 
     public String getScoringSound() {
-        return pointSound.getValue();
+        String pointSoundSelected = pointSound.getValue();
+        if (Utils.RANDOM.equals(pointSoundSelected)) {
+            int randomIndex = (int)(Math.random()*Utils.listSoundAvailable().size());
+            pointSoundSelected = Utils.listSoundAvailable().get(randomIndex);
+        }
+
+        return pointSoundSelected;
     }
 
     public Player getPlayer1() {
@@ -124,7 +130,7 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
 
         pointSound.setId("SoundFor_" + teamEnum.getCode());
         pointSound.setLabel("Scoring sound : ");
-        pointSound.setItems(Utils.listSoundAvalaible());
+        pointSound.setItems(Utils.listSoundAvailableWithRandom());
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.add(cboPlayer1, cboPlayer2, pointSound);

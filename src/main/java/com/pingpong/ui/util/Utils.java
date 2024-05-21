@@ -5,6 +5,7 @@ import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -14,23 +15,40 @@ public class Utils {
 
     private static Boolean needUpdate = false;
 
+    private static final List<String> filenames = new ArrayList<>();
+    private static final List<String> filenamesWithRandom = new ArrayList<>();;
 
-    public static List<String> listSoundAvalaible() {
-        List<String> filenames = new ArrayList<>();
+    public static String RANDOM = "Random";
 
+    static {
+
+        filenames.add("Bazinga.mp3");
         filenames.add("DingSoundEffect.mp3");
+        filenames.add("Chuis Bo.mp3");
+        filenames.add("HERE WE GO SOUND EFFECT (MARIO).mp3");
         filenames.add("I'm On A Boat.mp3");
         filenames.add("LetsGoToTheBeach.mp3");
         filenames.add("Nelson HaHa sound effect.mp3");
-        filenames.add("Super Mario Bros.-Coin Sound Effect.mp3");
-        filenames.add("Yoshi's Mlem Sound Effect.mp3");
-        filenames.add("Chuis Bo.mp3");
-        filenames.add("HERE WE GO SOUND EFFECT (MARIO).mp3");
         filenames.add("PikaCheeringSmash 64.mp3");
+        filenames.add("PikaCheeringSmash 64 twice.mp3");
+        filenames.add("Super Mario Bros.-Coin Sound Effect.mp3");
         filenames.add("Witch Doctor - Ooh Eeh Ooh .mp3");
         filenames.add("YAHOO SOUND EFFECT (MARIO).mp3");
+        filenames.add("Yoshi's Mlem Sound Effect.mp3");
 
+        Collections.sort(filenames);
+
+        filenamesWithRandom.add(RANDOM);
+        filenamesWithRandom.addAll(filenames);
+    }
+
+
+    public static List<String> listSoundAvailable() {
         return filenames;
+    }
+
+    public static List<String> listSoundAvailableWithRandom() {
+        return filenamesWithRandom;
     }
 
 
