@@ -9,6 +9,11 @@ import java.util.Map;
 
 public class DisplayScore {
 
+//    private static String PATH_DIGITS = "digits/jeff/";
+    private static String PATH_DIGITS = "digits/";
+//    private static String EXTENSION_DIGITS = ".png";
+    private static String EXTENSION_DIGITS = ".jpg";
+
     Image scoreDizaine = new Image();
     Image scoreUnit = new Image();
 
@@ -24,7 +29,7 @@ public class DisplayScore {
         setupImageScore(scoreUnit);
 
         for (int i = 0; i < 10; ++i) {
-            cacheDigitScore.put(i,"digits/" + i + ".jpg");
+            cacheDigitScore.put(i, PATH_DIGITS + i + EXTENSION_DIGITS);
         }
 
         refreshImageScore(0);
@@ -42,7 +47,7 @@ public class DisplayScore {
 
     public void refreshImageScore(int score) {
         if (score < 10) {
-            scoreDizaine.setSrc("digits/0.jpg");
+            scoreDizaine.setSrc(PATH_DIGITS + "0" + EXTENSION_DIGITS);
             scoreUnit.setSrc(cacheDigitScore.get(score));
         } else {
             scoreDizaine.setSrc(cacheDigitScore.get(score/10));
