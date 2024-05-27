@@ -11,6 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
+    public static String PATH_DIGITS = "digits/jeff3/";
+    public static String EXTENSION_DIGITS = ".png";
+
     private static Boolean isMute = null;
 
     private static Boolean needUpdate = false;
@@ -51,6 +54,13 @@ public class Utils {
         return filenamesWithRandom;
     }
 
+    public static void setPathDigits(String pathDigits) {
+        PATH_DIGITS = pathDigits;
+    }
+
+    public static void setExtensionDigits(String extensionDigits) {
+        EXTENSION_DIGITS = extensionDigits;
+    }
 
     public static void setNeedUpdate(Boolean pNeedUpdate) {
         needUpdate = pNeedUpdate;
