@@ -4,14 +4,15 @@ import com.pingpong.ui.Constants;
 import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
-    public static String PATH_DIGITS = "digits/jeff3/";
+    public static String PATH_DIGITS_DIZAINES = "digits/jeff4/dizaines/";
+    public static String PATH_DIGITS_UNITS = "digits/jeff4/units/";
+
+    public static String MARGIN_DIGITS = "23%";
     public static String EXTENSION_DIGITS = ".png";
 
     private static Boolean isMute = null;
@@ -45,6 +46,16 @@ public class Utils {
         filenamesWithRandom.addAll(filenames);
     }
 
+    private static final Map<String, ConfigScore> folderExtension = new HashMap<>();
+
+    static {
+        folderExtension.put("jeff", new ConfigScore(".png", "digits/jeff/", "digits/jeff/", "1%"));
+        folderExtension.put("jeff2", new ConfigScore(".png", "digits/jeff2/", "digits/jeff2/","1%"));
+        folderExtension.put("jeff3", new ConfigScore(".png", "digits/jeff3/", "digits/jeff3/", "12%"));
+        folderExtension.put("jeff4", new ConfigScore(".png", "digits/jeff4/dizaines/", "digits/jeff4/units/","23%"));
+        folderExtension.put("original", new ConfigScore(".jpg", "digits/original/", "digits/original/", "15%"));
+    }
+
 
     public static List<String> listSoundAvailable() {
         return filenames;
@@ -54,12 +65,17 @@ public class Utils {
         return filenamesWithRandom;
     }
 
-    public static void setPathDigits(String pathDigits) {
-        PATH_DIGITS = pathDigits;
+    public static void setPathDigits(ConfigScore configScore) {
+        PATH_DIGITS_UNITS = configScore.pathUnits();
+        PATH_DIGITS_DIZAINES = configScore.pathDizaines();
     }
 
-    public static void setExtensionDigits(String extensionDigits) {
-        EXTENSION_DIGITS = extensionDigits;
+    public static void setMarginDigits(String marginDigits) {
+        MARGIN_DIGITS = marginDigits;
+    }
+
+    public static void setExtensionDigits(ConfigScore configScore) {
+        EXTENSION_DIGITS = configScore.extension();
     }
 
     public static void setNeedUpdate(Boolean pNeedUpdate) {
@@ -130,6 +146,18 @@ public class Utils {
         myCookie.setDomain("localhost");
 
         return myCookie;
+    }
+
+    public static Set<String> getFolderAvalaible() {
+        return folderExtension.keySet();
+    }
+
+    public static void setupDigitsWithNewConfig(String folder) {
+        ConfigScore configScore = folderExtension.get(folder);
+
+        Utils.setPathDigits(configScore);
+        Utils.setExtensionDigits(configScore);
+        Utils.setMarginDigits(configScore.margin());
     }
 
 }

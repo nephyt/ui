@@ -7,22 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 @RestController
 public class GameSettingController {
 
 
-    static final Map<String, String> folderExtension = new HashMap<>();
-
-    static {
-        folderExtension.put("jeff", ".png");
-        folderExtension.put("jeff2", ".png");
-        folderExtension.put("jeff3", ".png");
-        folderExtension.put("original", ".jpg");
-    }
 
 
     static GameSetting gameSetting;
@@ -98,13 +88,12 @@ public class GameSettingController {
 
     @GetMapping(value = "/GetDigitsPath")
     public Set<String> getDigitsPath() {
-        return folderExtension.keySet();
+        return Utils.getFolderAvalaible();
     }
 
     @GetMapping(value = "/SetDigitsPath/{folder}")
     public void setDigitsPath(@PathVariable String folder) {
-        Utils.setPathDigits("digits/" + folder + "/");
-        Utils.setExtensionDigits(folderExtension.get(folder));
+        Utils.setupDigitsWithNewConfig(folder);
     }
 
 

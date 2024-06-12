@@ -55,8 +55,9 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         tabGame.setId("tabGame");
         Tab tabGamePaused = new Tab("Game Paused");
         Tab tabGameHistoric = new Tab("Game Historic");
+        Tab tabSetting = new Tab("Settings");
 
-        Tabs tabs = new Tabs(tabPlayer, tabGamePaused, tabGame, tabGameHistoric);
+        Tabs tabs = new Tabs(tabPlayer, tabGamePaused, tabGame, tabGameHistoric, tabSetting);
         tabs.setWidthFull();
         tabs.setFlexGrowForEnclosedTabs(1);
 
@@ -64,14 +65,16 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         PageGame pageGame = new PageGame();
         PausedGameVIew pageGamePaused = new PausedGameVIew(pageGame, tabs);
         HistoricGameVIew pageGameHistoric = new HistoricGameVIew();
+        SettingsView pageSetting = new SettingsView();
 
         Map<Tab, Component> tabsToPages = new HashMap<>();
         tabsToPages.put(tabPlayer, pagePlayers);
         tabsToPages.put(tabGamePaused, pageGamePaused);
         tabsToPages.put(tabGame, pageGame);
         tabsToPages.put(tabGameHistoric, pageGameHistoric);
+        tabsToPages.put(tabSetting, pageSetting);
 
-        Div pages = new Div(pagePlayers, pageGamePaused, pageGame, pageGameHistoric);
+        Div pages = new Div(pagePlayers, pageGamePaused, pageGame, pageGameHistoric, pageSetting);
         pages.setWidthFull();
 
         tabs.addSelectedChangeListener(event -> {
@@ -79,20 +82,23 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             Component selectedPage = tabsToPages.get(tabs.getSelectedTab());
             selectedPage.setVisible(true);
 
-            if (tabs.getSelectedIndex() == 0) {
-                ServicesButtons.getInstance().standBy();
-                fillGrid("");
-            }
-            if (tabs.getSelectedIndex() == 1) {
-                ServicesButtons.getInstance().standBy();
-                ((PausedGameVIew)selectedPage).fillGrid();
-            }
-            if (tabs.getSelectedIndex() == 2) {
-                ((PageGame)selectedPage).refreshStatePage();
-            }
-            if (tabs.getSelectedIndex() == 3) {
-                ServicesButtons.getInstance().standBy();
-                ((HistoricGameVIew)selectedPage).refreshPage();
+            switch (tabs.getSelectedIndex()) {
+                case 0 :
+                    ServicesButtons.getInstance().standBy();
+                    fillGrid("");
+                    break;
+                case 1 :
+                    ServicesButtons.getInstance().standBy();
+                    ((PausedGameVIew)selectedPage).fillGrid();
+                    break;
+                case 2 :
+                    ((PageGame)selectedPage).refreshStatePage();
+                    break;
+                case 3 :
+                    ServicesButtons.getInstance().standBy();
+                    ((HistoricGameVIew)selectedPage).refreshPage();
+                case 4:
+                    ServicesButtons.getInstance().standBy();
             }
 
         });
