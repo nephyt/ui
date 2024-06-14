@@ -14,7 +14,7 @@ public class SettingsView extends VerticalLayout {
 
         listDigits.setItems(Utils.getFolderAvalaible());
         listDigits.setLabel("Chiffres pour le pointage :");
-        listDigits.setValue("Jeff4");
+        listDigits.setValue("Normal");
         listDigits.setId("listDigits");
 
         listDigits.addValueChangeListener(event -> {

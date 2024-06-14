@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
-    public static String PATH_DIGITS_DIZAINES = "digits/jeff4/dizaines/";
-    public static String PATH_DIGITS_UNITS = "digits/jeff4/units/";
+    public static String PATH_DIGITS_DIZAINES = "digits/Normal/dizaines/";
+    public static String PATH_DIGITS_UNITS = "digits/Normal/units/";
 
     public static String MARGIN_DIGITS = "23%";
     public static String EXTENSION_DIGITS = ".png";
@@ -39,6 +39,7 @@ public class Utils {
         filenames.add("Witch Doctor - Ooh Eeh Ooh .mp3");
         filenames.add("YAHOO SOUND EFFECT (MARIO).mp3");
         filenames.add("Yoshi's Mlem Sound Effect.mp3");
+        filenames.add("Whippet.mp3");
 
         Collections.sort(filenames);
 
@@ -49,10 +50,10 @@ public class Utils {
     private static final Map<String, ConfigScore> folderExtension = new HashMap<>();
 
     static {
-        folderExtension.put("jeff", new ConfigScore(".png", "digits/jeff/", "digits/jeff/", "1%"));
-        folderExtension.put("jeff2", new ConfigScore(".png", "digits/jeff2/", "digits/jeff2/","1%"));
-        folderExtension.put("jeff3", new ConfigScore(".png", "digits/jeff3/", "digits/jeff3/", "12%"));
-        folderExtension.put("jeff4", new ConfigScore(".png", "digits/jeff4/dizaines/", "digits/jeff4/units/","23%"));
+        folderExtension.put("chiffreRouge", new ConfigScore(".png", "digits/chiffreRouge/", "digits/chiffreRouge/", "1%"));
+        folderExtension.put("fondNoir", new ConfigScore(".png", "digits/fondNoir/", "digits/fondNoir/","1%"));
+        folderExtension.put("flamme", new ConfigScore(".png", "digits/flamme/", "digits/flamme/", "12%"));
+        folderExtension.put("Normal", new ConfigScore(".png", "digits/Normal/dizaines/", "digits/Normal/units/","23%"));
         folderExtension.put("original", new ConfigScore(".jpg", "digits/original/", "digits/original/", "15%"));
     }
 
