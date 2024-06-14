@@ -7,7 +7,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.dom.Style;
 
 
-@CssImport("css/score.css")
+@CssImport("./css/score.css")
 public class DisplayScore {
 
     Image scoreDizaine = new Image();
