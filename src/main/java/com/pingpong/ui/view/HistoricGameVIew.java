@@ -65,6 +65,8 @@ public class HistoricGameVIew extends Div {
 
         mapPlayer = ServicesRest.mapPlayer("");
 
+        grid.addColumn(Game::getId).setAutoWidth(true).setResizable(true).setSortable(true).setHeader("ID").setKey("ID");
+
         grid.addColumn(game -> getTeamPlayerName(mapPlayer, game.getWinnerTeam()) )
                 .setAutoWidth(true).setResizable(true).setSortable(true).setHeader("Winner").setKey("winner");
 
