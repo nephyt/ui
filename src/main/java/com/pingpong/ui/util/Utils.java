@@ -20,7 +20,10 @@ public class Utils {
     private static Boolean needUpdate = false;
 
     private static final List<String> filenames = new ArrayList<>();
+    private static final List<String> filenamesAdult = new ArrayList<>();
     private static final List<String> filenamesWithRandom = new ArrayList<>();;
+
+    private static boolean allScoringSound = false;
 
     public static String RANDOM = "Random";
 
@@ -41,10 +44,10 @@ public class Utils {
         filenames.add("Yoshi's Mlem Sound Effect.mp3");
         filenames.add("Whippet.mp3");
 
-        Collections.sort(filenames);
+        filenamesAdult.add("Jizz In My Pants.mp3");
+        filenamesAdult.add("I Just Had Sex.mp3");
 
-        filenamesWithRandom.add(RANDOM);
-        filenamesWithRandom.addAll(filenames);
+        updateScoringSoundList(false);
     }
 
     private static final Map<String, ConfigScore> folderExtension = new HashMap<>();
@@ -161,4 +164,22 @@ public class Utils {
         Utils.setMarginDigits(configScore.margin());
     }
 
+    public static void setAllScoringSound(boolean allScoringSound) {
+        Utils.allScoringSound = allScoringSound;
+        updateScoringSoundList(Utils.allScoringSound);
+    }
+
+    private static void updateScoringSoundList(boolean isAll) {
+        filenamesWithRandom.clear();
+        if (isAll) {
+            filenamesWithRandom.addAll(filenamesAdult);
+        }
+
+        filenamesWithRandom.addAll(filenames);
+
+        Collections.sort(filenames);
+
+        filenamesWithRandom.addFirst(RANDOM);
+
+    }
 }

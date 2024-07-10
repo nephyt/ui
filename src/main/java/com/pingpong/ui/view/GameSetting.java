@@ -98,6 +98,10 @@ public class GameSetting extends VerticalLayout {
         return map;
     }
 
+    public void refreshPointSound() {
+        playerSelectorTeamA.refreshPointSound();
+        playerSelectorTeamB.refreshPointSound();
+    }
 
     public GameSetting(List<Player> listPlayer, PageGame pageGame) {
 

@@ -34,6 +34,11 @@ public class PageGame extends Div {
         add(winnerScreen);
     }
 
+    public void refreshSoundList() {
+        System.out.println("Updating the scoring sound with all the sound");
+        gameSetting.refreshPointSound();
+    }
+
     public void refreshStatePage() {
         if (gameSetting.isVisible()) {
             ServicesButtons.getInstance().playerSelection();

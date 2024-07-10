@@ -101,6 +101,10 @@ public class PlayerSelector extends VerticalLayout implements KeyNotifier {
         indexPlayer2 = -1;
     }
 
+    public void refreshPointSound() {
+        pointSound.setItems(Utils.listSoundAvailableWithRandom());
+    }
+
     public PlayerSelector(List<Player> listPlayer, TeamEnum teamEnum, GameSetting parent) {
 
         this.listPlayer1 = listPlayer;

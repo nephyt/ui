@@ -65,7 +65,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         PageGame pageGame = new PageGame();
         PausedGameVIew pageGamePaused = new PausedGameVIew(pageGame, tabs);
         HistoricGameVIew pageGameHistoric = new HistoricGameVIew();
-        SettingsView pageSetting = new SettingsView();
+        SettingsView pageSetting = new SettingsView(pageGame);
 
         Map<Tab, Component> tabsToPages = new HashMap<>();
         tabsToPages.put(tabPlayer, pagePlayers);
