@@ -35,6 +35,25 @@ public class GameController {
         return result[0];
     }
 
+    public void pauseGame() {
+        if (gameScore != null) {
+            gameScore.getUI().get().access(() -> {
+                gameScore.pauseResumeGame();
+                gameScore.getUI().get().push();
+            });
+
+        }
+    }
+
+    public void undo() {
+        if (gameScore != null) {
+            gameScore.getUI().get().access(() -> {
+                gameScore.undoPoint();
+                gameScore.getUI().get().push();
+            });
+        }
+    }
+
     @GetMapping(value = "/teamService")
     public String getTeamService() {
 

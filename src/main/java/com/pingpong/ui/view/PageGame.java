@@ -3,6 +3,7 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.enumeration.GameStatus;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.ui.services.MqttListener;
 import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
@@ -44,6 +45,7 @@ public class PageGame extends Div {
             ServicesButtons.getInstance().playerSelection();
 
             GameSettingController.setGameSetting(gameSetting);
+            MqttListener.setStateGameSetting();
 
             System.out.println("Set game score a null dans refreshStatePage");
             GameController.setGameScore(null);
@@ -60,6 +62,7 @@ public class PageGame extends Div {
 
             System.out.println("Set game score dans refreshStatePage");
             GameController.setGameScore(gameScore);
+            MqttListener.setStateGameScore();
             WinnerScreenController.setWinnerScreen(null);
 
             if (GameStatus.ACTIVE.getCode().equals(gameScore.getGame().getGameStatus().getCode())) {
@@ -71,6 +74,7 @@ public class PageGame extends Div {
             GameSettingController.setGameSetting(null);
             //GameController.setGameScore(null); will be set to null in winner screen
             WinnerScreenController.setWinnerScreen(winnerScreen);
+            MqttListener.setStateWinnerScreen();
 
             ServicesButtons.getInstance().startModeWinner(gameScore.getGame());
         }

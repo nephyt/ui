@@ -72,6 +72,14 @@ public class GameSettingController {
         }
     }
 
+    public void changeServerTeam() {
+        if (gameSetting != null) {
+            gameSetting.getUI().get().access(() -> {
+                gameSetting.changeServerTeam();
+            });
+        }
+    }
+
 
     @GetMapping(value = "/startGame")
     public void startGame() {

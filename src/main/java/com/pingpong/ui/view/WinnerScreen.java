@@ -4,12 +4,15 @@ import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
+import com.pingpong.ui.services.MqttListener;
+import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameController;
 import com.pingpong.ui.web.controller.WinnerScreenController;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -21,6 +24,8 @@ public class WinnerScreen extends VerticalLayout {
     Button rematch = new Button("Rematch");
     Button changePlayers = new Button("Change Players");
 
+    ComboBox<TeamEnum> serverTeam = new ComboBox<>("Équipe qui sert :");
+
     HorizontalLayout buttonsDiv = new HorizontalLayout(rematch, changePlayers);
     IFrame frame = new IFrame();
 
@@ -28,6 +33,7 @@ public class WinnerScreen extends VerticalLayout {
         this.pageGame = pageGame;
 
         WinnerScreenController.setWinnerScreen(this);
+        MqttListener.setStateWinnerScreen();
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -38,6 +44,9 @@ public class WinnerScreen extends VerticalLayout {
         rematch.setId("rematch");
         changePlayers.addClickListener(e -> changePlayers());
         changePlayers.setId("changementJoueur");
+
+        serverTeam.setItems(TeamEnum.TEAM_A, TeamEnum.TEAM_B);
+        serverTeam.setId("serverTeamWinnerScreen");
 
         Utils.disableSelection(this);
     }
@@ -117,6 +126,7 @@ public class WinnerScreen extends VerticalLayout {
         Html time = new Html("<font>Time : " + game.toStringTimePlayed() + "</font>");
         loserName.getElement().getStyle().set("font-size", "24px");
 
+        serverTeam.setValue(getTeamEnumWin(game.getTeamWinnerId(), game.getTeamA().getId()));
 
         add(winnerName);
         add(finalScore);
@@ -126,6 +136,8 @@ public class WinnerScreen extends VerticalLayout {
         if (winner1.getVictorySongPath() != null) {
             add(getVictorySong(winner1, isMute));
         }
+
+        add(serverTeam);
         add(buttonsDiv);
 
         // save game after using TeamState for the Winning screen
@@ -172,6 +184,15 @@ public class WinnerScreen extends VerticalLayout {
         pageGame.showGameSetting();
     }
 
+
+    public void changeServerTeam() {
+        if (TeamEnum.TEAM_A.equals(serverTeam.getValue())) {
+            serverTeam.setValue(TeamEnum.TEAM_B);
+        } else {
+            serverTeam.setValue(TeamEnum.TEAM_A);
+        }
+    }
+
     public void rematchGame() {
 
         System.out.println("Set game score a null dans rematchGame");
@@ -181,8 +202,9 @@ public class WinnerScreen extends VerticalLayout {
         DisplayTeam displayTeamA = pageGame.gameScore.getDisplayTeamA();
         DisplayTeam displayTeamB = pageGame.gameScore.getDisplayTeamB();
 
-        Game newGame = new Game(game.getTeamA(), game.getTeamB(), getTeamEnumWin(game.getTeamWinnerId(), game.getTeamA().getId()), game.getMaxScore(), game.getScoringSoundTeamA(), game.getScoringSoundTeamB());
+        Game newGame = new Game(game.getTeamA(), game.getTeamB(), serverTeam.getValue(), game.getMaxScore(), game.getScoringSoundTeamA(), game.getScoringSoundTeamB());
 
+        ServicesButtons.getInstance().startMatch(serverTeam.getValue());
         Game gameInProgress = ServicesRest.saveGame(newGame);
 
         pageGame.initialiseGameScore(gameInProgress, displayTeamA.getMapIdPlayer(), displayTeamB.getMapIdPlayer());

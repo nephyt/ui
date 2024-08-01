@@ -6,12 +6,11 @@ import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
+import com.pingpong.ui.services.MqttListener;
 import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
-import com.pingpong.ui.thread.ClickThread;
 import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameController;
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -25,8 +24,8 @@ public class GameScore extends VerticalLayout {
 
     HorizontalLayout displayScore = new HorizontalLayout();
 
-    ClickThread clickListener;
-    Thread thread;
+    //ClickThread clickListener;
+    //Thread thread;
 
     HorizontalLayout scoring = new HorizontalLayout();
 
@@ -71,14 +70,15 @@ public class GameScore extends VerticalLayout {
 
         System.out.println("Set game score a this dans GameScore");
         GameController.setGameScore(this);
+        MqttListener.setStateGameScore();
 
         setupAudio(matchPointSound, "Legend of Zelda A Link to the Past sound effect - Treasure!.mp3");
         setupAudio(undoSound, "Bowser Laugh Epic Sound FX.mp3");
         setupAudio(pauseSound, "Super Mario Bros.-Pause Sound Effect.mp3");
 
-        clickListener = new ClickThread(this);
-        thread = new Thread(clickListener);
-        thread.start();
+//        clickListener = new ClickThread(this);
+//        thread = new Thread(clickListener);
+//        thread.start();
 
         setWidthFull();
         displayScore.setWidthFull();
@@ -100,7 +100,7 @@ public class GameScore extends VerticalLayout {
 
         add(displayScore);
 
-        clickScore = scoring.addClickListener( e -> addClick(e));
+//        clickScore = scoring.addClickListener( e -> addClick(e));
 
         clickTeamA = displayTeamA.addClickListener(e -> updateGame(TeamEnum.TEAM_A));
         clickTeamB = displayTeamB.addClickListener(e -> updateGame(TeamEnum.TEAM_B));
@@ -197,7 +197,7 @@ public class GameScore extends VerticalLayout {
         audio.setSource("scoringSounds/" + src);
     }
 
-    private void pauseResumeGame() {
+    public void pauseResumeGame() {
         if (game != null) {
             if (GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
                 playSound(pauseSound);
@@ -238,15 +238,15 @@ public class GameScore extends VerticalLayout {
         undo.setEnabled(!scoringHistory.empty());
     }
 
-    private void addClick(ClickEvent event) {
-
-        if (game != null) {
-            synchronized (clickListener) {
-                clickListener.addClickEvent(event);
-                clickListener.notify();
-            }
-        }
-    }
+//    private void addClick(ClickEvent event) {
+//
+//        if (game != null) {
+//            synchronized (clickListener) {
+//                clickListener.addClickEvent(event);
+//                clickListener.notify();
+//            }
+//        }
+//    }
 
     public void undoPoint() {
 

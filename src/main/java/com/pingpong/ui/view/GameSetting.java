@@ -7,6 +7,8 @@ import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.basicclass.stats.TeamStats;
+import com.pingpong.ui.services.MqttListener;
+import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameSettingController;
@@ -16,6 +18,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ import java.util.Map;
 public class GameSetting extends VerticalLayout {
 
     ComboBox<Integer> scoreMax = new ComboBox<>();
+    ComboBox<TeamEnum> serverTeam = new ComboBox<>();
 
     Button btnStartGame = new Button("Start Game");
 
@@ -51,6 +55,14 @@ public class GameSetting extends VerticalLayout {
             scoreMax.setValue(21);
         } else {
             scoreMax.setValue(11);
+        }
+    }
+
+    public void changeServerTeam() {
+        if (TeamEnum.TEAM_A.equals(serverTeam.getValue())) {
+            serverTeam.setValue(TeamEnum.TEAM_B);
+        } else {
+            serverTeam.setValue(TeamEnum.TEAM_A);
         }
     }
 
@@ -106,6 +118,7 @@ public class GameSetting extends VerticalLayout {
     public GameSetting(List<Player> listPlayer, PageGame pageGame) {
 
         GameSettingController.setGameSetting(this);
+        MqttListener.setStateGameSetting();
 
         this.pageGame = pageGame;
 
@@ -115,6 +128,11 @@ public class GameSetting extends VerticalLayout {
         playerSelectorTeamA = new PlayerSelector(listPlayer, TeamEnum.TEAM_A, this);
         playerSelectorTeamB = new PlayerSelector(listPlayer, TeamEnum.TEAM_B, this);
 
+        HorizontalLayout generalSetting = new HorizontalLayout();
+        generalSetting.setAlignItems(FlexComponent.Alignment.CENTER);
+        generalSetting.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        generalSetting.add(scoreMax, serverTeam);
+
         VerticalLayout scoreMaxDiv = new VerticalLayout();
         scoreMaxDiv.setAlignItems(FlexComponent.Alignment.CENTER);
         scoreMaxDiv.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -123,6 +141,11 @@ public class GameSetting extends VerticalLayout {
         scoreMax.setLabel("Select score max :");
         scoreMax.setValue(scoreMaxSelected);
         scoreMax.setId("scoreMax");
+
+        serverTeam.setItems(TeamEnum.TEAM_A, TeamEnum.TEAM_B);
+        serverTeam.setLabel("Équipe avec le service :");
+        serverTeam.setValue(TeamEnum.TEAM_A);
+        serverTeam.setId("ServerTeam");
 
         scoreMax.addValueChangeListener(event -> {
             if (event.getValue() != null) {
@@ -135,7 +158,7 @@ public class GameSetting extends VerticalLayout {
         btnStartGame.setId("btnStartGame");
 
         btnStartGame.setEnabled(false);
-        scoreMaxDiv.add(scoreMax, btnStartGame);
+        scoreMaxDiv.add(generalSetting, btnStartGame);
 
         playerSelect.add(playerSelectorTeamA, playerSelectorTeamB);
         playerSelect.add(scoreMaxDiv);
@@ -252,10 +275,12 @@ public class GameSetting extends VerticalLayout {
 
         setVisible(false);
 
+        ServicesButtons.getInstance().startMatch(TeamEnum.TEAM_A);
+
         Team teamA = playerSelectorTeamA.createTeam();
         Team teamB = playerSelectorTeamB.createTeam();
 
-        Game game = new Game(teamA, teamB, TeamEnum.TEAM_A,scoreMaxSelected, playerSelectorTeamA.getScoringSound(), playerSelectorTeamB.getScoringSound());
+        Game game = new Game(teamA, teamB, serverTeam.getValue(),scoreMaxSelected, playerSelectorTeamA.getScoringSound(), playerSelectorTeamB.getScoringSound());
 
         game = ServicesRest.saveGame(game);
 

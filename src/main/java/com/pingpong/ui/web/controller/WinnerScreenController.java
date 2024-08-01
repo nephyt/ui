@@ -36,5 +36,13 @@ public class WinnerScreenController {
         }
     }
 
+    public void changeServerTeam() {
+        if (winnerScreen != null) {
+            winnerScreen.getUI().get().access(() -> {
+                winnerScreen.changeServerTeam();
+            });
+        }
+    }
+
 
 }
