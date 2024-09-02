@@ -38,7 +38,7 @@ public class WinnerScreen extends VerticalLayout {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        setupIframe(frame, "315px", "560px", true);
+        Utils.setupIframe(frame, "315px", "560px", true);
 
         rematch.addClickListener(e -> rematchGame());
         rematch.setId("rematch");
@@ -76,10 +76,8 @@ public class WinnerScreen extends VerticalLayout {
                     winner2 = displayTeamA.getPlayerById(game.getTeamStateA().getLeftPlayer());
                 }
             } else {
+                // in double, right player will never be null, so here we are in single, no need to check winner 2
                 winner1 = displayTeamA.getPlayerById(game.getTeamStateA().getLeftPlayer());
-                if (game.getTeamStateA().getLeftPlayer() != null) {
-                    winner1 = displayTeamA.getPlayerById(game.getTeamStateA().getLeftPlayer());
-                }
             }
         } else {
             finalScoreStr = game.getScoreTeamB() + " - " + game.getScoreTeamA();
@@ -148,26 +146,14 @@ public class WinnerScreen extends VerticalLayout {
 
     public IFrame getVictorySong(Player playerToDisplay, boolean isMute) {
 
-        String autoPlay = "?autoplay=1";
-        if (isMute) {
-            autoPlay = "";
-        }
-
-        String emdebSong = playerToDisplay.getYoutubeEmbedVictorySongPath() + autoPlay;
+        String emdebSong = playerToDisplay.getYoutubeEmbedVictorySongPath(!isMute);
         frame.setSrc(emdebSong);
 
         return frame;
 
     }
 
-    private void setupIframe(IFrame frame, String height, String witdth, boolean isVisible) {
-        frame.setHeight(height);
-        frame.setWidth(witdth);
-        frame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
-        frame.getElement().setAttribute("allowfullscreen", true);
-        frame.getElement().setAttribute("frameborder", "0");
-        frame.setVisible(isVisible);
-    }
+
 
     public void newMatch() {
         changePlayers.click();

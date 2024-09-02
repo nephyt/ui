@@ -213,7 +213,7 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
     }
 
     public void previewSong() {
-        String victorySong = player.getYoutubeEmbedVictorySongPath();
+        String victorySong = player.getYoutubeEmbedVictorySongPath(false);
 
         if (victorySong != null) {
 

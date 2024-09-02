@@ -3,8 +3,11 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.enumeration.PlayerStatus;
 import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
+import com.pingpong.basicclass.game.MatchPointInfo;
 import com.pingpong.basicclass.game.Team;
+import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -155,5 +158,66 @@ class GameScoreTest {
         assertEquals(1, gameScore.getGame().getTeamStateA().getServer());
         assertTrue(gameScore.getGame().getTeamStateA().hasService());
 
+    }
+
+    @Test
+    void determineReceiver() {
+
+        GameScore gameScore = new GameScore();
+
+        TeamState teamServe = new TeamState();
+        TeamState teamReceive = new TeamState();
+
+        teamServe.setRightPlayer(1);
+        teamServe.setServer(1);
+        teamReceive.setRightPlayer(2);
+        assertEquals(2, gameScore.determineReceiver(teamServe, teamReceive));
+
+        teamServe.setRightPlayer(null);
+        teamServe.setLeftPlayer(1);
+        teamServe.setServer(1);
+        teamReceive.setLeftPlayer(2);
+        assertEquals(2, gameScore.determineReceiver(teamServe, teamReceive));
+
+        // test en double
+
+        teamServe.setRightPlayer(1);
+        teamServe.setLeftPlayer(2);
+        teamServe.setServer(1);
+        teamReceive.setRightPlayer(3);
+        teamReceive.setLeftPlayer(4);
+        assertEquals(3, gameScore.determineReceiver(teamServe, teamReceive));
+
+        teamServe.setServer(2);
+        assertEquals(4, gameScore.determineReceiver(teamServe, teamReceive));
+    }
+
+    @Test
+    void determninePlayerSoundMatchPoint() {
+        GameScore gameScore = new GameScore();
+
+        MatchPointInfo info = new MatchPointInfo();
+        info.setMatchPoint(true);
+        info.setTeamWithMatchPoint(TeamEnum.TEAM_A);
+
+        DisplayTeam displayTeamA = new DisplayTeam();
+        DisplayTeam displayTeamB = new DisplayTeam();
+
+        Map<Integer, Player> playersA = new HashMap<>();
+        playersA.put(1, new Player(1, "1", null, null,""));
+        displayTeamA.setMapIdPlayer(playersA);
+
+        Map<Integer, Player> playersB = new HashMap<>();
+        playersB.put(1, new Player(2, "2", null, null,""));
+        displayTeamB.setMapIdPlayer(playersB);
+
+
+        assertEquals(1, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_A, 1, 2, displayTeamA, displayTeamB).getId());
+        assertEquals(2, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_B, 1, 2, displayTeamA, displayTeamB).getId());
+
+        info.setTeamWithMatchPoint(TeamEnum.TEAM_B);
+
+        assertEquals(2, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_A, 1, 2, displayTeamA, displayTeamB).getId());
+        assertEquals(1, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_B, 1, 2, displayTeamA, displayTeamB).getId());
     }
 }

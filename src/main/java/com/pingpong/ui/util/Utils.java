@@ -1,6 +1,7 @@
 package com.pingpong.ui.util;
 
 import com.pingpong.ui.Constants;
+import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 
@@ -25,12 +26,19 @@ public class Utils {
 
     private static boolean allScoringSound = false;
 
+    private static boolean useVictorySongForMatchPoint = true;
+
+
+
+    private static int timeVictorySongForMatchPoint = 5;
+
     public static String RANDOM = "Random";
 
     static {
 
         filenames.add("Bazinga.mp3");
         filenames.add("DingSoundEffect.mp3");
+        filenames.add("Everything Is AWESOME!.mp3");
         filenames.add("Chuis Bo.mp3");
         filenames.add("HERE WE GO SOUND EFFECT (MARIO).mp3");
         filenames.add("I'm On A Boat.mp3");
@@ -38,6 +46,7 @@ public class Utils {
         filenames.add("Nelson HaHa sound effect.mp3");
         filenames.add("PikaCheeringSmash 64.mp3");
         filenames.add("PikaCheeringSmash 64 twice.mp3");
+        filenames.add("Star Wars-The Imperial March.mp3");
         filenames.add("Super Mario Bros.-Coin Sound Effect.mp3");
         filenames.add("Witch Doctor - Ooh Eeh Ooh .mp3");
         filenames.add("YAHOO SOUND EFFECT (MARIO).mp3");
@@ -169,6 +178,14 @@ public class Utils {
         updateScoringSoundList(Utils.allScoringSound);
     }
 
+    public static boolean isUseVictorySongForMatchPoint() {
+        return useVictorySongForMatchPoint;
+    }
+
+    public static void setUseVictorySongForMatchPoint(boolean useVictorySongForMatchPoint) {
+        Utils.useVictorySongForMatchPoint = useVictorySongForMatchPoint;
+    }
+
     private static void updateScoringSoundList(boolean isAll) {
         filenamesWithRandom.clear();
         if (isAll) {
@@ -181,5 +198,22 @@ public class Utils {
 
         filenamesWithRandom.addFirst(RANDOM);
 
+    }
+
+    public static int getTimeVictorySongForMatchPoint() {
+        return timeVictorySongForMatchPoint;
+    }
+
+    public static void setTimeVictorySongForMatchPoint(int timeVictorySongForMatchPoint) {
+        Utils.timeVictorySongForMatchPoint = timeVictorySongForMatchPoint;
+    }
+
+    public static void setupIframe(IFrame frame, String height, String witdth, boolean isVisible) {
+        frame.setHeight(height);
+        frame.setWidth(witdth);
+        frame.setAllow("accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
+        frame.getElement().setAttribute("allowfullscreen", false);
+        frame.getElement().setAttribute("frameborder", "0");
+        frame.setVisible(isVisible);
     }
 }

@@ -3,6 +3,7 @@ package com.pingpong.ui.view;
 import com.pingpong.basicclass.enumeration.GameStatus;
 import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
+import com.pingpong.basicclass.game.MatchPointInfo;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
@@ -12,6 +13,7 @@ import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
 import com.pingpong.ui.web.controller.GameController;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.shared.Registration;
@@ -28,6 +30,8 @@ public class GameScore extends VerticalLayout {
     //Thread thread;
 
     HorizontalLayout scoring = new HorizontalLayout();
+
+    IFrame matchPointYoutube = new IFrame();
 
     Game game;
 
@@ -110,15 +114,20 @@ public class GameScore extends VerticalLayout {
 
         newGame.setVisible(false);
 
+        Utils.setupIframe(matchPointYoutube, "0px","0px", true);
+
+
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         add(buttonsDiv);
+
 
         add(pointSoundTeamA);
         add(pointSoundTeamB);
         add(matchPointSound);
         add(undoSound);
         add(pauseSound);
+        add(matchPointYoutube);
 
         pauseResumeGame.addClickListener(e-> pauseResumeGame());
         undo.addClickListener(e-> undoPoint());
@@ -175,6 +184,15 @@ public class GameScore extends VerticalLayout {
         newGame.setVisible(false);
     }
 
+    public void playMatchPoint(Player playerToDisplay) {
+
+        String emdebSong = playerToDisplay.getYoutubeEmbedVictorySongPathForMatchPoint(Utils.getTimeVictorySongForMatchPoint());
+
+        remove(matchPointYoutube);
+        matchPointYoutube.setSrc(emdebSong);
+        add(matchPointYoutube);
+
+    }
 
     private void muteUnmuteSounds() {
         if (isMute) {
@@ -266,23 +284,36 @@ public class GameScore extends VerticalLayout {
 
     public void updateGame(TeamEnum teamScored) {
 
+
         if (game != null && GameStatus.ACTIVE.getCode().equals(game.getGameStatus().getCode())) {
+
+            TeamEnum hasServe;
+            Integer server;
+            Integer receiver;
+
             if (TeamEnum.TEAM_A.getCode().equals(teamScored.getCode() )) {
                 updateServiceCount(game.getTeamStateA(), game.getTeamStateB());
 
-                scoringHistory.add(TeamEnum.TEAM_A);
-
                 game.incrementScoreTeamA();
-                game.updateGame();
+
             }
             else if (TeamEnum.TEAM_B.getCode().equals(teamScored.getCode() )) {
                 updateServiceCount(game.getTeamStateB(), game.getTeamStateA());
-
-                scoringHistory.add(TeamEnum.TEAM_B);
-
                 game.incrementScoreTeamB();
-                game.updateGame();
             }
+
+            if (game.getTeamStateA().hasService()) {
+                hasServe = TeamEnum.TEAM_A;
+                server = game.getTeamStateA().getServer();
+                receiver = determineReceiver(game.getTeamStateA(), game.getTeamStateB());
+            } else {
+                hasServe = TeamEnum.TEAM_B;
+                server = game.getTeamStateB().getServer();
+                receiver = determineReceiver(game.getTeamStateB(), game.getTeamStateA());
+            }
+
+            scoringHistory.add(teamScored);
+            game.updateGame();
 
             // done after the click or double click to end the game correctly
             game.updateGameIfFinish();
@@ -296,8 +327,13 @@ public class GameScore extends VerticalLayout {
             } else {
                 game = ServicesRest.saveGame(game); // save state in DB
 
-                if (game.isMatchPoint()) {
-                    playSound(matchPointSound);
+                MatchPointInfo info = game.isMatchPoint();
+                if (info.isMatchPoint()) {
+                    if (Utils.isUseVictorySongForMatchPoint()) {
+                        playMatchPoint(determninePlayerSoundMatchPoint(info, hasServe, server, receiver, displayTeamA, displayTeamB));
+                    } else {
+                        playSound(matchPointSound);
+                    }
                 } else {
                     if (teamScored.equals(TeamEnum.TEAM_A)) {
                         playSound(pointSoundTeamA);
@@ -308,6 +344,37 @@ public class GameScore extends VerticalLayout {
                 refreshScreen();
             }
         }
+    }
+
+    protected Player determninePlayerSoundMatchPoint(MatchPointInfo info, TeamEnum hasServe, Integer server, Integer receiver, DisplayTeam displayTeamA, DisplayTeam displayTeamB) {
+        Player player;
+        if (info.getTeamWithMatchPoint().equals(TeamEnum.TEAM_A)) {
+            if (hasServe.equals(TeamEnum.TEAM_A)) {
+                player = displayTeamA.getPlayerById(server);
+            } else {
+                player = displayTeamA.getPlayerById(receiver);
+            }
+        } else {
+            if (hasServe.equals(TeamEnum.TEAM_B)) {
+                player = displayTeamB.getPlayerById(server);
+            } else {
+                player = displayTeamB.getPlayerById(receiver);
+            }
+        }
+
+        return player;
+    }
+
+    protected Integer determineReceiver(TeamState teamServe, TeamState teamReceive) {
+        Integer receiver;
+
+        int server = teamServe.getServer();
+        if (teamServe.getRightPlayer() != null && teamServe.getRightPlayer() == server) {
+            receiver = teamReceive.getRightPlayer();
+        } else {
+            receiver = teamReceive.getLeftPlayer();
+        }
+        return receiver;
     }
 
     private void playSound(AudioPlayer audio) {

@@ -17,9 +17,9 @@ public class MqttConfig {
             options.setAutomaticReconnect(true);
             options.setCleanSession(true);
             options.setConnectionTimeout(1000000);
-            options.setKeepAliveInterval(10);
+            options.setKeepAliveInterval(30 );
 
-            MQTT_CLIENT = new MqttClient("tcp://192.168.0.115:1883", "PING_PONG_UI");
+            MQTT_CLIENT = new MqttClient("tcp://localhost:1883", "PING_PONG_UI");
 
         } catch (MqttException e) {
             throw new RuntimeException(e);
@@ -31,6 +31,8 @@ public class MqttConfig {
             try {
                 MQTT_CLIENT.connect();
             } catch (MqttException e) {
+                System.out.println("Error connexion a MQTT dans getMqttClient()" + e.getMessage());
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }

@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class MqttListener {
 
-    private GameController gameController;
-    private WinnerScreenController winnerScreenController;
-    private GameSettingController gameSettingController;
+    private final GameController gameController;
+    private final WinnerScreenController winnerScreenController;
+    private final GameSettingController gameSettingController;
     static private State state;
 
 
@@ -29,6 +29,8 @@ public class MqttListener {
         try {
             mqttClient.subscribe(MqttConfig.BUTTON_PRESS, this::manageMessage);
         } catch (MqttException e) {
+            System.out.println("Error lors du subscribe au topic " + MqttConfig.BUTTON_PRESS + " : " + e.getMessage());
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -37,8 +39,7 @@ public class MqttListener {
         MessageParser message = new MessageParser(msg.getPayload());
 
         // ... payload handling omitted
-        System.out.println("MESSAGE RECU topic - score: " + topic + " " + message);
-
+        System.out.println("MESSAGE RECU " + topic + " " + message);
 
         switch (state) {
             case GAME ->  manageGame(message);
@@ -48,7 +49,7 @@ public class MqttListener {
     }
 
     private void manageGame(MessageParser message) {
-        System.out.println("Changer le score");
+        System.out.println("manageGame : " + message.toString());
 
         if (message.getButtonLong()) {
             switch (message.getButtonPress()) {
@@ -68,7 +69,7 @@ public class MqttListener {
     }
 
     private void manageSetting(MessageParser message) {
-        System.out.println("changer les seeting");
+        System.out.println("manageSetting : " + message.toString());
 
         if (message.getButtonLong()) {
             switch (message.getButtonPress()) {
@@ -87,7 +88,7 @@ public class MqttListener {
         }
     }
     private void manageWinner(MessageParser message) {
-        System.out.println("recommencer une game");
+        System.out.println("manageWinner : " + message.toString());
 
         if (message.getButtonLong()) {
             winnerScreenController.changeServerTeam();

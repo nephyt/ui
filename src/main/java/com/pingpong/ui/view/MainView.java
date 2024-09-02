@@ -166,7 +166,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
             result.setWidth("60px");
             result.setHeight("60px");
             if (player.getVictorySongPath() != null) {
-                String victorySong = player.getYoutubeEmbedVictorySongPath();
+                String victorySong = player.getYoutubeEmbedVictorySongPath(false);
 
                 if (victorySong != null) {
                     result.setSrc(victorySong);
