@@ -60,7 +60,8 @@ public class GameScore extends VerticalLayout {
 
     AudioPlayer pointSoundTeamA = new AudioPlayer();
     AudioPlayer pointSoundTeamB = new AudioPlayer();
-    AudioPlayer matchPointSound = new AudioPlayer();
+    AudioPlayer matchPointSoundA = new AudioPlayer();
+    AudioPlayer matchPointSoundB = new AudioPlayer();
     AudioPlayer undoSound = new AudioPlayer();
     AudioPlayer pauseSound = new AudioPlayer();
 
@@ -76,7 +77,8 @@ public class GameScore extends VerticalLayout {
         GameController.setGameScore(this);
         MqttListener.setStateGameScore();
 
-        setupAudio(matchPointSound, "Legend of Zelda A Link to the Past sound effect - Treasure!.mp3");
+        setupAudio(matchPointSoundA, "Legend of Zelda A Link to the Past sound effect - Treasure!.mp3");
+        setupAudio(matchPointSoundB, "Final Fantasy Victory Fanfare.mp3");
         setupAudio(undoSound, "Bowser Laugh Epic Sound FX.mp3");
         setupAudio(pauseSound, "Super Mario Bros.-Pause Sound Effect.mp3");
 
@@ -124,7 +126,8 @@ public class GameScore extends VerticalLayout {
 
         add(pointSoundTeamA);
         add(pointSoundTeamB);
-        add(matchPointSound);
+        add(matchPointSoundA);
+        add(matchPointSoundB);
         add(undoSound);
         add(pauseSound);
         add(matchPointYoutube);
@@ -332,7 +335,11 @@ public class GameScore extends VerticalLayout {
                     if (Utils.isUseVictorySongForMatchPoint()) {
                         playMatchPoint(determninePlayerSoundMatchPoint(info, hasServe, server, receiver, displayTeamA, displayTeamB));
                     } else {
-                        playSound(matchPointSound);
+                        if (info.getTeamWithMatchPoint().equals(TeamEnum.TEAM_A)) {
+                            playSound(matchPointSoundA);
+                        } else {
+                            playSound(matchPointSoundB);
+                        }
                     }
                 } else {
                     if (teamScored.equals(TeamEnum.TEAM_A)) {

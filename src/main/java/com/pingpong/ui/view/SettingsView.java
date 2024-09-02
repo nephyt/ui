@@ -58,7 +58,7 @@ public class SettingsView extends VerticalLayout {
         });
 
         useVictorySongForMatchPoint.setLabel("Use VictorySong for Match Point");
-        useVictorySongForMatchPoint.setValue(true);
+        useVictorySongForMatchPoint.setValue(Utils.isUseVictorySongForMatchPoint());
         useVictorySongForMatchPoint.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 Utils.setUseVictorySongForMatchPoint(event.getValue());

@@ -26,7 +26,7 @@ public class Utils {
 
     private static boolean allScoringSound = false;
 
-    private static boolean useVictorySongForMatchPoint = true;
+    private static boolean useVictorySongForMatchPoint = false;
 
 
 
