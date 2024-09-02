@@ -208,16 +208,16 @@ class GameScoreTest {
         displayTeamA.setMapIdPlayer(playersA);
 
         Map<Integer, Player> playersB = new HashMap<>();
-        playersB.put(1, new Player(2, "2", null, null,""));
+        playersB.put(2, new Player(2, "2", null, null,""));
         displayTeamB.setMapIdPlayer(playersB);
 
 
         assertEquals(1, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_A, 1, 2, displayTeamA, displayTeamB).getId());
-        assertEquals(2, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_B, 1, 2, displayTeamA, displayTeamB).getId());
+        assertEquals(1, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_B, 2, 1, displayTeamA, displayTeamB).getId());
 
         info.setTeamWithMatchPoint(TeamEnum.TEAM_B);
 
         assertEquals(2, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_A, 1, 2, displayTeamA, displayTeamB).getId());
-        assertEquals(1, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_B, 1, 2, displayTeamA, displayTeamB).getId());
+        assertEquals(2, gameScore.determninePlayerSoundMatchPoint(info, TeamEnum.TEAM_B, 2, 1, displayTeamA, displayTeamB).getId());
     }
 }
