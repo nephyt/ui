@@ -188,13 +188,30 @@ public class WinnerScreen extends VerticalLayout {
         DisplayTeam displayTeamA = pageGame.gameScore.getDisplayTeamA();
         DisplayTeam displayTeamB = pageGame.gameScore.getDisplayTeamB();
 
+
         Game newGame = new Game(game.getTeamA(), game.getTeamB(), serverTeam.getValue(), game.getMaxScore(), game.getScoringSoundTeamA(), game.getScoringSoundTeamB());
+
+        setCorrectPositionForDouble(game.getTeamStateA(), newGame.getTeamStateA());
+        setCorrectPositionForDouble(game.getTeamStateB(), newGame.getTeamStateB());
 
         ServicesButtons.getInstance().startMatch(serverTeam.getValue());
         Game gameInProgress = ServicesRest.saveGame(newGame);
 
         pageGame.initialiseGameScore(gameInProgress, displayTeamA.getMapIdPlayer(), displayTeamB.getMapIdPlayer());
         pageGame.showGameScore();
+    }
+
+    private static void setCorrectPositionForDouble(TeamState oldTeamState, TeamState newTeamState) {
+        if (!oldTeamState.isSingle()) {
+            // simulate a undo pour avoir les bonne position
+            oldTeamState.undoMovePlayer();
+            if (!oldTeamState.getRightPlayer().equals(newTeamState.getRightPlayer())) {
+                newTeamState.swapPosition();
+                if (newTeamState.hasService()) {
+                    newTeamState.setServer(newTeamState.getRightPlayer());
+                }
+            }
+        }
     }
 
 }
