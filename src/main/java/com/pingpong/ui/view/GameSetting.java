@@ -84,12 +84,12 @@ public class GameSetting extends VerticalLayout {
 
         Map<Integer, Integer> validate = new HashMap<>();
 
-        for (int i = 0; i < listPlayer.size(); ++i) {
-            if (listPlayer.get(i) != null) {
-                if (validate.containsKey(listPlayer.get(i).getId())) {
+        for (Player player : listPlayer) {
+            if (player != null) {
+                if (validate.containsKey(player.getId())) {
                     return false;
                 } else {
-                    validate.put(listPlayer.get(i).getId(), 0);
+                    validate.put(player.getId(), 0);
                 }
             }
         }
