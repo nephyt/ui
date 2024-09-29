@@ -14,6 +14,7 @@ import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.IFrame;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
@@ -24,7 +25,7 @@ public class WinnerScreen extends VerticalLayout {
     Button rematch = new Button("Rematch");
     Button changePlayers = new Button("Change Players");
 
-    ComboBox<TeamEnum> serverTeam = new ComboBox<>("Équipe qui sert :");
+    ComboBox<TeamEnum> serverTeam = new ComboBox<>("Équipe qui servira :");
 
     HorizontalLayout buttonsDiv = new HorizontalLayout(rematch, changePlayers);
     IFrame frame = new IFrame();
@@ -48,7 +49,37 @@ public class WinnerScreen extends VerticalLayout {
         serverTeam.setItems(TeamEnum.TEAM_A, TeamEnum.TEAM_B);
         serverTeam.setId("serverTeamWinnerScreen");
 
+        serverTeam.addValueChangeListener(event -> {
+            displayNotification(formatNotification(event.getValue()));
+        });
+
         Utils.disableSelection(this);
+    }
+
+    private String formatNotification(TeamEnum teamServer) {
+        String res = "<DIV><b>Prochain Serveur : ";
+
+        TeamState team =  (TeamEnum.TEAM_A.equals(teamServer) ? pageGame.gameScore.game.getTeamStateA() : pageGame.gameScore.game.getTeamStateB());
+        DisplayTeam displayTeam =  (TeamEnum.TEAM_A.equals(teamServer) ? pageGame.gameScore.getDisplayTeamA() : pageGame.gameScore.getDisplayTeamB());
+
+        int serverId;
+        if (team.isSingle()) {
+            serverId = ((TeamEnum.TEAM_A.equals(teamServer) ? pageGame.gameScore.game.getTeamA().getTeamPlayer1().getPlayerId()
+                                                            : pageGame.gameScore.game.getTeamB().getTeamPlayer1().getPlayerId()));
+        } else {
+            // undo le mouvement pour avoir la personne qui va servir le prochain coup
+            team.undoMovePlayer();
+            serverId = team.getRightPlayer();
+            team.movePlayer(); //  undo le undo pour prendre en compte le prochain undo lors de la création de la partie
+
+        }
+
+        Player server = displayTeam.getPlayerById(serverId);
+
+        res += server.getName() + "</b></DIV>";
+
+        return res;
+
     }
 
     public void showWinner(Game game, DisplayTeam displayTeamA, DisplayTeam displayTeamB, boolean isMute) {
@@ -124,7 +155,13 @@ public class WinnerScreen extends VerticalLayout {
         Html time = new Html("<font>Time : " + game.toStringTimePlayed() + "</font>");
         loserName.getElement().getStyle().set("font-size", "24px");
 
-        serverTeam.setValue(getTeamEnumWin(game.getTeamWinnerId(), game.getTeamA().getId()));
+
+        TeamEnum winnerTeam = getTeamEnumWin(game.getTeamWinnerId(), game.getTeamA().getId());
+        if (winnerTeam.equals(serverTeam.getValue())) {
+            displayNotification(formatNotification(winnerTeam));
+        } else {
+            serverTeam.setValue(winnerTeam);
+        }
 
         add(winnerName);
         add(finalScore);
@@ -177,6 +214,13 @@ public class WinnerScreen extends VerticalLayout {
         } else {
             serverTeam.setValue(TeamEnum.TEAM_A);
         }
+    }
+
+    private void displayNotification(String text) {
+        Html textHtml = new Html(text);
+        Notification notification = new Notification(textHtml);
+        notification.setDuration(6000);
+        notification.open();
     }
 
     public void rematchGame() {
