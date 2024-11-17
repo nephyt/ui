@@ -22,10 +22,10 @@ import java.util.Map;
 
 public class ServicesRest {
 
-    private static InitHttpConfig initHttpConfig = new InitHttpConfig();
-    private static ServiceCountClient serviceCountClient = initHttpConfig.serviceCountClient(Constants.SERVICE_COUNT_URL);
-    private static ServiceGameClient serviceGameClient = initHttpConfig.serviceGameClient(Constants.SERVICE_GAME_URL);
-    private static ServicePlayersClient servicePlayersClient = initHttpConfig.servicePlayersClient(Constants.SERVICE_PLAYER_URL);
+    private static final InitHttpConfig initHttpConfig = new InitHttpConfig();
+    private static final ServiceCountClient serviceCountClient = initHttpConfig.serviceCountClient(Constants.SERVICE_COUNT_URL);
+    private static final ServiceGameClient serviceGameClient = initHttpConfig.serviceGameClient(Constants.SERVICE_GAME_URL);
+    private static final ServicePlayersClient servicePlayersClient = initHttpConfig.servicePlayersClient(Constants.SERVICE_PLAYER_URL);
 
     static RestTemplate restTemplate = new RestTemplate();
 

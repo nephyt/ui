@@ -7,7 +7,6 @@ import com.pingpong.basicclass.game.MatchPointInfo;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
-import com.pingpong.ui.services.MqttListener;
 import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
@@ -75,7 +74,6 @@ public class GameScore extends VerticalLayout {
 
         System.out.println("Set game score a this dans GameScore");
         GameController.setGameScore(this);
-        MqttListener.setStateGameScore();
 
         setupAudio(matchPointSoundA, "Legend of Zelda A Link to the Past sound effect - Treasure!.mp3");
         setupAudio(matchPointSoundB, "Final Fantasy Victory Fanfare.mp3");
@@ -244,8 +242,11 @@ public class GameScore extends VerticalLayout {
         }
     }
 
-    public void refreshScreen() {
-        ServicesButtons.getInstance().startServerModeButton(game.determineServerState());
+    public void refreshScreen(boolean isInit) {
+        if (!isInit) {
+            // it will be done later
+            ServicesButtons.getInstance().startServerModeButton(game.determineServerState());
+        }
 
         displayTeamA.refreshTeam(game.getTeamStateA(), TeamEnum.TEAM_A);
 
@@ -280,7 +281,7 @@ public class GameScore extends VerticalLayout {
                 game.undo(scoringHistory.pop());
                 game.determineServerState();
 
-                refreshScreen();
+                refreshScreen(false);
             }
         }
     }
@@ -348,7 +349,7 @@ public class GameScore extends VerticalLayout {
                         playSound(pointSoundTeamB);
                     }
                 }
-                refreshScreen();
+                refreshScreen(false);
             }
         }
     }

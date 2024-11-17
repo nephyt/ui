@@ -7,7 +7,6 @@ import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.ServiceCount;
 import com.pingpong.basicclass.stats.TeamStats;
-import com.pingpong.ui.services.MqttListener;
 import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
@@ -118,7 +117,6 @@ public class GameSetting extends VerticalLayout {
     public GameSetting(List<Player> listPlayer, PageGame pageGame) {
 
         GameSettingController.setGameSetting(this);
-        MqttListener.setStateGameSetting();
 
         this.pageGame = pageGame;
 
@@ -285,7 +283,7 @@ public class GameSetting extends VerticalLayout {
         game = ServicesRest.saveGame(game);
 
         pageGame.initialiseGameScore(game, getDisplayPlayerTeamA(), getDisplayPlayerTeamB());
-        pageGame.showGameScore();
+        pageGame.showGameScore(false);
     }
 
 }

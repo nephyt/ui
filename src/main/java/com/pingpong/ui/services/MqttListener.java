@@ -2,40 +2,77 @@ package com.pingpong.ui.services;
 
 import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.ui.config.MessageParser;
-import com.pingpong.ui.config.MqttConfig;
 import com.pingpong.ui.config.State;
+import com.pingpong.ui.thread.CheckMqttConnection;
 import com.pingpong.ui.web.controller.GameController;
 import com.pingpong.ui.web.controller.GameSettingController;
 import com.pingpong.ui.web.controller.WinnerScreenController;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.stereotype.Service;
 @Service
 public class MqttListener {
 
-    private final GameController gameController;
-    private final WinnerScreenController winnerScreenController;
-    private final GameSettingController gameSettingController;
-    static private State state;
+    private static final MqttConnectOptions options = new MqttConnectOptions();
+    public static final String BUTTON_PRESS = "BUTTON_PRESS";
+    public static final String BUTTON_LIGHT = "BUTTON_LIGHT";
+    private static final MqttClient MQTT_CLIENT;
 
+    private static GameController gameController;
+    private static WinnerScreenController winnerScreenController;
+    private static GameSettingController gameSettingController;
+    static private State state = State.NONE;
 
-    MqttClient mqttClient;
-    MqttListener(GameSettingController gameSettingController, GameController gameController, WinnerScreenController winnerScreenController) {
-        this.gameSettingController = gameSettingController;
-        this.gameController = gameController;
-        this.winnerScreenController = winnerScreenController;
-        mqttClient = MqttConfig.getMqttClient();
+    CheckMqttConnection checkMqttConnection;
+
+    static {
         try {
-            mqttClient.subscribe(MqttConfig.BUTTON_PRESS, this::manageMessage);
+
+            options.setCleanSession(true);
+            options.setConnectionTimeout(15);
+            options.setKeepAliveInterval(60000);
+
+            MQTT_CLIENT = new MqttClient("tcp://localhost:1883", "PING_PONG_UI");
+//            MQTT_CLIENT = new MqttClient("tcp://192.168.0.115:1883", "PING_PONG_UI");
+
         } catch (MqttException e) {
-            System.out.println("Error lors du subscribe au topic " + MqttConfig.BUTTON_PRESS + " : " + e.getMessage());
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    private void manageMessage(String topic, MqttMessage msg) {
+    MqttListener(GameSettingController gameSettingController, GameController gameController, WinnerScreenController winnerScreenController) {
+        this.gameSettingController = gameSettingController;
+        this.gameController = gameController;
+        this.winnerScreenController = winnerScreenController;
+
+        checkMqttConnection = new CheckMqttConnection();
+        checkMqttConnection.start();
+    }
+
+    public static MqttClient getMqttClient() {
+        if (!MQTT_CLIENT.isConnected()) {
+            try {
+                MQTT_CLIENT.connect(options);
+
+                try {
+                    MQTT_CLIENT.subscribe(MqttListener.BUTTON_PRESS, MqttListener::manageMessage);
+                } catch (MqttException e) {
+                    System.out.println("Error lors du subscribe au topic " + MqttListener.BUTTON_PRESS + " : " + e.getMessage());
+                    System.out.println("ERRO : ");
+                    e.printStackTrace(System.out);
+                    throw new RuntimeException(e);
+                }
+            } catch (MqttException e) {
+                System.out.println("Error connexion a MQTT dans getMqttClient()" + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return  MQTT_CLIENT;
+    }
+
+    private static void manageMessage(String topic, MqttMessage msg) {
         MessageParser message = new MessageParser(msg.getPayload());
 
         // ... payload handling omitted
@@ -45,10 +82,11 @@ public class MqttListener {
             case GAME ->  manageGame(message);
             case SETTING -> manageSetting(message);
             case WINNER -> manageWinner(message);
+            case NONE -> System.out.println("none");
         }
     }
 
-    private void manageGame(MessageParser message) {
+    private static void manageGame(MessageParser message) {
         System.out.println("manageGame : " + message.toString());
 
         if (message.getButtonLong()) {
@@ -68,7 +106,7 @@ public class MqttListener {
         }
     }
 
-    private void manageSetting(MessageParser message) {
+    private static void manageSetting(MessageParser message) {
         System.out.println("manageSetting : " + message.toString());
 
         if (message.getButtonLong()) {
@@ -87,7 +125,7 @@ public class MqttListener {
             }
         }
     }
-    private void manageWinner(MessageParser message) {
+    private static void manageWinner(MessageParser message) {
         System.out.println("manageWinner : " + message.toString());
 
         if (message.getButtonLong()) {
@@ -112,5 +150,9 @@ public class MqttListener {
 
     public static void setStateGameSetting() {
         state = State.SETTING;
+    }
+
+    public static void setStateNone() {
+        state = State.NONE;
     }
 }
