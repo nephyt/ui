@@ -4,7 +4,6 @@ import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
 import com.pingpong.basicclass.game.TeamState;
 import com.pingpong.basicclass.player.Player;
-import com.pingpong.ui.services.MqttListener;
 import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
@@ -34,7 +33,6 @@ public class WinnerScreen extends VerticalLayout {
         this.pageGame = pageGame;
 
         WinnerScreenController.setWinnerScreen(this);
-        MqttListener.setStateWinnerScreen();
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -242,7 +240,7 @@ public class WinnerScreen extends VerticalLayout {
         Game gameInProgress = ServicesRest.saveGame(newGame);
 
         pageGame.initialiseGameScore(gameInProgress, displayTeamA.getMapIdPlayer(), displayTeamB.getMapIdPlayer());
-        pageGame.showGameScore();
+        pageGame.showGameScore(false);
     }
 
     private static void setCorrectPositionForDouble(TeamState oldTeamState, TeamState newTeamState) {

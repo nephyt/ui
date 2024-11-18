@@ -1,8 +1,6 @@
 package com.pingpong.ui.services;
 
 import com.pingpong.basicclass.game.Game;
-import com.pingpong.basicclass.game.ListOfGames;
-import com.pingpong.basicclass.game.ListOfTeams;
 import com.pingpong.basicclass.game.Team;
 import com.pingpong.basicclass.player.ListOfPlayers;
 import com.pingpong.basicclass.player.Player;
@@ -11,97 +9,85 @@ import com.pingpong.basicclass.servicecount.UpdatePlayer;
 import com.pingpong.basicclass.stats.PlayersStats;
 import com.pingpong.basicclass.stats.TeamStats;
 import com.pingpong.ui.Constants;
+import com.pingpong.ui.client.ServiceCountClient;
+import com.pingpong.ui.client.ServiceGameClient;
+import com.pingpong.ui.client.ServicePlayersClient;
+import com.pingpong.ui.config.InitHttpConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
 
+
 public class ServicesRest {
+
+    private static final InitHttpConfig initHttpConfig = new InitHttpConfig();
+    private static final ServiceCountClient serviceCountClient = initHttpConfig.serviceCountClient(Constants.SERVICE_COUNT_URL);
+    private static final ServiceGameClient serviceGameClient = initHttpConfig.serviceGameClient(Constants.SERVICE_GAME_URL);
+    private static final ServicePlayersClient servicePlayersClient = initHttpConfig.servicePlayersClient(Constants.SERVICE_PLAYER_URL);
 
     static RestTemplate restTemplate = new RestTemplate();
 
+
+    // count service
     public static void updatePlayersCountService(AllServiceCount updatePlayers) {
-        String uri = Constants.SERVICE_COUNT_URL +  "updatePlayersCountService";
-        restTemplate.put(uri, updatePlayers, AllServiceCount.class);
+        serviceCountClient.updatePlayersCountService(updatePlayers);
     }
 
     public static void updatePlayerCountService(UpdatePlayer updatePlayer) {
-        String uri = Constants.SERVICE_COUNT_URL +  "updatePlayerCountService";
-        restTemplate.put(uri, updatePlayer, PlayersStats.class);
+        serviceCountClient.updatePlayerCountService(updatePlayer);
     }
 
     public static void deleteServiceGame(Integer gameId) {
-        String uri = Constants.SERVICE_COUNT_URL +  "deleteServiceGame/" + gameId;
-        restTemplate.delete(uri, List.class);
-    }
-
-    public static void deleteGame(Integer gameId) {
-        String uri = Constants.SERVICE_GAME_URL +  "deleteGame/" + gameId;
-        restTemplate.delete(uri);
-    }
-
-    public static void pauseGame(Integer gameId) {
-        String uri = Constants.SERVICE_GAME_URL +  "pauseGame/" + gameId;
-        restTemplate.put(uri, null);
-    }
-
-    public static void resumeGame(Integer gameId) {
-        String uri = Constants.SERVICE_GAME_URL +  "resumeGame/" + gameId;
-        restTemplate.put(uri, null);
+        serviceCountClient.deleteServiceGame(gameId);
     }
 
     public static AllServiceCount getPlayerCountService() {
-        String uri = Constants.SERVICE_COUNT_URL +  "getPlayerCountService";
-        AllServiceCount result = restTemplate.getForObject(uri, AllServiceCount.class);
-
-        return result;
+        return serviceCountClient.getPlayerCountService();
     }
 
     public static AllServiceCount getGameCountService(Integer gameId) {
-        String uri = Constants.SERVICE_COUNT_URL +  "getGameCountService/" + gameId;
-        AllServiceCount result = restTemplate.getForObject(uri, AllServiceCount.class);
-
-        return result;
+        return serviceCountClient.getGameCountService(gameId);
     }
 
     public static AllServiceCount getTeamsServiceCount(Integer teamId1, Integer teamId2) {
-        String uri = Constants.SERVICE_COUNT_URL +  "getServiceCountForTeams/" + teamId1 + "/" + teamId2;
-        AllServiceCount result = restTemplate.getForObject(uri, AllServiceCount.class);
+        return serviceCountClient.getServiceCountForTeams(teamId1, teamId2);
+    }
 
-        return result;
+
+    // Game
+
+    public static void deleteGame(Integer gameId) {
+        serviceGameClient.deleteGame(gameId);
+    }
+
+    public static void pauseGame(Integer gameId) {
+        serviceGameClient.pauseGame(gameId);
+    }
+
+    public static void resumeGame(Integer gameId) {
+        serviceGameClient.resumeGame(gameId);
     }
 
     public static PlayersStats getPlayersStats() {
-        String uri = Constants.SERVICE_GAME_URL +  "getPlayersStats";
-        PlayersStats result = restTemplate.getForObject(uri, PlayersStats.class);
-
-        return result;
+        return serviceGameClient.getPlayersStats();
     }
 
     public static TeamStats getTeamStatsByPlayer(Team team) {
-        String uri = Constants.SERVICE_GAME_URL +  "getTeamStatsByPlayer/";
-
         String teamAParam = getParamStringForPlayers(team);
+        return serviceGameClient.getTeamStatsByPlayer(teamAParam);
+    }
 
-        uri += (teamAParam);
-
-        TeamStats teamStats = restTemplate.getForObject(uri, TeamStats.class);
-
-        return teamStats;
+    public static Game saveGame(Game game) {
+        return serviceGameClient.saveGame(game);
     }
 
     public static TeamStats getTeamVSStatsByPlayer(Team teamA, Team teamB) {
-        String uri = Constants.SERVICE_GAME_URL +  "getTeamVSStatsByPlayer/";
-
         String teamAParam = getParamStringForPlayers(teamA);
         String teamBParam = getParamStringForPlayers(teamB);
 
-        uri += (teamAParam + "/" + teamBParam);
-
-        TeamStats teamStats = restTemplate.getForObject(uri, TeamStats.class);
-
-        return teamStats;
+        return  serviceGameClient.getTeamVSStatsByPlayer(teamAParam, teamBParam);
     }
 
     private static String getParamStringForPlayers(Team team) {
@@ -113,46 +99,33 @@ public class ServicesRest {
     }
 
     public static List<Game> getPausedGames() {
-        String uri = Constants.SERVICE_GAME_URL +  "getPausedGames";
-
-        ListOfGames result = restTemplate.getForObject(uri, ListOfGames.class);
-
-        return result.getGames();
+        return serviceGameClient.getPausedGames().getGames();
     }
 
     public static List<Team> getAllTeams() {
-        String uri = Constants.SERVICE_GAME_URL +  "getAllTeams";
-
-        ListOfTeams result = restTemplate.getForObject(uri, ListOfTeams.class);
-
-        return result.getTeams();
+        return serviceGameClient.getAllTeams().getTeams();
     }
 
     public static List<Game> getHistoricGames(Integer nbHours, Integer teamId) {
-        String uri = Constants.SERVICE_GAME_URL +  "getHistoricGames/" + nbHours;
-
-        if (teamId != null) {
-            uri += "/" + teamId;
+        if (teamId == null) {
+            return serviceGameClient.getHistoricGames(nbHours).getGames();
+        } else {
+            return serviceGameClient.getHistoricGames(nbHours, teamId).getGames();
         }
-
-        ListOfGames result = restTemplate.getForObject(uri, ListOfGames.class);
-
-        return result.getGames();
     }
 
+    // PLayer
+
     public static void deletePlayer(Player player) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + player.getId();
-        restTemplate.delete(uri, player, Player.class);
+        servicePlayersClient.delete(player.getId());
     }
 
     public static void restorePlayer(Player player) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + player.getId();
-        restTemplate.put(uri, player, Player.class);
+        servicePlayersClient.restorePlayer(player.getId());
     }
 
     public static void savePlayer(Player player) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "SavePlayer";
-        restTemplate.postForEntity(uri, player, Player.class);
+        servicePlayersClient.savePlayer(player);
     }
 
     public static Player getAPlayer(int id) {
@@ -160,6 +133,14 @@ public class ServicesRest {
         Player result = restTemplate.getForObject(uri, Player.class);
 
         return result;
+    }
+
+    private static ListOfPlayers getListOfPlayers(String filterText) {
+        if (!StringUtils.isEmpty(filterText)) {
+            return servicePlayersClient.getListOfPlayersWithName(filterText);
+        }
+
+        return servicePlayersClient.getListOfPlayers();
     }
 
     public static List<Player> listPlayer(String filterText) {
@@ -174,20 +155,8 @@ public class ServicesRest {
         return result.getMapPlayers();
     }
 
-    private static ListOfPlayers getListOfPlayers(String filterText) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "Players";
 
-        if (!StringUtils.isEmpty(filterText)) {
-            uri = Constants.SERVICE_PLAYER_URL +  "PlayersWithName/" + filterText;
-        }
 
-        return restTemplate.getForObject(uri, ListOfPlayers.class);
-    }
 
-    public static Game saveGame(Game game) {
-        String uri = Constants.SERVICE_GAME_URL +  "saveGame";
-
-        return restTemplate.postForObject(uri, game, Game.class);
-    }
 
 }

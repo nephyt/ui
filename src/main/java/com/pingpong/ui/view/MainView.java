@@ -4,6 +4,7 @@ import com.pingpong.basicclass.player.Player;
 import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.stats.PlayerStats;
 import com.pingpong.basicclass.stats.PlayersStats;
+import com.pingpong.ui.services.MqttListener;
 import com.pingpong.ui.services.ServicesButtons;
 import com.pingpong.ui.services.ServicesRest;
 import com.pingpong.ui.util.Utils;
@@ -45,7 +46,10 @@ public class MainView extends VerticalLayout implements KeyNotifier {
     AllServiceCount serviceCount;
 
 
+
     public MainView() {
+
+        MqttListener.setStateNone();
 
         // init cookie for mute
         Utils.isMute();
@@ -84,10 +88,12 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
             switch (tabs.getSelectedIndex()) {
                 case 0 :
+                    MqttListener.setStateNone();
                     ServicesButtons.getInstance().standBy();
                     fillGrid("");
                     break;
                 case 1 :
+                    MqttListener.setStateNone();
                     ServicesButtons.getInstance().standBy();
                     ((PausedGameVIew)selectedPage).fillGrid();
                     break;
@@ -95,9 +101,11 @@ public class MainView extends VerticalLayout implements KeyNotifier {
                     ((PageGame)selectedPage).refreshStatePage();
                     break;
                 case 3 :
+                    MqttListener.setStateNone();
                     ServicesButtons.getInstance().standBy();
                     ((HistoricGameVIew)selectedPage).refreshPage();
                 case 4:
+                    MqttListener.setStateNone();
                     ServicesButtons.getInstance().standBy();
             }
 

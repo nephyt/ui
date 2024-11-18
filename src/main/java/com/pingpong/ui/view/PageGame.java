@@ -83,7 +83,7 @@ public class PageGame extends Div {
     public void initialiseGameScore(Game gameToManage, Map<Integer, Player> mapPlayerTeamA, Map<Integer, Player> mapPlayerTeamB) {
 
         gameScore.initGameScore(this, gameToManage, mapPlayerTeamA, mapPlayerTeamB);
-        gameScore.refreshScreen();
+        gameScore.refreshScreen(true);
     }
 
     public void showGameSetting() {
@@ -95,12 +95,15 @@ public class PageGame extends Div {
         refreshStatePage();
     }
 
-    public void showGameScore() {
+    public void showGameScore(boolean fromResumeGame) {
         remove(winnerScreen);
         gameScore.setVisible(true);
         gameSetting.setVisible(false);
 
-        refreshStatePage();
+        if (!fromResumeGame) {
+            //refresh state page will be done by the tab selection
+            refreshStatePage();
+        }
 
     }
 

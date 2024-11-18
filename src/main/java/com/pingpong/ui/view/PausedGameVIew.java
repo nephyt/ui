@@ -49,7 +49,7 @@ public class PausedGameVIew extends Div {
             gameSelected.resumeGame();
 
             pageGame.initialiseGameScore(gameSelected, getMapPlayerTeam(gameSelected.getTeamA(), mapPlayer), getMapPlayerTeam(gameSelected.getTeamB(), mapPlayer));
-            pageGame.showGameScore();
+            pageGame.showGameScore(true);
 
             tabs.setSelectedIndex(2);
         }

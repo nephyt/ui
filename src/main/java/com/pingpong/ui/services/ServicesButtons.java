@@ -2,7 +2,6 @@ package com.pingpong.ui.services;
 
 import com.pingpong.basicclass.enumeration.TeamEnum;
 import com.pingpong.basicclass.game.Game;
-import com.pingpong.ui.config.MqttConfig;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -26,9 +25,10 @@ public class ServicesButtons  {
 
     private static void publishToMqtt(MqttMessage mqttMessage) {
         try {
-            MqttConfig.getMqttClient().publish(MqttConfig.BUTTON_LIGHT, mqttMessage);
+            MqttListener.getMqttClient().publish(MqttListener.BUTTON_LIGHT, mqttMessage);
         } catch (MqttException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            //throw new RuntimeException(e);
         }
     }
 
