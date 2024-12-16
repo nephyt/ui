@@ -255,14 +255,16 @@ public class GameSetting extends VerticalLayout {
     }
 
 
-    public void validateAndStartGame() {
+    public boolean validateAndStartGame() {
 
         Team teamA = playerSelectorTeamA.createTeam();
         Team teamB = playerSelectorTeamB.createTeam();
 
-        if (isTeamValid(teamA, teamB)) {
+        boolean isValid = isTeamValid(teamA, teamB);
+        if (isValid) {
             startGame();
         }
+        return isValid;
     }
 
     private boolean isTeamValid(Team teamA, Team teamB) {

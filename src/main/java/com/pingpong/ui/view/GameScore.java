@@ -229,6 +229,8 @@ public class GameScore extends VerticalLayout {
                 pauseResumeGame.setText("Resume Game");
                 newGame.setVisible(true);
                 undo.setVisible(false);
+                scoring.getElement().getStyle().set("background-image","url('pause.jpg')");
+
             } else if (GameStatus.PAUSE.getCode().equals(game.getGameStatus().getCode())) {
                 playSound(pauseSound);
                 ServicesButtons.getInstance().startServerModeButton(game.determineServerState());
@@ -238,6 +240,7 @@ public class GameScore extends VerticalLayout {
                 newGame.setVisible(false);
                 undo.setVisible(true);
                 undo.setEnabled(!scoringHistory.isEmpty());
+                scoring.getElement().getStyle().set("background-image","url('pingpongtable.png')");
             }
         }
     }

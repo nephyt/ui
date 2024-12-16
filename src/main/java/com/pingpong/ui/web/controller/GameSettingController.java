@@ -86,12 +86,13 @@ public class GameSettingController {
 
         if (gameSetting != null) {
             gameSetting.getUI().get().access(() -> {
-                gameSetting.validateAndStartGame();
-
+                if (gameSetting.validateAndStartGame()) {
+                    gameSetting = null;
+                }
                 //     gameScore.getUI().get().access(() -> gameScore.getUI().get().push());
             });
         }
-        gameSetting = null;
+
     }
 
     @GetMapping(value = "/GetDigitsPath")
