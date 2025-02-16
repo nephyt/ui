@@ -32,7 +32,7 @@ public class MqttListener {
 
             options.setCleanSession(true);
             options.setConnectionTimeout(15);
-            options.setKeepAliveInterval(60000);
+            options.setKeepAliveInterval(10);
 
             MQTT_CLIENT = new MqttClient("tcp://localhost:1883", "PING_PONG_UI");
 //            MQTT_CLIENT = new MqttClient("tcp://192.168.0.115:1883", "PING_PONG_UI");
@@ -60,7 +60,7 @@ public class MqttListener {
                     MQTT_CLIENT.subscribe(MqttListener.BUTTON_PRESS, MqttListener::manageMessage);
                 } catch (MqttException e) {
                     System.out.println("Error lors du subscribe au topic " + MqttListener.BUTTON_PRESS + " : " + e.getMessage());
-                    System.out.println("ERRO : ");
+                    System.out.println("ERROR : ");
                     e.printStackTrace(System.out);
                     throw new RuntimeException(e);
                 }

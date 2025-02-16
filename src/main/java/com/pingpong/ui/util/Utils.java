@@ -36,6 +36,7 @@ public class Utils {
 
     static {
 
+        filenames.add("1-UP.mp3");
         filenames.add("Bazinga.mp3");
         filenames.add("DingSoundEffect.mp3");
         filenames.add("Everything Is AWESOME!.mp3");
