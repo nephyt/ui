@@ -181,6 +181,7 @@ public class GameScore extends VerticalLayout {
 
         scoringHistory.clear();
         pauseResumeGame.setText("Pause Game");
+        scoring.getElement().getStyle().set("background-image","url('pingpongtable.png')");
         undo.setVisible(true);
         newGame.setVisible(false);
     }
