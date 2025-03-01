@@ -34,7 +34,7 @@ public class MqttListener {
             options.setConnectionTimeout(15);
             options.setKeepAliveInterval(10);
 
-            MQTT_CLIENT = new MqttClient("tcp://localhost:1883", "PING_PONG_UI");
+            MQTT_CLIENT = new MqttClient("tcp://192.168.0.116:1883", "PING_PONG_UI");
 //            MQTT_CLIENT = new MqttClient("tcp://192.168.0.115:1883", "PING_PONG_UI");
 
         } catch (MqttException e) {
