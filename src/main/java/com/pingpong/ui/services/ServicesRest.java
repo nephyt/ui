@@ -8,27 +8,34 @@ import com.pingpong.basicclass.servicecount.AllServiceCount;
 import com.pingpong.basicclass.servicecount.UpdatePlayer;
 import com.pingpong.basicclass.stats.PlayersStats;
 import com.pingpong.basicclass.stats.TeamStats;
-import com.pingpong.ui.Constants;
 import com.pingpong.ui.client.ServiceCountClient;
 import com.pingpong.ui.client.ServiceGameClient;
 import com.pingpong.ui.client.ServicePlayersClient;
 import com.pingpong.ui.config.InitHttpConfig;
+import com.pingpong.ui.config.UrlConfig;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
 
 
+@Component
 public class ServicesRest {
 
     private static final InitHttpConfig initHttpConfig = new InitHttpConfig();
-    private static final ServiceCountClient serviceCountClient = initHttpConfig.serviceCountClient(Constants.SERVICE_COUNT_URL);
-    private static final ServiceGameClient serviceGameClient = initHttpConfig.serviceGameClient(Constants.SERVICE_GAME_URL);
-    private static final ServicePlayersClient servicePlayersClient = initHttpConfig.servicePlayersClient(Constants.SERVICE_PLAYER_URL);
+    private static ServiceCountClient serviceCountClient;
+    private static ServiceGameClient serviceGameClient;
+    private static ServicePlayersClient servicePlayersClient;
 
     static RestTemplate restTemplate = new RestTemplate();
 
+    public ServicesRest(UrlConfig config) {
+        serviceCountClient = initHttpConfig.serviceCountClient(config.getServicecount());
+        serviceGameClient = initHttpConfig.serviceGameClient(config.getServicegame());
+        servicePlayersClient = initHttpConfig.servicePlayersClient(config.getServiceplayer());
+    }
 
     // count service
     public static void updatePlayersCountService(AllServiceCount updatePlayers) {
@@ -129,10 +136,7 @@ public class ServicesRest {
     }
 
     public static Player getAPlayer(int id) {
-        String uri = Constants.SERVICE_PLAYER_URL +  "Players/" + id;
-        Player result = restTemplate.getForObject(uri, Player.class);
-
-        return result;
+        return servicePlayersClient.getAPlayer(id);
     }
 
     private static ListOfPlayers getListOfPlayers(String filterText) {
