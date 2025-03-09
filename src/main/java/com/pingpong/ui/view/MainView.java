@@ -52,7 +52,7 @@ public class MainView extends VerticalLayout implements KeyNotifier {
 
     public MainView() {
 
-        System.out.println("IP:" + getClientIP() );
+        String ipClient = getClientIP();
 
         MqttListener.setStateNone();
 
@@ -69,6 +69,13 @@ public class MainView extends VerticalLayout implements KeyNotifier {
         Tabs tabs = new Tabs(tabPlayer, tabGamePaused, tabGame, tabGameHistoric, tabSetting);
         tabs.setWidthFull();
         tabs.setFlexGrowForEnclosedTabs(1);
+
+        if (!ipClient.startsWith("192.168.0")) {
+            tabs.getTabAt(1).setEnabled(false); // game pause
+            tabs.getTabAt(2).setEnabled(false); // game
+            tabs.getTabAt(4).setEnabled(false); // Settings
+        }
+
 
         Div pagePlayers = buildPagePlayers();
         PageGame pageGame = new PageGame();
