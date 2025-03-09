@@ -25,6 +25,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.server.VaadinSession;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -45,9 +46,13 @@ public class MainView extends VerticalLayout implements KeyNotifier {
     PlayersStats playersStats;
     AllServiceCount serviceCount;
 
-
+    public String getClientIP() {
+        return VaadinSession.getCurrent().getBrowser().getAddress();
+    }
 
     public MainView() {
+
+        System.out.println("IP:" + getClientIP() );
 
         MqttListener.setStateNone();
 
