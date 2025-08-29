@@ -38,6 +38,7 @@ public class Utils {
 
         filenames.add("1-UP.mp3");
         filenames.add("Bazinga.mp3");
+        filenames.add("Captain Falcon.mp3");
         filenames.add("DingSoundEffect.mp3");
         filenames.add("Everything Is AWESOME!.mp3");
         filenames.add("Heee oui Theo.m4a");
