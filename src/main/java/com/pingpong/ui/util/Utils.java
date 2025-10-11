@@ -44,6 +44,7 @@ public class Utils {
         filenames.add("Heee oui Theo.m4a");
         filenames.add("Chuis Bo.mp3");
         filenames.add("HERE WE GO SOUND EFFECT (MARIO).mp3");
+        filenames.add("Hugo_blam.m4a");
         filenames.add("I'm On A Boat.mp3");
         filenames.add("LetsGoToTheBeach.mp3");
         filenames.add("Nelson HaHa sound effect.mp3");
@@ -53,6 +54,8 @@ public class Utils {
         filenames.add("Super Mario Bros.-Coin Sound Effect.mp3");
         filenames.add("Theo 2.m4a");
         filenames.add("Theo 3.m4a");
+        filenames.add("Theo_Lets_go.m4a");
+        filenames.add("Thoe_hen_hen.m4a");
         filenames.add("Witch Doctor - Ooh Eeh Ooh .mp3");
         filenames.add("YAHOO SOUND EFFECT (MARIO).mp3");
         filenames.add("Yoshi's Mlem Sound Effect.mp3");
