@@ -1,4 +1,4 @@
-FROM openjdk:21-oracle
+FROM openjdk:25-oracle
 
 ARG PROPS_ENV
 
