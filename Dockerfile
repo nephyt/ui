@@ -1,4 +1,4 @@
-FROM openjdk:25-oracle
+FROM eclipse-temurin:27-jdk
 
 ARG PROPS_ENV
 
