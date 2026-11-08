@@ -20,8 +20,8 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
-import elemental.json.Json;
 import org.springframework.beans.factory.annotation.Autowired;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -191,7 +191,8 @@ public class PlayerEditor extends VerticalLayout implements KeyNotifier {
                 image.setSrc(resource);
                 image.setVisible(true);
 
-                upload.getElement().setPropertyJson("files", Json.createArray());
+                ObjectMapper mapper = new ObjectMapper();
+                upload.getElement().setPropertyJson("files", mapper.createArrayNode());
 
             } catch (IOException ioException) {
                 ioException.printStackTrace();
